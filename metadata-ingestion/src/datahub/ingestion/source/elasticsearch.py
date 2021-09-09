@@ -1,9 +1,8 @@
 import logging
 from dataclasses import dataclass, field
-from typing import Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Type
 
 from elasticsearch import Elasticsearch
-
 
 from datahub.configuration import ConfigModel
 from datahub.configuration.common import AllowDenyPattern
@@ -18,9 +17,16 @@ from datahub.metadata.com.linkedin.pegasus2avro.schema import (
     SchemaField,
     SchemaMetadata,
 )
-
-from src.datahub.metadata.com.linkedin.pegasus2avro.schema import SchemaFieldDataType
-from src.datahub.metadata.schema_classes import NumberTypeClass, BooleanTypeClass, StringTypeClass, DateTypeClass, NullTypeClass, SchemalessClass, DatasetPropertiesClass
+from datahub.metadata.com.linkedin.pegasus2avro.schema import SchemaFieldDataType
+from datahub.metadata.schema_classes import (
+    BooleanTypeClass,
+    DatasetPropertiesClass,
+    DateTypeClass,
+    NullTypeClass,
+    NumberTypeClass,
+    SchemalessClass,
+    StringTypeClass,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,17 +49,19 @@ class ElasticsearchSourceReport(SourceReport):
     def report_dropped(self, index: str) -> None:
         self.filtered.append(index)
 
+
 _field_type_mapping: Dict[str, Type] = {
     "integer": NumberTypeClass,
     "boolean": BooleanTypeClass,
     "keyword": StringTypeClass,
-    "date": DateTypeClass
-
+    "text": StringTypeClass,
+    "date": DateTypeClass,
 }
-def get_column_type(
-        elasticsearch_report: ElasticsearchSourceReport, dataset_name: str, column_type: str
-) -> SchemaFieldDataType:
 
+
+def get_column_type(
+    elasticsearch_report: ElasticsearchSourceReport, dataset_name: str, column_type: str
+) -> SchemaFieldDataType:
     TypeClass: Optional[Type] = _field_type_mapping.get(column_type)
     if TypeClass is None:
         elasticsearch_report.report_warning(
@@ -62,7 +70,6 @@ def get_column_type(
         TypeClass = NullTypeClass
 
     return SchemaFieldDataType(type=TypeClass())
-
 
 
 @dataclass
@@ -78,7 +85,7 @@ class ElasticsearchSource(Source):
         self.report = ElasticsearchSourceReport()
 
     @classmethod
-    def create(cls, config_dict, ctx):
+    def create(cls, config_dict, ctx) :
         config = ElasticsearchSourceConfig.parse_obj(config_dict)
         return cls(config, ctx)
 
@@ -90,7 +97,7 @@ class ElasticsearchSource(Source):
 
             if self.source_config.index_patterns.allowed(t):
                 mce = self._extract_record(t)
-                wu = MetadataWorkUnit(id=f"index-{t}", mce=mce)
+                wu = MetadataWorkUnit(id=f"{t}", mce=mce)
                 self.report.report_workunit(wu)
                 yield wu
             else:
@@ -110,8 +117,8 @@ class ElasticsearchSource(Source):
             customProperties={},
         )
         dataset_snapshot.aspects.append(dataset_properties)
-        raw_data = self.client.indices.get_mapping( index );
-        raw_schema = raw_data[ index ]["mappings"]["properties"]
+        raw_data = self.client.indices.get_mapping(index)
+        raw_schema = raw_data[index]["mappings"]["properties"]
 
         # initialize the schema for the collection
         canonical_schema: List[SchemaField] = []
@@ -120,20 +127,22 @@ class ElasticsearchSource(Source):
         for columnName, column in raw_schema.items():
             schema_field = SchemaField(
                 fieldPath=columnName,
-                nativeDataType=get_column_type(self.report, dataset_name, column['type']),
-                type=column['type'],
+                type=get_column_type(
+                    self.report, dataset_name, column["type"]
+                ),
+                nativeDataType=column["type"],
                 description=None,
                 nullable=True,
                 recursive=False,
             )
             canonical_schema.append(schema_field)
         schema_metadata = SchemaMetadata(
-          schemaName=index,
-          platform=f"urn:li:dataPlatform:{platform}",
-          version=0,
-          hash="",
-          platformSchema=SchemalessClass(),
-          fields=canonical_schema,
+            schemaName=index,
+            platform=f"urn:li:dataPlatform:{platform}",
+            version=0,
+            hash="",
+            platformSchema=SchemalessClass(),
+            fields=canonical_schema,
         )
         dataset_snapshot.aspects.append(schema_metadata)
 
@@ -144,5 +153,5 @@ class ElasticsearchSource(Source):
         return self.report
 
     def close(self):
-        if self.consumer:
-            self.consumer.close()
+        if self.client:
+            self.client.close()
