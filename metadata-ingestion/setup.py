@@ -80,6 +80,7 @@ plugins: Dict[str, Set[str]] = {
     "bigquery-usage": {"google-cloud-logging", "cachetools"},
     "dbt": set(),
     "druid": sql_common | {"pydruid>=0.6.2"},
+    "elasticsearch": {"elasticsearch>=7.10"},
     "feast": {"docker"},
     "glue": aws_common,
     "hive": sql_common
@@ -97,6 +98,7 @@ plugins: Dict[str, Set[str]] = {
     "mssql": sql_common | {"sqlalchemy-pytds>=0.3"},
     "mssql-odbc": sql_common | {"pyodbc"},
     "mysql": sql_common | {"pymysql>=1.0.2"},
+    "clickhouse": sql_common | {"clickhouse-sqlalchemy"},
     "okta": {"okta~=1.7.0"},
     "oracle": sql_common | {"cx_Oracle"},
     "postgres": sql_common | {"psycopg2-binary", "GeoAlchemy2"},
@@ -196,6 +198,7 @@ full_test_dev_requirements = {
     *list(
         dependency
         for plugin in [
+            "elasticsearch",
             "druid",
             "feast",
             "hive",
@@ -203,6 +206,7 @@ full_test_dev_requirements = {
             "mongodb",
             "mssql",
             "mysql",
+            "clickhouse",
             "snowflake",
             "sql-profiles",
             "redash",
@@ -221,6 +225,7 @@ entry_points = {
         "bigquery-usage = datahub.ingestion.source.usage.bigquery_usage:BigQueryUsageSource",
         "dbt = datahub.ingestion.source.dbt:DBTSource",
         "druid = datahub.ingestion.source.sql.druid:DruidSource",
+        "elasticsearch = datahub.ingestion.source.elasticsearch:ElasticsearchSource",
         "feast = datahub.ingestion.source.feast:FeastSource",
         "glue = datahub.ingestion.source.aws.glue:GlueSource",
         "sagemaker = datahub.ingestion.source.aws.sagemaker:SagemakerSource",
@@ -233,6 +238,7 @@ entry_points = {
         "mongodb = datahub.ingestion.source.mongodb:MongoDBSource",
         "mssql = datahub.ingestion.source.sql.mssql:SQLServerSource",
         "mysql = datahub.ingestion.source.sql.mysql:MySQLSource",
+        "clickhouse = datahub.ingestion.source.sql.clickhouse:ClickhouseSource",
         "okta = datahub.ingestion.source.identity.okta:OktaSource",
         "oracle = datahub.ingestion.source.sql.oracle:OracleSource",
         "postgres = datahub.ingestion.source.sql.postgres:PostgresSource",
