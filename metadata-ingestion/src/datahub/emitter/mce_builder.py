@@ -12,6 +12,10 @@ from datahub.metadata.schema_classes import (
     MetadataChangeEventClass,
     UpstreamClass,
     UpstreamLineageClass,
+    DatasetUpstreamLineageClass,
+    DatasetFieldMappingClass,
+    TransformationTypeClass,
+    AuditStampClass
 )
 
 DEFAULT_ENV = "PROD"
@@ -42,6 +46,9 @@ def make_data_platform_urn(platform: str) -> str:
 def make_dataset_urn(platform: str, name: str, env: str = DEFAULT_ENV) -> str:
     return f"urn:li:dataset:({make_data_platform_urn(platform)},{name},{env})"
 
+def make_dataset_field_urn(platform: str, dataset_name: str, field_name: str, env: str = DEFAULT_ENV) -> str:
+    return f"urn:li:datasetField:({make_dataset_urn(platform, dataset_name, env)},{field_name})"
+
 
 def make_user_urn(username: str) -> str:
     return f"urn:li:corpuser:{username}"
@@ -70,7 +77,7 @@ def make_data_job_urn(
 
 
 def make_dashboard_urn(platform: str, name: str) -> str:
-    # FIXME: dashboards don't currently include data platform urn prefixes.
+    # FI  XME: dashboards don't currently include data platform urn prefixes.
     _check_data_platform_name(platform)
     return f"urn:li:dashboard:({platform},{name})"
 
@@ -113,9 +120,9 @@ def make_ml_model_group_urn(platform: str, group_name: str, env: str) -> str:
 
 
 def make_lineage_mce(
-    upstream_urns: List[str],
-    downstream_urn: str,
-    lineage_type: str = DatasetLineageTypeClass.TRANSFORMED,
+        upstream_urns: List[str],
+        downstream_urn: str,
+        lineage_type: str = DatasetLineageTypeClass.TRANSFORMED,
 ) -> MetadataChangeEventClass:
     mce = MetadataChangeEventClass(
         proposedSnapshot=DatasetSnapshotClass(
@@ -128,6 +135,37 @@ def make_lineage_mce(
                             type=lineage_type,
                         )
                         for upstream_urn in upstream_urns
+                    ]
+                )
+            ],
+        )
+    )
+    return mce
+
+
+def make_field_lineage_mce(
+        dataset_urn,
+        sourceFields: List[str],
+        destinationField: str,
+        transformation_type: str = TransformationTypeClass.IDENTITY
+) -> MetadataChangeEventClass:
+    print(dataset_urn)
+    print(sourceFields)
+    print(destinationField)
+    print(transformation_type)
+    mce = MetadataChangeEventClass(
+        proposedSnapshot=DatasetSnapshotClass(
+            urn=dataset_urn,
+            aspects=[
+                DatasetUpstreamLineageClass(
+                    fieldMappings=[
+                        DatasetFieldMappingClass(
+                            created=AuditStampClass.construct_with_defaults(),
+                            transformation=transformation_type,
+                            sourceFields=sourceFields,
+                            destinationField=destinationField
+
+                        )
                     ]
                 )
             ],
