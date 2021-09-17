@@ -1,0 +1,8 @@
+namespace com.linkedin.metadata.relationship
+
+@pairings = [ {
+  "destination" : "com.linkedin.common.urn.DatasetFieldUrn",
+  "source" : "com.linkedin.common.urn.DatasetFieldUrn"
+} ]
+record DataDerivedFrom includes BaseRelationship {
+}

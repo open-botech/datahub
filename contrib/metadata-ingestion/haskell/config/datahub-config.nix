@@ -1,1 +1,1 @@
-../../nix/datahub-config.nix
+../../../nix/datahub-config.nix

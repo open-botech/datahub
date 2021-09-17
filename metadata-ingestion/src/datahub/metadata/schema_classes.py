@@ -2518,6 +2518,39 @@ class DatasetDeprecationClass(DictWrapper):
         self._inner_dict['actor'] = value
     
     
+class DatasetFieldClass(DictWrapper):
+    # No docs available.
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.dataset.DatasetField")
+    def __init__(self,
+        datasetField: str,
+    ):
+        super().__init__()
+        
+        self.datasetField = datasetField
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "DatasetFieldClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.datasetField = str()
+    
+    
+    @property
+    def datasetField(self) -> str:
+        # No docs available.
+        return self._inner_dict.get('datasetField')  # type: ignore
+    
+    @datasetField.setter
+    def datasetField(self, value: str) -> None:
+        # No docs available.
+        self._inner_dict['datasetField'] = value
+    
+    
 class DatasetFieldMappingClass(DictWrapper):
     """Representation of mapping between fields in source dataset to the field in destination dataset"""
     
@@ -2806,6 +2839,39 @@ class DatasetFieldProfileClass(DictWrapper):
     def sampleValues(self, value: Union[None, List[str]]) -> None:
         # No docs available.
         self._inner_dict['sampleValues'] = value
+    
+    
+class DatasetFieldsClass(DictWrapper):
+    # No docs available.
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.dataset.DatasetFields")
+    def __init__(self,
+        fields: List["DatasetFieldClass"],
+    ):
+        super().__init__()
+        
+        self.fields = fields
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "DatasetFieldsClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.fields = list()
+    
+    
+    @property
+    def fields(self) -> List["DatasetFieldClass"]:
+        # No docs available.
+        return self._inner_dict.get('fields')  # type: ignore
+    
+    @fields.setter
+    def fields(self, value: List["DatasetFieldClass"]) -> None:
+        # No docs available.
+        self._inner_dict['fields'] = value
     
     
 class DatasetLineageTypeClass(object):
@@ -4351,6 +4417,53 @@ class DataProcessKeyClass(DictWrapper):
         self._inner_dict['origin'] = value
     
     
+class DatasetFieldKeyClass(DictWrapper):
+    """Key for a Dataset"""
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.metadata.key.DatasetFieldKey")
+    def __init__(self,
+        dataset: str,
+        name: str,
+    ):
+        super().__init__()
+        
+        self.dataset = dataset
+        self.name = name
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "DatasetFieldKeyClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.dataset = str()
+        self.name = str()
+    
+    
+    @property
+    def dataset(self) -> str:
+        """Getter: Dataset urn associated with the datasetField"""
+        return self._inner_dict.get('dataset')  # type: ignore
+    
+    @dataset.setter
+    def dataset(self, value: str) -> None:
+        """Setter: Dataset urn associated with the datasetField"""
+        self._inner_dict['dataset'] = value
+    
+    
+    @property
+    def name(self) -> str:
+        """Getter: DatasetField native name e.g. /<name>"""
+        return self._inner_dict.get('name')  # type: ignore
+    
+    @name.setter
+    def name(self, value: str) -> None:
+        """Setter: DatasetField native name e.g. /<name>"""
+        self._inner_dict['name'] = value
+    
+    
 class DatasetKeyClass(DictWrapper):
     """Key for a Dataset"""
     
@@ -5211,13 +5324,60 @@ class DataProcessSnapshotClass(DictWrapper):
         self._inner_dict['aspects'] = value
     
     
+class DatasetFieldSnapshotClass(DictWrapper):
+    # No docs available.
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.metadata.snapshot.DatasetFieldSnapshot")
+    def __init__(self,
+        urn: str,
+        aspects: List["DatasetFieldKeyClass"],
+    ):
+        super().__init__()
+        
+        self.urn = urn
+        self.aspects = aspects
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "DatasetFieldSnapshotClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.urn = str()
+        self.aspects = list()
+    
+    
+    @property
+    def urn(self) -> str:
+        """Getter: URN for the entity the metadata snapshot is associated with."""
+        return self._inner_dict.get('urn')  # type: ignore
+    
+    @urn.setter
+    def urn(self, value: str) -> None:
+        """Setter: URN for the entity the metadata snapshot is associated with."""
+        self._inner_dict['urn'] = value
+    
+    
+    @property
+    def aspects(self) -> List["DatasetFieldKeyClass"]:
+        """Getter: The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."""
+        return self._inner_dict.get('aspects')  # type: ignore
+    
+    @aspects.setter
+    def aspects(self, value: List["DatasetFieldKeyClass"]) -> None:
+        """Setter: The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."""
+        self._inner_dict['aspects'] = value
+    
+    
 class DatasetSnapshotClass(DictWrapper):
     # No docs available.
     
     RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot")
     def __init__(self,
         urn: str,
-        aspects: List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass"]],
+        aspects: List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass", "DatasetFieldsClass"]],
     ):
         super().__init__()
         
@@ -5248,12 +5408,12 @@ class DatasetSnapshotClass(DictWrapper):
     
     
     @property
-    def aspects(self) -> List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass"]]:
+    def aspects(self) -> List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass", "DatasetFieldsClass"]]:
         """Getter: The list of metadata aspects associated with the dataset. Depending on the use case, this can either be all, or a selection, of supported aspects."""
         return self._inner_dict.get('aspects')  # type: ignore
     
     @aspects.setter
-    def aspects(self, value: List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass"]]) -> None:
+    def aspects(self, value: List[Union["DatasetKeyClass", "DatasetPropertiesClass", "EditableDatasetPropertiesClass", "DatasetDeprecationClass", "DatasetUpstreamLineageClass", "UpstreamLineageClass", "InstitutionalMemoryClass", "OwnershipClass", "StatusClass", "SchemaMetadataClass", "EditableSchemaMetadataClass", "GlobalTagsClass", "GlossaryTermsClass", "BrowsePathsClass", "DatasetFieldsClass"]]) -> None:
         """Setter: The list of metadata aspects associated with the dataset. Depending on the use case, this can either be all, or a selection, of supported aspects."""
         self._inner_dict['aspects'] = value
     
@@ -7288,7 +7448,7 @@ class MetadataChangeEventClass(DictWrapper):
     
     RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.mxe.MetadataChangeEvent")
     def __init__(self,
-        proposedSnapshot: Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"],
+        proposedSnapshot: Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DatasetFieldSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"],
         auditHeader: Union[None, "KafkaAuditHeaderClass"]=None,
         proposedDelta: None=None,
         systemMetadata: Union[None, "SystemMetadataClass"]=None,
@@ -7326,12 +7486,12 @@ class MetadataChangeEventClass(DictWrapper):
     
     
     @property
-    def proposedSnapshot(self) -> Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"]:
+    def proposedSnapshot(self) -> Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DatasetFieldSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"]:
         """Getter: Snapshot of the proposed metadata change. Include only the aspects affected by the change in the snapshot."""
         return self._inner_dict.get('proposedSnapshot')  # type: ignore
     
     @proposedSnapshot.setter
-    def proposedSnapshot(self, value: Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"]) -> None:
+    def proposedSnapshot(self, value: Union["ChartSnapshotClass", "CorpGroupSnapshotClass", "CorpUserSnapshotClass", "DashboardSnapshotClass", "DataFlowSnapshotClass", "DataJobSnapshotClass", "DatasetSnapshotClass", "DatasetFieldSnapshotClass", "DataProcessSnapshotClass", "DataPlatformSnapshotClass", "MLModelSnapshotClass", "MLPrimaryKeySnapshotClass", "MLFeatureSnapshotClass", "MLFeatureTableSnapshotClass", "MLModelDeploymentSnapshotClass", "MLModelGroupSnapshotClass", "TagSnapshotClass", "GlossaryTermSnapshotClass", "GlossaryNodeSnapshotClass"]) -> None:
         """Setter: Snapshot of the proposed metadata change. Include only the aspects affected by the change in the snapshot."""
         self._inner_dict['proposedSnapshot'] = value
     
@@ -9294,8 +9454,10 @@ __SCHEMA_TYPES = {
     'com.linkedin.pegasus2avro.dataplatform.PlatformType': PlatformTypeClass,
     'com.linkedin.pegasus2avro.dataprocess.DataProcessInfo': DataProcessInfoClass,
     'com.linkedin.pegasus2avro.dataset.DatasetDeprecation': DatasetDeprecationClass,
+    'com.linkedin.pegasus2avro.dataset.DatasetField': DatasetFieldClass,
     'com.linkedin.pegasus2avro.dataset.DatasetFieldMapping': DatasetFieldMappingClass,
     'com.linkedin.pegasus2avro.dataset.DatasetFieldProfile': DatasetFieldProfileClass,
+    'com.linkedin.pegasus2avro.dataset.DatasetFields': DatasetFieldsClass,
     'com.linkedin.pegasus2avro.dataset.DatasetLineageType': DatasetLineageTypeClass,
     'com.linkedin.pegasus2avro.dataset.DatasetProfile': DatasetProfileClass,
     'com.linkedin.pegasus2avro.dataset.DatasetProperties': DatasetPropertiesClass,
@@ -9322,6 +9484,7 @@ __SCHEMA_TYPES = {
     'com.linkedin.pegasus2avro.metadata.key.DataJobKey': DataJobKeyClass,
     'com.linkedin.pegasus2avro.metadata.key.DataPlatformKey': DataPlatformKeyClass,
     'com.linkedin.pegasus2avro.metadata.key.DataProcessKey': DataProcessKeyClass,
+    'com.linkedin.pegasus2avro.metadata.key.DatasetFieldKey': DatasetFieldKeyClass,
     'com.linkedin.pegasus2avro.metadata.key.DatasetKey': DatasetKeyClass,
     'com.linkedin.pegasus2avro.metadata.key.GlossaryNodeKey': GlossaryNodeKeyClass,
     'com.linkedin.pegasus2avro.metadata.key.GlossaryTermKey': GlossaryTermKeyClass,
@@ -9340,6 +9503,7 @@ __SCHEMA_TYPES = {
     'com.linkedin.pegasus2avro.metadata.snapshot.DataJobSnapshot': DataJobSnapshotClass,
     'com.linkedin.pegasus2avro.metadata.snapshot.DataPlatformSnapshot': DataPlatformSnapshotClass,
     'com.linkedin.pegasus2avro.metadata.snapshot.DataProcessSnapshot': DataProcessSnapshotClass,
+    'com.linkedin.pegasus2avro.metadata.snapshot.DatasetFieldSnapshot': DatasetFieldSnapshotClass,
     'com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot': DatasetSnapshotClass,
     'com.linkedin.pegasus2avro.metadata.snapshot.GlossaryNodeSnapshot': GlossaryNodeSnapshotClass,
     'com.linkedin.pegasus2avro.metadata.snapshot.GlossaryTermSnapshot': GlossaryTermSnapshotClass,
@@ -9460,8 +9624,10 @@ __SCHEMA_TYPES = {
     'PlatformType': PlatformTypeClass,
     'DataProcessInfo': DataProcessInfoClass,
     'DatasetDeprecation': DatasetDeprecationClass,
+    'DatasetField': DatasetFieldClass,
     'DatasetFieldMapping': DatasetFieldMappingClass,
     'DatasetFieldProfile': DatasetFieldProfileClass,
+    'DatasetFields': DatasetFieldsClass,
     'DatasetLineageType': DatasetLineageTypeClass,
     'DatasetProfile': DatasetProfileClass,
     'DatasetProperties': DatasetPropertiesClass,
@@ -9488,6 +9654,7 @@ __SCHEMA_TYPES = {
     'DataJobKey': DataJobKeyClass,
     'DataPlatformKey': DataPlatformKeyClass,
     'DataProcessKey': DataProcessKeyClass,
+    'DatasetFieldKey': DatasetFieldKeyClass,
     'DatasetKey': DatasetKeyClass,
     'GlossaryNodeKey': GlossaryNodeKeyClass,
     'GlossaryTermKey': GlossaryTermKeyClass,
@@ -9506,6 +9673,7 @@ __SCHEMA_TYPES = {
     'DataJobSnapshot': DataJobSnapshotClass,
     'DataPlatformSnapshot': DataPlatformSnapshotClass,
     'DataProcessSnapshot': DataProcessSnapshotClass,
+    'DatasetFieldSnapshot': DatasetFieldSnapshotClass,
     'DatasetSnapshot': DatasetSnapshotClass,
     'GlossaryNodeSnapshot': GlossaryNodeSnapshotClass,
     'GlossaryTermSnapshot': GlossaryTermSnapshotClass,

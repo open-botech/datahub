@@ -37,6 +37,8 @@ services:
       dockerfile: Dockerfile
       args:
         APP_ENV: dev
+    ports: # <--- Add this line
+      - "5005:5005"    # <--- And this line. Must match port from environment file
     volumes:
       - ./datahub-gms/start.sh:/datahub/datahub-gms/scripts/start.sh
       - ../metadata-models/src/main/resources/:/datahub/datahub-gms/resources

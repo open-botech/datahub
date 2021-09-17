@@ -12,11 +12,15 @@ from datahub.metadata.schema_classes import (
     MetadataChangeEventClass,
     UpstreamClass,
     UpstreamLineageClass,
+    DatasetFieldSnapshotClass,
+    TransformationTypeClass,
     DatasetUpstreamLineageClass,
     DatasetFieldMappingClass,
-    TransformationTypeClass,
-    AuditStampClass
+    AuditStampClass,
+    DatasetFieldsClass,
+    DatasetFieldClass,
 )
+
 
 DEFAULT_ENV = "PROD"
 DEFAULT_FLOW_CLUSTER = "prod"
@@ -135,6 +139,66 @@ def make_lineage_mce(
                             type=lineage_type,
                         )
                         for upstream_urn in upstream_urns
+                    ]
+                )
+            ],
+        )
+    )
+    return mce
+
+def make_datasetfield_mce(
+        dataset_urn,
+) -> MetadataChangeEventClass:
+    mce = MetadataChangeEventClass(
+        proposedSnapshot=DatasetFieldSnapshotClass(
+            urn=dataset_urn,
+            aspects=[],
+        )
+    )
+    return mce
+
+def make_hasfield_mce(
+        dataset_urn: str,
+        datasetField_urns: List[str]
+) -> MetadataChangeEventClass:
+    mce = MetadataChangeEventClass(
+        proposedSnapshot=DatasetSnapshotClass(
+            urn=dataset_urn,
+            aspects=[
+                DatasetFieldsClass(
+                    fields=[
+                        DatasetFieldClass(
+                        datasetField=urn
+                        )
+                        for urn in datasetField_urns
+
+                    ]
+                )
+            ]
+        )
+    )
+    return mce
+
+
+
+def make_field_lineage_mce(
+        dataset_urn,
+        sourceFields: List[str],
+        destinationField: str,
+        transformation_type: str = TransformationTypeClass.IDENTITY
+) -> MetadataChangeEventClass:
+    mce = MetadataChangeEventClass(
+        proposedSnapshot=DatasetSnapshotClass(
+            urn=dataset_urn,
+            aspects=[
+                DatasetUpstreamLineageClass(
+                    fieldMappings=[
+                        DatasetFieldMappingClass(
+                            created=AuditStampClass(0,"urn:li:corpuser:unknown"),
+                            transformation=transformation_type,
+                            sourceFields=sourceFields,
+                            destinationField=destinationField,
+                        )
                     ]
                 )
             ],

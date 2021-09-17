@@ -5,8 +5,10 @@
 
 # fmt: off
 from .....schema_classes import DatasetDeprecationClass
+from .....schema_classes import DatasetFieldClass
 from .....schema_classes import DatasetFieldMappingClass
 from .....schema_classes import DatasetFieldProfileClass
+from .....schema_classes import DatasetFieldsClass
 from .....schema_classes import DatasetLineageTypeClass
 from .....schema_classes import DatasetProfileClass
 from .....schema_classes import DatasetPropertiesClass
@@ -20,8 +22,10 @@ from .....schema_classes import ValueFrequencyClass
 
 
 DatasetDeprecation = DatasetDeprecationClass
+DatasetField = DatasetFieldClass
 DatasetFieldMapping = DatasetFieldMappingClass
 DatasetFieldProfile = DatasetFieldProfileClass
+DatasetFields = DatasetFieldsClass
 DatasetLineageType = DatasetLineageTypeClass
 DatasetProfile = DatasetProfileClass
 DatasetProperties = DatasetPropertiesClass

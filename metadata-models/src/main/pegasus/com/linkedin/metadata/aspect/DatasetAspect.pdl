@@ -6,6 +6,7 @@ import com.linkedin.dataset.DatasetProperties
 import com.linkedin.dataset.EditableDatasetProperties
 import com.linkedin.dataset.DatasetUpstreamLineage
 import com.linkedin.dataset.UpstreamLineage
+import com.linkedin.dataset.DatasetFields
 import com.linkedin.schema.SchemaMetadata
 import com.linkedin.schema.EditableSchemaMetadata
 import com.linkedin.common.InstitutionalMemory
@@ -32,5 +33,6 @@ typeref DatasetAspect = union[
   EditableSchemaMetadata,
   GlobalTags,
   GlossaryTerms,
-  BrowsePaths
+  BrowsePaths,
+  DatasetFields,
 ]
