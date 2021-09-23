@@ -58,7 +58,12 @@
           "values" : "string"
         },
         "doc" : "Custom property bag.",
-        "default" : { }
+        "default" : { },
+        "Searchable" : {
+          "/*" : {
+            "queryByDefault" : true
+          }
+        }
       } ]
     }, {
       "type" : "record",
@@ -2071,7 +2076,7 @@
               "Searchable" : {
                 "/terms/*/urn" : {
                   "boostScore" : 0.5,
-                  "fieldName" : "fieldGlossaryTerms",
+                  "fieldName" : "editedFieldGlossaryTerms",
                   "fieldType" : "URN_PARTIAL"
                 }
               }

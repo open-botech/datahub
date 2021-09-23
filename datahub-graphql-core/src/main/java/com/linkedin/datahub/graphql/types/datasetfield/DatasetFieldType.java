@@ -10,7 +10,6 @@ import com.linkedin.datahub.graphql.generated.EntityType;
 import com.linkedin.datahub.graphql.generated.FacetFilterInput;
 import com.linkedin.datahub.graphql.generated.SearchResults;
 import com.linkedin.datahub.graphql.resolvers.ResolverUtils;
-import com.linkedin.datahub.graphql.types.LoadableType;
 import com.linkedin.datahub.graphql.types.SearchableEntityType;
 import com.linkedin.datahub.graphql.types.datasetfield.mappers.DatasetFieldSnapshotMapper;
 import com.linkedin.datahub.graphql.types.mappers.AutoCompleteResultsMapper;
@@ -35,7 +34,7 @@ public class DatasetFieldType implements SearchableEntityType<DatasetField> {
 
     private static final Set<String> FACET_FIELDS = ImmutableSet.of("origin", "platform");
 
-    private final EntityClient _datasetsFieldClient;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        private final EntityClient _datasetsFieldClient;
 
     public DatasetFieldType(final EntityClient datasetsFieldClient) {
         _datasetsFieldClient = datasetsFieldClient;
@@ -58,7 +57,7 @@ public class DatasetFieldType implements SearchableEntityType<DatasetField> {
             final Map<Urn, Entity> datasetFieldMap = _datasetsFieldClient.batchGet(datasetFieldUrns
                     .stream()
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet()), context.getActor());
 
             final List<Entity> gmsResults = new ArrayList<>();
             for (DatasetFieldUrn urn : datasetFieldUrns) {
@@ -89,8 +88,8 @@ public class DatasetFieldType implements SearchableEntityType<DatasetField> {
         int count,
         @Nonnull final QueryContext context) throws Exception {
         final Map<String, String> facetFilters = ResolverUtils.buildFacetFilters(filters, FACET_FIELDS);
-        final SearchResult searchResult = _datasetsFieldClient.search("datasetField", query, facetFilters, start, count);
-        return UrnSearchResultsMapper.map(searchResult);
+        final SearchResult searchResult = _datasetsFieldClient.search("datasetField", query, facetFilters, start, count, context.getActor());
+        return UrnSearchResultsMapper.map(searchResult) ;
     }
 
     @Override
@@ -100,7 +99,7 @@ public class DatasetFieldType implements SearchableEntityType<DatasetField> {
         int limit,
         @Nonnull final QueryContext context) throws Exception {
         final Map<String, String> facetFilters = ResolverUtils.buildFacetFilters(filters, FACET_FIELDS);
-        final AutoCompleteResult result = _datasetsFieldClient.autoComplete("datasetField", query, facetFilters, limit);
+        final AutoCompleteResult result = _datasetsFieldClient.autoComplete("datasetField", query, facetFilters, limit, context.getActor());
         return AutoCompleteResultsMapper.map(result);
     }
 }
