@@ -22,5 +22,6 @@ typeref Snapshot = union[
   MLModelGroupSnapshot,
   TagSnapshot,
   GlossaryTermSnapshot,
-  GlossaryNodeSnapshot
+  GlossaryNodeSnapshot,
+  DataHubPolicySnapshot,
 ]

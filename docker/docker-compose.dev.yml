@@ -41,6 +41,7 @@ services:
       - "5005:5005"    # <--- And this line. Must match port from environment file
     volumes:
       - ./datahub-gms/start.sh:/datahub/datahub-gms/scripts/start.sh
+      - ./monitoring/client-prometheus-config.yaml:/datahub/datahub-gms/scripts/prometheus-config.yaml
       - ../metadata-models/src/main/resources/:/datahub/datahub-gms/resources
       - ../metadata-service/war/build/libs/:/datahub/datahub-gms/bin
 
