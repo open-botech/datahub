@@ -69,6 +69,7 @@ import com.linkedin.datahub.graphql.resolvers.search.SearchResolver;
 import com.linkedin.datahub.graphql.resolvers.type.EntityInterfaceTypeResolver;
 import com.linkedin.datahub.graphql.resolvers.type.PlatformSchemaUnionTypeResolver;
 import com.linkedin.datahub.graphql.types.dataset.mappers.DatasetProfileMapper;
+import com.linkedin.datahub.graphql.types.datasetfield.DatasetFieldType;
 import com.linkedin.datahub.graphql.types.lineage.DownstreamLineageType;
 import com.linkedin.datahub.graphql.types.lineage.UpstreamLineageType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLFeatureTableType;
@@ -116,6 +117,7 @@ public class GmsGraphQLEngine {
     private static GraphQLEngine _engine;
 
     private final DatasetType datasetType = new DatasetType(GmsClientFactory.getEntitiesClient());
+    private final DatasetFieldType datasetFieldType = new DatasetFieldType(GmsClientFactory.getEntitiesClient());
     private final CorpUserType corpUserType = new CorpUserType(GmsClientFactory.getEntitiesClient());
     private final CorpGroupType corpGroupType = new CorpGroupType(GmsClientFactory.getEntitiesClient());
     private final ChartType chartType = new ChartType(GmsClientFactory.getEntitiesClient());
@@ -147,7 +149,7 @@ public class GmsGraphQLEngine {
     /**
      * Configures the graph objects that can be fetched primary key.
      */
-    public final List<EntityType<?>> entityTypes = ImmutableList.of(datasetType, corpUserType, corpGroupType,
+    public final List<EntityType<?>> entityTypes = ImmutableList.of(datasetType, datasetFieldType,corpUserType, corpGroupType,
         dataPlatformType, chartType, dashboardType, tagType, mlModelType, mlModelGroupType, mlFeatureType,
         mlFeatureTableType, mlPrimaryKeyType, dataFlowType, dataJobType, glossaryTermType
     );
@@ -228,6 +230,7 @@ public class GmsGraphQLEngine {
         configureMutationResolvers(builder);
         configureGenericEntityResolvers(builder);
         configureDatasetResolvers(builder);
+        configureDatasetFieldResolvers(builder);
         configureCorpUserResolvers(builder);
         configureCorpGroupResolvers(builder);
         configureDashboardResolvers(builder);
@@ -289,8 +292,8 @@ public class GmsGraphQLEngine {
             .dataFetcher("browsePaths", new AuthenticatedResolver<>(
                     new BrowsePathsResolver(browsableTypes)))
             .dataFetcher("dataset", new AuthenticatedResolver<>(
-                    new LoadableTypeResolver<>(datasetType,
-                            (env) -> env.getArgument(URN_FIELD_NAME))))
+                new LoadableTypeResolver<>(datasetType,
+                    (env) -> env.getArgument(URN_FIELD_NAME))))
             .dataFetcher("corpUser", new AuthenticatedResolver<>(
                     new LoadableTypeResolver<>(corpUserType,
                             (env) -> env.getArgument(URN_FIELD_NAME))))
@@ -383,16 +386,16 @@ public class GmsGraphQLEngine {
         builder
             .type("Dataset", typeWiring -> typeWiring
                 .dataFetcher("platform", new AuthenticatedResolver<>(
-                        new LoadableTypeResolver<>(dataPlatformType,
-                                (env) -> ((Dataset) env.getSource()).getPlatform().getUrn()))
+                    new LoadableTypeResolver<>(dataPlatformType,
+                        (env) -> ((Dataset) env.getSource()).getPlatform().getUrn()))
                 )
                 .dataFetcher("downstreamLineage", new AuthenticatedResolver<>(
-                        new LoadableTypeResolver<>(downstreamLineageType,
-                                (env) -> ((Entity) env.getSource()).getUrn()))
+                    new LoadableTypeResolver<>(downstreamLineageType,
+                        (env) -> ((Entity) env.getSource()).getUrn()))
                 )
                 .dataFetcher("upstreamLineage", new AuthenticatedResolver<>(
-                        new LoadableTypeResolver<>(upstreamLineageType,
-                                (env) -> ((Entity) env.getSource()).getUrn()))
+                    new LoadableTypeResolver<>(upstreamLineageType,
+                        (env) -> ((Entity) env.getSource()).getUrn()))
                 )
                 .dataFetcher("datasetProfiles", new AuthenticatedResolver<>(
                     new TimeSeriesAspectResolver(
@@ -405,13 +408,15 @@ public class GmsGraphQLEngine {
                 .dataFetcher("usageStats", new AuthenticatedResolver<>(new UsageTypeResolver()))
                 .dataFetcher("schemaMetadata", new AuthenticatedResolver<>(
                     new AspectResolver())
-                )
+                ).dataFetcher("relationships", new AuthenticatedResolver<>(
+                    new EntityRelationshipsResultResolver(GmsClientFactory.getRelationshipsClient())
+                ))
             )
             .type("Owner", typeWiring -> typeWiring
-                    .dataFetcher("owner", new AuthenticatedResolver<>(
-                            new OwnerTypeResolver<>(ownerTypes,
-                                    (env) -> ((Owner) env.getSource()).getOwner()))
-                    )
+                .dataFetcher("owner", new AuthenticatedResolver<>(
+                    new OwnerTypeResolver<>(ownerTypes,
+                        (env) -> ((Owner) env.getSource()).getOwner()))
+                )
             )
             .type("UserUsageCounts", typeWiring -> typeWiring
                 .dataFetcher("user", new AuthenticatedResolver<>(
@@ -420,17 +425,25 @@ public class GmsGraphQLEngine {
                 )
             )
             .type("RelatedDataset", typeWiring -> typeWiring
-                    .dataFetcher("dataset", new AuthenticatedResolver<>(
-                            new LoadableTypeResolver<>(datasetType,
-                                    (env) -> ((RelatedDataset) env.getSource()).getDataset().getUrn()))
-                    )
+                .dataFetcher("dataset", new AuthenticatedResolver<>(
+                    new LoadableTypeResolver<>(datasetType,
+                        (env) -> ((RelatedDataset) env.getSource()).getDataset().getUrn()))
+                )
             )
             .type("InstitutionalMemoryMetadata", typeWiring -> typeWiring
                 .dataFetcher("author", new AuthenticatedResolver<>(
-                        new LoadableTypeResolver<>(corpUserType,
-                                (env) -> ((InstitutionalMemoryMetadata) env.getSource()).getAuthor().getUrn()))
+                    new LoadableTypeResolver<>(corpUserType,
+                        (env) -> ((InstitutionalMemoryMetadata) env.getSource()).getAuthor().getUrn()))
                 )
             );
+    }
+
+    private void configureDatasetFieldResolvers(final RuntimeWiring.Builder builder) {
+        builder.type("DatasetField", typeWiring -> typeWiring
+            .dataFetcher("relationships", new AuthenticatedResolver<>(
+                new EntityRelationshipsResultResolver(GmsClientFactory.getRelationshipsClient())
+            ))
+        );
     }
 
     /**

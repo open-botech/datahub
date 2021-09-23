@@ -130,6 +130,10 @@ enum EntityType {
     """
     DATASET
     """
+    The DatasetField Entity
+    """
+    DATASET_FIELD
+    """
     The CorpUser Entity
     """
     CORP_USER
@@ -192,6 +196,11 @@ type Query {
     Fetch a Dataset by primary key
     """
     dataset(urn: String!): Dataset
+
+    """
+    Fetch a DatasetField by primary key
+    """
+    datasetField(urn: String!): DatasetField
 
     """
     Fetch a CorpUser by primary key
@@ -431,6 +440,23 @@ type Dataset implements EntityWithRelationships & Entity {
     If no start / end time are provided, the most recent events will be returned.
     """
     datasetProfiles(startTimeMillis: Long, endTimeMillis: Long, limit: Int): [DatasetProfile!]
+
+    """
+    Edges extending from this entity.
+    """
+    relationships(types: [String!]!, direction: RelationshipDirection!, start: Int, count: Int): EntityRelationshipsResult
+}
+
+type DatasetField implements Entity {
+    """
+    The unique Dataset URN
+    """
+    urn: String!
+
+    """
+    GMS Entity Type
+    """
+    type: EntityType!
 
     """
     Edges extending from this entity.

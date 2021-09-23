@@ -5,4 +5,5 @@ namespace com.linkedin.metadata.relationship
   "source" : "com.linkedin.common.urn.DatasetUrn"
 }  ]
 record HasField includes BaseRelationship {
+
 }
