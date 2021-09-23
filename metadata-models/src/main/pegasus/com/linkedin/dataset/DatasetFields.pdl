@@ -1,0 +1,10 @@
+namespace com.linkedin.dataset
+
+
+@Aspect = {
+  "name": "datasetFields"
+}
+record DatasetFields {
+
+  fields: array[DatasetField]
+}

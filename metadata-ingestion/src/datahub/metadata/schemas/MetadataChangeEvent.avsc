@@ -3027,7 +3027,42 @@
                   },
                   "com.linkedin.pegasus2avro.common.GlobalTags",
                   "com.linkedin.pegasus2avro.common.GlossaryTerms",
-                  "com.linkedin.pegasus2avro.common.BrowsePaths"
+                  "com.linkedin.pegasus2avro.common.BrowsePaths",
+                  {
+                    "type": "record",
+                    "name": "DatasetFields",
+                    "namespace": "com.linkedin.pegasus2avro.dataset",
+                    "fields": [
+                      {
+                        "name": "fields",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "DatasetField",
+                            "fields": [
+                              {
+                                "name": "datasetField",
+                                "type": "string",
+                                "Relationship": {
+                                  "entityTypes": [
+                                    "datasetField"
+                                  ],
+                                  "name": "HasField"
+                                },
+                                "java": {
+                                  "class": "com.linkedin.pegasus2avro.common.urn.DatasetFieldUrn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "Aspect": {
+                      "name": "datasetFields"
+                    }
+                  }
                 ]
               },
               "doc": "The list of metadata aspects associated with the dataset. Depending on the use case, this can either be all, or a selection, of supported aspects."
@@ -3036,6 +3071,67 @@
           "Entity": {
             "keyAspect": "datasetKey",
             "name": "dataset"
+          }
+        },
+        {
+          "type": "record",
+          "name": "DatasetFieldSnapshot",
+          "namespace": "com.linkedin.pegasus2avro.metadata.snapshot",
+          "fields": [
+            {
+              "name": "urn",
+              "type": "string",
+              "doc": "URN for the entity the metadata snapshot is associated with.",
+              "java": {
+                "class": "com.linkedin.pegasus2avro.common.urn.DatasetFieldUrn"
+              }
+            },
+            {
+              "name": "aspects",
+              "type": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "record",
+                    "name": "DatasetFieldKey",
+                    "namespace": "com.linkedin.pegasus2avro.metadata.key",
+                    "doc": "Key for a Dataset",
+                    "fields": [
+                      {
+                        "name": "dataset",
+                        "type": "string",
+                        "doc": "Dataset urn associated with the datasetField",
+                        "Searchable": {
+                          "addToFilters": true,
+                          "fieldType": "URN"
+                        },
+                        "java": {
+                          "class": "com.linkedin.pegasus2avro.common.urn.Urn"
+                        }
+                      },
+                      {
+                        "name": "name",
+                        "type": "string",
+                        "doc": "DatasetField native name e.g. /<name>",
+                        "Searchable": {
+                          "boostScore": 10.0,
+                          "enableAutocomplete": true,
+                          "fieldType": "TEXT_PARTIAL"
+                        }
+                      }
+                    ],
+                    "Aspect": {
+                      "name": "datasetFieldKey"
+                    }
+                  }
+                ]
+              },
+              "doc": "The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."
+            }
+          ],
+          "Entity": {
+            "keyAspect": "datasetFieldKey",
+            "name": "datasetField"
           }
         },
         {

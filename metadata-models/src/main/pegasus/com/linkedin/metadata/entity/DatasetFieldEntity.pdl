@@ -1,0 +1,25 @@
+namespace com.linkedin.metadata.entity
+
+import com.linkedin.common.DatasetFieldUrn
+import com.linkedin.common.DatasetUrn
+/**
+ * Data model for a datasetField entity
+ */
+record DatasetFieldEntity includes BaseEntity {
+
+  /**
+   * Urn for the datasetField
+   */
+  urn: DatasetFieldUrn
+
+  /**
+   * DatasetField native name e.g. /{name}
+   */
+  name: optional string
+
+  /**
+   * Dataset urn for the datasetField in the form of urn:li:dataset:(urn:li:platform:{platform_name},{table_name},{env})
+   */
+  dataset: optional DatasetUrn
+
+}

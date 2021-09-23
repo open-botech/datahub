@@ -13,6 +13,7 @@ from ......schema_classes import DataHubPolicyKeyClass
 from ......schema_classes import DataJobKeyClass
 from ......schema_classes import DataPlatformKeyClass
 from ......schema_classes import DataProcessKeyClass
+from ......schema_classes import DatasetFieldKeyClass
 from ......schema_classes import DatasetKeyClass
 from ......schema_classes import GlossaryNodeKeyClass
 from ......schema_classes import GlossaryTermKeyClass
@@ -34,6 +35,7 @@ DataHubPolicyKey = DataHubPolicyKeyClass
 DataJobKey = DataJobKeyClass
 DataPlatformKey = DataPlatformKeyClass
 DataProcessKey = DataProcessKeyClass
+DatasetFieldKey = DatasetFieldKeyClass
 DatasetKey = DatasetKeyClass
 GlossaryNodeKey = GlossaryNodeKeyClass
 GlossaryTermKey = GlossaryTermKeyClass

@@ -119,6 +119,25 @@ query getDataset($urn: String!) {
                 sampleValues
             }
         }
+        relationships(types:["HasField"],direction: OUTGOING) {
+               start
+               count
+               total
+               relationships {
+                type
+                direction
+                entity {
+                   ... on DatasetField{
+                      urn
+                   }
+
+                }
+                created {
+                  actor
+                  time
+                }
+              }
+        }
     }
 }
 
