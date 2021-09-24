@@ -3123,6 +3123,51 @@
                     "Aspect": {
                       "name": "datasetFieldKey"
                     }
+                  },
+                  {
+                    "type": "record",
+                    "name": "UpstreamLineage",
+                    "namespace": "com.linkedin.pegasus2avro.datasetfield",
+                    "fields": [
+                      {
+                        "name": "upstreams",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "Upstream",
+                            "fields": [
+                              {
+                                "name": "auditStamp",
+                                "type": "com.linkedin.pegasus2avro.common.AuditStamp",
+                                "default": {
+                                  "actor": "urn:li:corpuser:unknown",
+                                  "impersonator": null,
+                                  "time": 0
+                                },
+                                "deprecated": "we no longer associate a timestamp per upstream edge"
+                              },
+                              {
+                                "name": "datasetField",
+                                "type": "string",
+                                "Relationship": {
+                                  "entityTypes": [
+                                    "datasetField"
+                                  ],
+                                  "name": "DataDerivedFrom"
+                                },
+                                "java": {
+                                  "class": "com.linkedin.pegasus2avro.common.urn.DatasetFieldUrn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "Aspect": {
+                      "name": "upstreamLineage"
+                    }
                   }
                 ]
               },

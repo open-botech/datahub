@@ -128,19 +128,29 @@ query getDataset($urn: String!) {
                 direction
                 entity {
                    ... on DatasetField{
-                      urn
-                   }
-
-                }
-                created {
-                  actor
-                  time
+                      urn,
+                      type,
+                      relationships(types:["DataDerivedFrom"],direction: INGOING){
+                             start
+                             count
+                             total
+                             relationships {
+                                type
+                                direction
+                                entity {
+                                   ... on DatasetField{
+                                      urn,
+                                      type
+                                   }
+                              }
+                            }
+                       }
+                  }
                 }
               }
         }
     }
 }
-
 query getDatasetSchemaVersions($urn: String!, $version1: Long, $version2: Long) {
     dataset(urn: $urn) {
         urn

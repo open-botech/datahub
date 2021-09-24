@@ -1720,6 +1720,45 @@
     }
   }, {
     "type" : "record",
+    "name" : "Upstream",
+    "namespace" : "com.linkedin.datasetfield",
+    "fields" : [ {
+      "name" : "auditStamp",
+      "type" : "com.linkedin.common.AuditStamp",
+      "default" : {
+        "actor" : "urn:li:corpuser:unknown",
+        "time" : 0
+      },
+      "deprecated" : "we no longer associate a timestamp per upstream edge"
+    }, {
+      "name" : "datasetField",
+      "type" : "com.linkedin.common.DatasetFieldUrn",
+      "Relationship" : {
+        "entityTypes" : [ "datasetField" ],
+        "name" : "DownstreamOf"
+      },
+      "Searchable" : {
+        "fieldName" : "upstreams",
+        "fieldType" : "URN",
+        "queryByDefault" : false
+      }
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "UpstreamLineage",
+    "namespace" : "com.linkedin.datasetfield",
+    "fields" : [ {
+      "name" : "upstreams",
+      "type" : {
+        "type" : "array",
+        "items" : "Upstream"
+      }
+    } ],
+    "Aspect" : {
+      "name" : "upstreamLineage"
+    }
+  }, {
+    "type" : "record",
     "name" : "Entity",
     "namespace" : "com.linkedin.entity",
     "fields" : [ {
@@ -2804,7 +2843,7 @@
                   "Aspect" : {
                     "name" : "datasetFieldKey"
                   }
-                } ]
+                }, "com.linkedin.datasetfield.UpstreamLineage" ]
               }
             },
             "doc" : "The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."

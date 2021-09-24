@@ -3685,6 +3685,90 @@ class ValueFrequencyClass(DictWrapper):
         self._inner_dict['frequency'] = value
     
     
+class UpstreamClass(DictWrapper):
+    # No docs available.
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.datasetfield.Upstream")
+    def __init__(self,
+        datasetField: str,
+        auditStamp: Optional["AuditStampClass"]=None,
+    ):
+        super().__init__()
+        
+        if auditStamp is None:
+            # default: {'actor': 'urn:li:corpuser:unknown', 'impersonator': None, 'time': 0}
+            self.auditStamp = _json_converter.from_json_object(self.RECORD_SCHEMA.field_map["auditStamp"].default, writers_schema=self.RECORD_SCHEMA.field_map["auditStamp"].type)
+        else:
+            self.auditStamp = auditStamp
+        self.datasetField = datasetField
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "UpstreamClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.auditStamp = _json_converter.from_json_object(self.RECORD_SCHEMA.field_map["auditStamp"].default, writers_schema=self.RECORD_SCHEMA.field_map["auditStamp"].type)
+        self.datasetField = str()
+    
+    
+    @property
+    def auditStamp(self) -> "AuditStampClass":
+        # No docs available.
+        return self._inner_dict.get('auditStamp')  # type: ignore
+    
+    @auditStamp.setter
+    def auditStamp(self, value: "AuditStampClass") -> None:
+        # No docs available.
+        self._inner_dict['auditStamp'] = value
+    
+    
+    @property
+    def datasetField(self) -> str:
+        # No docs available.
+        return self._inner_dict.get('datasetField')  # type: ignore
+    
+    @datasetField.setter
+    def datasetField(self, value: str) -> None:
+        # No docs available.
+        self._inner_dict['datasetField'] = value
+    
+    
+class UpstreamLineageClass(DictWrapper):
+    # No docs available.
+    
+    RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.datasetfield.UpstreamLineage")
+    def __init__(self,
+        upstreams: List["UpstreamClass"],
+    ):
+        super().__init__()
+        
+        self.upstreams = upstreams
+    
+    @classmethod
+    def construct_with_defaults(cls) -> "UpstreamLineageClass":
+        self = cls.construct({})
+        self._restore_defaults()
+        
+        return self
+    
+    def _restore_defaults(self) -> None:
+        self.upstreams = list()
+    
+    
+    @property
+    def upstreams(self) -> List["UpstreamClass"]:
+        # No docs available.
+        return self._inner_dict.get('upstreams')  # type: ignore
+    
+    @upstreams.setter
+    def upstreams(self, value: List["UpstreamClass"]) -> None:
+        # No docs available.
+        self._inner_dict['upstreams'] = value
+    
+    
 class ChangeTypeClass(object):
     """Descriptor for a change action"""
     
@@ -5677,7 +5761,7 @@ class DatasetFieldSnapshotClass(DictWrapper):
     RECORD_SCHEMA = get_schema_type("com.linkedin.pegasus2avro.metadata.snapshot.DatasetFieldSnapshot")
     def __init__(self,
         urn: str,
-        aspects: List["DatasetFieldKeyClass"],
+        aspects: List[Union["DatasetFieldKeyClass", "UpstreamLineageClass"]],
     ):
         super().__init__()
         
@@ -5708,12 +5792,12 @@ class DatasetFieldSnapshotClass(DictWrapper):
     
     
     @property
-    def aspects(self) -> List["DatasetFieldKeyClass"]:
+    def aspects(self) -> List[Union["DatasetFieldKeyClass", "UpstreamLineageClass"]]:
         """Getter: The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."""
         return self._inner_dict.get('aspects')  # type: ignore
     
     @aspects.setter
-    def aspects(self, value: List["DatasetFieldKeyClass"]) -> None:
+    def aspects(self, value: List[Union["DatasetFieldKeyClass", "UpstreamLineageClass"]]) -> None:
         """Setter: The list of metadata aspects associated with the datasetField. Depending on the use case, this can either be all, or a selection, of supported aspects."""
         self._inner_dict['aspects'] = value
     
@@ -10297,6 +10381,8 @@ __SCHEMA_TYPES = {
     'com.linkedin.pegasus2avro.dataset.Upstream': UpstreamClass,
     'com.linkedin.pegasus2avro.dataset.UpstreamLineage': UpstreamLineageClass,
     'com.linkedin.pegasus2avro.dataset.ValueFrequency': ValueFrequencyClass,
+    'com.linkedin.pegasus2avro.datasetfield.Upstream': UpstreamClass,
+    'com.linkedin.pegasus2avro.datasetfield.UpstreamLineage': UpstreamLineageClass,
     'com.linkedin.pegasus2avro.events.metadata.ChangeType': ChangeTypeClass,
     'com.linkedin.pegasus2avro.glossary.GlossaryNodeInfo': GlossaryNodeInfoClass,
     'com.linkedin.pegasus2avro.glossary.GlossaryRelatedTerms': GlossaryRelatedTermsClass,
@@ -10479,6 +10565,8 @@ __SCHEMA_TYPES = {
     'Upstream': UpstreamClass,
     'UpstreamLineage': UpstreamLineageClass,
     'ValueFrequency': ValueFrequencyClass,
+    'Upstream': UpstreamClass,
+    'UpstreamLineage': UpstreamLineageClass,
     'ChangeType': ChangeTypeClass,
     'GlossaryNodeInfo': GlossaryNodeInfoClass,
     'GlossaryRelatedTerms': GlossaryRelatedTermsClass,

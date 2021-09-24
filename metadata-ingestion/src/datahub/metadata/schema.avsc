@@ -3171,6 +3171,52 @@
                         }
                       ],
                       "doc": "Key for a Dataset"
+                    },
+                    {
+                      "type": "record",
+                      "Aspect": {
+                        "name": "upstreamLineage"
+                      },
+                      "name": "UpstreamLineage",
+                      "namespace": "com.linkedin.pegasus2avro.datasetfield",
+                      "fields": [
+                        {
+                          "type": {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "Upstream",
+                              "namespace": "com.linkedin.pegasus2avro.datasetfield",
+                              "fields": [
+                                {
+                                  "deprecated": "we no longer associate a timestamp per upstream edge",
+                                  "type": "com.linkedin.pegasus2avro.common.AuditStamp",
+                                  "name": "auditStamp",
+                                  "default": {
+                                    "actor": "urn:li:corpuser:unknown",
+                                    "impersonator": null,
+                                    "time": 0
+                                  }
+                                },
+                                {
+                                  "Relationship": {
+                                    "entityTypes": [
+                                      "datasetField"
+                                    ],
+                                    "name": "DataDerivedFrom"
+                                  },
+                                  "java": {
+                                    "class": "com.linkedin.pegasus2avro.common.urn.DatasetFieldUrn"
+                                  },
+                                  "type": "string",
+                                  "name": "datasetField"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "upstreams"
+                        }
+                      ]
                     }
                   ]
                 },
