@@ -130,7 +130,7 @@ query getDataset($urn: String!) {
                    ... on DatasetField{
                       urn,
                       type,
-                      relationships(types:["DataDerivedFrom"],direction: INGOING){
+                      relationships(types:["DataDerivedFrom"],direction: INCOMING){
                              start
                              count
                              total
