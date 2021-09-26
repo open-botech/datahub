@@ -40,9 +40,13 @@ export default function ColumnStats({ columnStats }: Props) {
                 mean: doc.mean,
                 median: doc.median,
                 stdev: doc.stdev,
+                // eslint-disable-next-line
                 nullCount: isPresent(doc.nullCount) && doc.nullCount!.toString(),
+                // eslint-disable-next-line
                 nullPercentage: isPresent(doc.nullProportion) && decimalToPercentStr(doc.nullProportion!, 2),
+                // eslint-disable-next-line
                 distinctCount: isPresent(doc.uniqueCount) && doc.uniqueCount!.toString(),
+                // eslint-disable-next-line
                 distinctPercentage: isPresent(doc.uniqueProportion) && decimalToPercentStr(doc.uniqueProportion!, 2),
                 sampleValues: doc.sampleValues,
             })) || [],

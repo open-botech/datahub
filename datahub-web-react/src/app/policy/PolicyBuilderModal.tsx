@@ -70,6 +70,7 @@ export default function PolicyBuilderModal({ policy, setPolicy, visible, onClose
         content: (
             <PolicyPrivilegeForm
                 policyType={policy.type}
+                // eslint-disable-next-line
                 resources={policy.resources!}
                 setResources={(resources: ResourceFilter) => setPolicy({ ...policy, resources })}
                 privileges={policy.privileges}
