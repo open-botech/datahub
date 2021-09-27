@@ -1,5 +1,5 @@
 const logInFilter = function (pathname, req) {
-  return pathname.match('^/logIn') && req.method === 'POST';
+    return pathname.match('^/logIn') && req.method === 'POST';
 };
 
 if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy') {
@@ -13,21 +13,21 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
         app.use(
             '/logIn',
             createProxyMiddleware(logInFilter, {
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002',
                 changeOrigin: true,
             }),
         );
         app.use(
             '/authenticate',
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002',
                 changeOrigin: true,
             }),
         );
         app.use(
             '/api/v2/graphql',
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002',
                 changeOrigin: true,
             }),
         );
