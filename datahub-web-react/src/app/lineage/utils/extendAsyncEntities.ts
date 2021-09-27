@@ -10,7 +10,6 @@ export default function extendAsyncEntities(
     if (fetchedEntities[entityAndType.entity.urn]?.fullyFetched) {
         return fetchedEntities;
     }
-
     const lineageVizConfig = entityRegistry.getLineageVizConfig(entityAndType.type, entityAndType.entity);
 
     if (!lineageVizConfig) return fetchedEntities;

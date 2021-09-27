@@ -68,7 +68,6 @@ export default function LineageExplorer({ urn, type }: Props) {
             if (entityAndType?.entity.urn && !asyncEntities[entityAndType?.entity.urn]?.fullyFetched) {
                 // record that we have added this entity
                 let newAsyncEntities = extendAsyncEntities(asyncEntities, entityRegistry, entityAndType, true);
-
                 // add the partially fetched downstream & upstream datasets
                 getChildren(entityAndType, Direction.Downstream).forEach((downstream) => {
                     newAsyncEntities = extendAsyncEntities(newAsyncEntities, entityRegistry, downstream, false);

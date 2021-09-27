@@ -194,6 +194,9 @@ export class DatasetEntity implements Entity<Dataset> {
             downstreamChildren: getChildren({ entity, type: EntityType.Dataset }, Direction.Downstream).map(
                 (child) => child.entity.urn,
             ),
+            relationChildren: getChildren({ entity, type: EntityType.Dataset }, Direction.Relation).map(
+                (child) => child.entity.urn,
+            ),
             icon: entity.platform.info?.logoUrl || undefined,
             platform: entity.platform.name,
         };

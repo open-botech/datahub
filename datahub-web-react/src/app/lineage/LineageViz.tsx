@@ -4,6 +4,7 @@ import { Zoom } from '@vx/zoom';
 
 import { TreeProps } from './types';
 import LineageVizInsideZoom from './LineageVizInsideZoom';
+import LineageNetwork from './LineageNetwork';
 
 export const defaultMargin = { top: 10, left: 280, right: 280, bottom: 10 };
 
@@ -28,7 +29,7 @@ export default function LineageViz({
         skewX: 0,
         skewY: 0,
     };
-    return (
+    return height < 1 ? (
         <Zoom
             width={width}
             height={height}
@@ -53,5 +54,7 @@ export default function LineageViz({
                 />
             )}
         </Zoom>
+    ) : (
+        <LineageNetwork margin={margin} fetchedEntities={fetchedEntities} />
     );
 }

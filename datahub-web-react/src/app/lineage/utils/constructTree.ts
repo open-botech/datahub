@@ -13,7 +13,6 @@ export default function constructTree(
     const constructedNodes = {};
 
     const fetchedEntity = entityRegistry.getLineageVizConfig(entityAndType.type, entityAndType.entity);
-
     const root: NodeData = {
         name: fetchedEntity?.name || '',
         urn: fetchedEntity?.urn,

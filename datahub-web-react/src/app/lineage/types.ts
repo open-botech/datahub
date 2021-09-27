@@ -30,6 +30,7 @@ export type FetchedEntity = {
     // children?: Array<string>;
     upstreamChildren?: Array<string>;
     downstreamChildren?: Array<string>;
+    relationChildren?: Array<string>;
     fullyFetched?: boolean;
     platform?: string;
 };
@@ -52,6 +53,7 @@ export type FetchedEntities = { [x: string]: FetchedEntity };
 export enum Direction {
     Upstream = 'Upstream',
     Downstream = 'Downstream',
+    Relation = 'Relation',
 }
 
 export type LineageExplorerParams = {
@@ -68,6 +70,11 @@ export type TreeProps = {
     onLineageExpand: (LineageExpandParams) => void;
     selectedEntity?: EntitySelectParams;
     hoveredEntity?: EntitySelectParams;
+};
+
+export type NetworkProps = {
+    margin?: { top: number; right: number; bottom: number; left: number };
+    fetchedEntities: { [x: string]: FetchedEntity };
 };
 
 export type EntityAndType =

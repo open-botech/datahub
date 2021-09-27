@@ -11,7 +11,6 @@ export default function constructFetchedNode(
         return null;
     }
     const newConstructionPath = [...constructionPath, urn];
-
     const fetchedNode = fetchedEntities[urn];
 
     if (constructedNodes[urn]) {
