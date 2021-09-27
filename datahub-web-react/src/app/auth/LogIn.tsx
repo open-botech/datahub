@@ -1,25 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import * as QueryString from 'query-string';
 import { Input, Button, Form, message, Image } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useReactiveVar } from '@apollo/client';
+// import { useReactiveVar } from '@apollo/client';
 import { useTheme } from 'styled-components';
 import { Redirect, useLocation } from 'react-router';
 import styles from './login.module.css';
 import { Message } from '../shared/Message';
-import { isLoggedInVar } from './checkAuthStatus';
+// import { isLoggedInVar } from './checkAuthStatus';
 import analytics, { EventType } from '../analytics';
 import { useAppConfig } from '../useAppConfig';
 
-type FormValues = {
-    username: string;
-    password: string;
-};
+// type FormValues = {
+//     username: string;
+//     password: string;
+// };
 
 export type LogInProps = Record<string, never>;
 
 export const LogIn: React.VFC<LogInProps> = () => {
-    const isLoggedIn = useReactiveVar(isLoggedInVar);
+    // const isLoggedIn = useReactiveVar(isLoggedInVar);
     const location = useLocation();
 
     const themeConfig = useTheme();
@@ -27,35 +27,41 @@ export const LogIn: React.VFC<LogInProps> = () => {
 
     const { refreshContext } = useAppConfig();
 
-    const handleLogin = useCallback(
-        (values: FormValues) => {
-            setLoading(true);
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: values.username, password: values.password }),
-            };
-            fetch('/logIn', requestOptions)
-                .then(async (response) => {
-                    if (!response.ok) {
-                        const data = await response.json();
-                        const error = (data && data.message) || response.status;
-                        return Promise.reject(error);
-                    }
-                    isLoggedInVar(true);
-                    refreshContext();
-                    analytics.event({ type: EventType.LogInEvent });
-                    return Promise.resolve();
-                })
-                .catch((error) => {
-                    message.error(`Failed to log in! ${error}`);
-                })
-                .finally(() => setLoading(false));
-        },
-        [refreshContext],
-    );
+    const [isTimeout, setIsTimeout] = useState(true);
 
-    if (isLoggedIn) {
+    const handleLogin = useCallback(() => {
+        setLoading(true);
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: 'datahub', password: 'datahub' }),
+        };
+        fetch('/logIn', requestOptions)
+            .then(async (response) => {
+                if (!response.ok) {
+                    const data = await response.json();
+                    const error = (data && data.message) || response.status;
+                    return Promise.reject(error);
+                }
+                // isLoggedInVar(true);
+                setIsTimeout(false);
+                refreshContext();
+                analytics.event({ type: EventType.LogInEvent });
+                return Promise.resolve();
+            })
+            .catch((error) => {
+                message.error(`Failed to log in! ${error}`);
+            })
+            .finally(() => setLoading(false));
+    }, [refreshContext]);
+
+    useEffect(() => {
+        if (isTimeout) {
+            handleLogin();
+        }
+    });
+
+    if (!isTimeout) {
         const params = QueryString.parse(location.search);
         const maybeRedirectUri = params.redirect_uri;
         return <Redirect to={(maybeRedirectUri && decodeURIComponent(maybeRedirectUri as string)) || '/'} />;

@@ -25,6 +25,9 @@
         "homepage": {
             "homepageMessage": "Find data you can count(*) on"
         },
+        "homepagebody": {
+          "title": "Explore your data"
+        },
         "search": {
             "searchbarMessage": "Search Datasets, People, & more..."
         },

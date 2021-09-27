@@ -1,5 +1,5 @@
 const logInFilter = function (pathname, req) {
-  return pathname.match('^/logIn') && req.method === 'POST';
+    return pathname.match('^/logIn') && req.method === 'POST';
 };
 
 if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy') {

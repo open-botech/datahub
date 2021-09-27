@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Row, Col } from 'antd';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { useEntityRegistry } from '../useEntityRegistry';
 import { BrowseEntityCard } from '../search/BrowseEntityCard';
@@ -25,12 +25,11 @@ const BodyContainer = styled.div`
 
 export const HomePageBody = () => {
     const entityRegistry = useEntityRegistry();
+    const theme = useTheme();
 
     return (
         <BodyContainer>
-            <Title>
-                <b>Explore</b> your data
-            </Title>
+            <Title>{theme.content.homepagebody.title}</Title>
             <EntityGridRow gutter={[16, 24]}>
                 {entityRegistry.getBrowseEntityTypes().map((entityType) => (
                     <Col xs={24} sm={24} md={8} key={entityType}>

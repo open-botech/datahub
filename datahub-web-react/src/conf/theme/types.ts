@@ -28,6 +28,9 @@ export type Theme = {
         homepage: {
             homepageMessage: string;
         };
+        homepagebody: {
+            title: string;
+        };
         search: {
             searchbarMessage: string;
         };

@@ -42,7 +42,7 @@ export class MLModelEntity implements Entity<MlModel> {
 
     getPathName = () => 'mlModels';
 
-    getCollectionName = () => 'ML Models';
+    getCollectionName = () => '机器学习模型';
 
     renderProfile = (urn: string) => <MLModelProfile urn={urn} />;
 

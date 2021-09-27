@@ -42,7 +42,7 @@ export class MLModelGroupEntity implements Entity<MlModelGroup> {
 
     getPathName = () => 'mlModelGroup';
 
-    getCollectionName = () => 'ML Groups';
+    getCollectionName = () => '机器模型分组';
 
     renderProfile = (urn: string) => <MLModelGroupProfile urn={urn} />;
 

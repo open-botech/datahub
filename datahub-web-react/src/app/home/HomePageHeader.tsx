@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router';
-import { Typography, Image, Row, Button, Carousel } from 'antd';
+import { Typography, Row, Button, Carousel } from 'antd';
 import styled, { useTheme } from 'styled-components';
 
-import { ManageAccount } from '../shared/ManageAccount';
-import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
 import { useEntityRegistry } from '../useEntityRegistry';
 import { navigateToSearchUrl } from '../search/utils/navigateToSearchUrl';
 import { SearchBar } from '../search/SearchBar';
@@ -21,12 +19,6 @@ const Background = styled.div`
         75%,
         ${(props) => props.theme.styles['homepage-background-lower-fade']}
     );
-`;
-
-const WelcomeText = styled(Typography.Text)`
-    font-size: 16px;
-    color: ${(props) =>
-        props.theme.styles['homepage-text-color'] || props.theme.styles['homepage-background-lower-fade']};
 `;
 
 const SubHeaderText = styled(Typography.Text)`
@@ -138,7 +130,6 @@ export const HomePageHeader = () => {
     const history = useHistory();
     const entityRegistry = useEntityRegistry();
     const [getAutoCompleteResultsForMultiple, { data: suggestionsData }] = useGetAutoCompleteMultipleResultsLazyQuery();
-    const user = useGetAuthenticatedUser()?.corpUser;
     const themeConfig = useTheme();
 
     const onSearch = (query: string, type?: EntityType) => {
@@ -204,27 +195,11 @@ export const HomePageHeader = () => {
     return (
         <Background>
             <Row justify="space-between" style={styles.navBar}>
-                <WelcomeText>
-                    {!!user && (
-                        <>
-                            Welcome back, <b>{user.info?.firstName || user.username}</b>.
-                        </>
-                    )}
-                </WelcomeText>
                 <NavGroup>
                     <AdminHeaderLinks />
-                    <ManageAccount
-                        urn={user?.urn || ''}
-                        pictureLink={user?.editableInfo?.pictureLink || ''}
-                        name={user?.info?.firstName || user?.username || undefined}
-                    />
                 </NavGroup>
             </Row>
             <HeaderContainer>
-                <Image src={themeConfig.assets.logoUrl} preview={false} style={styles.logoImage} />
-                {!!themeConfig.content.subtitle && (
-                    <Typography.Text style={styles.subtitle}>{themeConfig.content.subtitle}</Typography.Text>
-                )}
                 <SearchBarContainer>
                     <SearchBar
                         placeholderText={themeConfig.content.search.searchbarMessage}

@@ -60,7 +60,7 @@ export class DashboardEntity implements Entity<Dashboard> {
 
     getPathName = () => 'dashboard';
 
-    getCollectionName = () => 'Dashboards';
+    getCollectionName = () => '仪表盘';
 
     renderProfile = (urn: string) => <DashboardProfile urn={urn} />;
 
