@@ -55,6 +55,6 @@ export default function LineageViz({
             )}
         </Zoom>
     ) : (
-        <LineageNetwork margin={margin} fetchedEntities={fetchedEntities} />
+        <LineageNetwork entityAndType={entityAndType} />
     );
 }

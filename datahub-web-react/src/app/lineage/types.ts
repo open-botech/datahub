@@ -35,6 +35,22 @@ export type FetchedEntity = {
     platform?: string;
 };
 
+export type NetWorkEntity = {
+    id: string;
+    label: string;
+    type: EntityType;
+    icon?: string;
+    // children?: Array<string>;
+    upstreamChildren?: Array<string>;
+    downstreamChildren?: Array<string>;
+    relationChildren?: Array<string>;
+    fullyFetched?: boolean;
+    platform?: string;
+    isdatafield?: boolean;
+    color?: string;
+    shape?: string;
+};
+
 export type NodeData = {
     urn?: string;
     name: string;
@@ -73,8 +89,7 @@ export type TreeProps = {
 };
 
 export type NetworkProps = {
-    margin?: { top: number; right: number; bottom: number; left: number };
-    fetchedEntities: { [x: string]: FetchedEntity };
+    entityAndType: EntityAndType | null | undefined;
 };
 
 export type EntityAndType =
