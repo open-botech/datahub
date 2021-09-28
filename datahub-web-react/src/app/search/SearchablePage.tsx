@@ -7,7 +7,6 @@ import { useEntityRegistry } from '../useEntityRegistry';
 import { EntityType } from '../../types.generated';
 import { useGetAutoCompleteMultipleResultsLazyQuery } from '../../graphql/search.generated';
 import { navigateToSearchUrl } from './utils/navigateToSearchUrl';
-import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
 import analytics, { EventType } from '../analytics';
 
 const styles = {
@@ -40,7 +39,6 @@ export const SearchablePage = ({ initialQuery, onSearch, onAutoComplete, childre
     const themeConfig = useTheme();
 
     const [getAutoCompleteResults, { data: suggestionsData }] = useGetAutoCompleteMultipleResultsLazyQuery();
-    const user = useGetAuthenticatedUser()?.corpUser;
 
     const search = (query: string, type?: EntityType) => {
         if (!query || query.trim().length === 0) {
@@ -84,8 +82,6 @@ export const SearchablePage = ({ initialQuery, onSearch, onAutoComplete, childre
                 }
                 onSearch={onSearch || search}
                 onQueryChange={onAutoComplete || autoComplete}
-                authenticatedUserUrn={user?.urn || ''}
-                authenticatedUserPictureLink={user?.editableInfo?.pictureLink}
                 entityRegistry={entityRegistry}
             />
             <div style={styles.children}>{children}</div>

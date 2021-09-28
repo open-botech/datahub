@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Image, Layout } from 'antd';
 import { Link } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router';
 import styled, { useTheme } from 'styled-components';
 
 import { SearchBar } from './SearchBar';
-import { ManageAccount } from '../shared/ManageAccount';
 import { AutoCompleteResultForEntity, EntityType } from '../../types.generated';
 import EntityRegistry from '../entity/EntityRegistry';
 import { ANTD_GRAY } from '../entity/shared/constants';
 import { AdminHeaderLinks } from '../shared/admin/AdminHeaderLinks';
+import { LegacyBrowsePath } from '../browse/LegacyBrowsePath';
 
 const { Header } = Layout;
 
@@ -17,7 +18,7 @@ const styles = {
         position: 'fixed',
         zIndex: 1,
         width: '100%',
-        lineHeight: '20px',
+        lineHeight: '60px',
         padding: '0px 20px',
         display: 'flex',
         justifyContent: 'space-between',
@@ -36,6 +37,7 @@ const LogoImage = styled(Image)`
 const LogoSearchContainer = styled.div`
     display: flex;
     flex: 1;
+    align-items: center;
 `;
 
 const NavGroup = styled.div`
@@ -51,14 +53,14 @@ type Props = {
     suggestions: Array<AutoCompleteResultForEntity>;
     onSearch: (query: string, type?: EntityType) => void;
     onQueryChange: (query: string) => void;
-    authenticatedUserUrn: string;
-    authenticatedUserPictureLink?: string | null;
     entityRegistry: EntityRegistry;
 };
 
-const defaultProps = {
-    authenticatedUserPictureLink: undefined,
+type BrowseResultsPageParams = {
+    type: string;
 };
+
+const defaultProps = {};
 
 /**
  * A header containing a Logo, Search Bar view, & an account management dropdown.
@@ -69,18 +71,31 @@ export const SearchHeader = ({
     suggestions,
     onSearch,
     onQueryChange,
-    authenticatedUserUrn,
-    authenticatedUserPictureLink,
     entityRegistry,
 }: Props) => {
     const themeConfig = useTheme();
+    const location = useLocation();
+
+    const { type } = useParams<BrowseResultsPageParams>();
+
+    let entityType;
+
+    if (type) {
+        entityType = entityRegistry.getTypeFromPathName(type);
+    }
+
+    const rootPath = location.pathname;
+    const path = rootPath.split('/').slice(3);
 
     return (
         <Header style={styles.header as any}>
             <LogoSearchContainer>
-                <Link to="/">
+                <Link to="/" style={{ marginRight: '30px' }}>
                     <LogoImage src={themeConfig.assets.logoUrl} preview={false} />
                 </Link>
+
+                {type && <LegacyBrowsePath type={entityType} path={path} isBrowsable />}
+
                 <SearchBar
                     initialQuery={initialQuery}
                     placeholderText={placeholderText}
@@ -92,7 +107,6 @@ export const SearchHeader = ({
             </LogoSearchContainer>
             <NavGroup>
                 <AdminHeaderLinks />
-                <ManageAccount urn={authenticatedUserUrn} pictureLink={authenticatedUserPictureLink || ''} />
             </NavGroup>
         </Header>
     );
