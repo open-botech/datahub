@@ -48,8 +48,7 @@ const HoverableVscRepoForked = styled(({ isSelected: _, ...props }: IconBaseProp
 `;
 
 const BrowseRow = styled(Row)`
-    padding: 10px 100px;
-    border-bottom: 1px solid #dcdcdc;
+    margin: 0px 50px 0 0px;
     background-color: ${(props) => props.theme.styles['body-background']};
     display: flex;
     justify-content: space-between;

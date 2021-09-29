@@ -32,8 +32,9 @@ const StyledAutoComplete = styled(AutoComplete)`
 `;
 
 const AutoCompleteContainer = styled.div`
-    width: 100%;
-    padding: 0 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
 `;
 
 const StyledSearchBar = styled(Input)`
