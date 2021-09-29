@@ -102,6 +102,7 @@ const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
                     color: {
                         color: '#ff69b4',
                     },
+                    length: 400,
                 });
             });
             v.upstreamChildren.forEach((n) => {
@@ -111,6 +112,7 @@ const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
                     color: {
                         color: '#ff69b4',
                     },
+                    length: 400,
                 });
             });
             v.relationChildren.forEach((n) => {
@@ -121,6 +123,7 @@ const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
                         color: {
                             color: '#8a2be2',
                         },
+                        length: 400,
                     });
                 } else {
                     edgeArr.push({
@@ -129,6 +132,7 @@ const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
                         color: {
                             color: '#3cb371',
                         },
+                        length: 100,
                     });
                 }
             });
@@ -172,7 +176,6 @@ const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
             color: {
                 color: '#999999',
             },
-            length: 200,
         };
         const nt = new Network(
             graphRef.current,
