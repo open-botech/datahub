@@ -138,7 +138,7 @@ export const EntitySearchResults = ({
 
     return (
         <div style={styles.resultsContainer}>
-            {loading && <Message type="loading" content="Loading..." style={styles.loading} />}
+            {loading && <Message type="loading" content="加载中..." style={styles.loading} />}
             <Button onClick={onEditFilters} data-testid="filters-button">
                 <FilterOutlined />
                 Filters{' '}

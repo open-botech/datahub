@@ -109,7 +109,7 @@ export default function TagProfile() {
 
     return (
         <PageContainer>
-            {loading && <LoadingMessage type="loading" content="Loading..." />}
+            {loading && <LoadingMessage type="loading" content="加载中..." />}
             <Card
                 title={
                     <HeaderLayout>
@@ -133,12 +133,12 @@ export default function TagProfile() {
                             <StatsLabel>Applied to</StatsLabel>
                             {statsLoading && (
                                 <div>
-                                    <EmptyStatsText>Loading...</EmptyStatsText>
+                                    <EmptyStatsText>加载中...</EmptyStatsText>
                                 </div>
                             )}
                             {!statsLoading && !someStats && (
                                 <div>
-                                    <EmptyStatsText>No entities</EmptyStatsText>
+                                    <EmptyStatsText>暂无数据</EmptyStatsText>
                                 </div>
                             )}
                             {!statsLoading &&

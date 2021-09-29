@@ -58,7 +58,7 @@ export default function GlossaryRelatedTermsResult({ glossaryRelatedTermType, gl
     return (
         <>
             {contentLoading ? (
-                <Message type="loading" content="Loading..." style={messageStyle} />
+                <Message type="loading" content="加载中..." style={messageStyle} />
             ) : (
                 <ListContainer>
                     <TitleContainer>

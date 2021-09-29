@@ -218,7 +218,7 @@ export default function HistoricalStatsView({ urn, toggleView }: Props) {
 
     return (
         <>
-            {profilesLoading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {profilesLoading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             <Affix offsetTop={127}>
                 <HeaderRow justify="space-between" align="middle">
                     <div>

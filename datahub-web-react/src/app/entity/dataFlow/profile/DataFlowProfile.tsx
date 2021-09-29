@@ -73,7 +73,7 @@ export const DataFlowProfile = ({ urn }: { urn: string }): JSX.Element => {
 
     return (
         <>
-            {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             {data && data.dataFlow && (
                 <LegacyEntityProfile
                     tags={

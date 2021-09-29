@@ -59,7 +59,7 @@ export const BrowseResultsPage = () => {
             {/* <Affix offsetTop={64}>
                 <LegacyBrowsePath type={entityType} path={path} isBrowsable />
             </Affix> */}
-            {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             {data && data.browse && (
                 <BrowseResults
                     type={entityType}
