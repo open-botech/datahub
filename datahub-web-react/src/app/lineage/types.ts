@@ -49,6 +49,9 @@ export type NetWorkEntity = {
     isdatafield?: boolean;
     color?: string;
     shape?: string;
+    widthConstraint?: any;
+    font?: any;
+    margin?: any;
 };
 
 export type NodeData = {
@@ -90,6 +93,7 @@ export type TreeProps = {
 
 export type NetworkProps = {
     entityAndType: EntityAndType | null | undefined;
+    onEntityClick: (EntitySelectParams) => void;
 };
 
 export type EntityAndType =

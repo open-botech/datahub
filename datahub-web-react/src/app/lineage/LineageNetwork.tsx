@@ -15,7 +15,7 @@ const GraphDiv = styled.div`
     height: ${(props: GraphDivProps) => props.height}px;
 `;
 
-const LineageNetwork = ({ entityAndType }: NetworkProps) => {
+const LineageNetwork = ({ entityAndType, onEntityClick }: NetworkProps) => {
     const [network, setNetWork] = useState<any>(null);
     const [windowWidth, windowHeight] = useWindowSize();
     const graphRef = useRef(null);
@@ -32,13 +32,16 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
     ) => {
         if (entityTp?.entity.urn) {
             const { entity }: any = entityTp;
+            const platfrom = entity.platform
+                ? entity.platform.name
+                : entity.urn.split('dataPlatform:')[1].split(',')[0];
+            const name =
+                entity.__typename === 'DatasetField'
+                    ? entity.urn.split('/')[1].slice(0, -1)
+                    : `${platfrom} | ${entity.type}\n\n${entity.urn.split(',')[1]}`;
             const obj: NetWorkEntity = {
                 id: entity.urn,
-                label:
-                    entity.name ||
-                    (entity.__typename === 'DatasetField'
-                        ? entity.urn.split('/')[1].slice(0, -1)
-                        : entity.urn.split(',')[1]),
+                label: name,
                 type: entity.type,
                 icon: '',
                 upstreamChildren: entity.upstreamLineage
@@ -51,10 +54,23 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
                     ? entity.relationships.relationships.map((v) => v.entity.urn)
                     : [],
                 fullyFetched,
-                platform: entity.platform || entity.urn.split('dataPlatform:')[1].split(',')[0],
+                platform: platfrom,
                 isdatafield: entity.__typename === 'DatasetField',
-                color: entity.__typename === 'DatasetField' ? '#6E6EFD' : '#FFA807',
+                color: entity.__typename === 'DatasetField' ? '#6E6EFD' : '#fafafa',
                 shape: entity.__typename === 'DatasetField' ? 'circle' : 'box',
+                widthConstraint: {
+                    minimum: entity.__typename === 'DatasetField' ? 44 : 160,
+                    maximum: entity.__typename === 'DatasetField' ? 44 : 160,
+                },
+                font: {
+                    color: entity.__typename === 'DatasetField' ? '#ffffff' : '#333333',
+                    size: entity.__typename === 'DatasetField' ? 9 : 12,
+                    align: entity.__typename === 'DatasetField' ? 'center' : 'left',
+                },
+                margin: {
+                    top: entity.__typename === 'DatasetField' ? 5 : 10,
+                    bottom: entity.__typename === 'DatasetField' ? 5 : 10,
+                },
             };
             newAsyncEntities.push(obj);
             const configVis = (lineage: any, tp?: string) => {
@@ -83,12 +99,18 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
                 edgeArr.push({
                     from: v.id,
                     to: n,
+                    color: {
+                        color: '#ff69b4',
+                    },
                 });
             });
             v.upstreamChildren.forEach((n) => {
                 edgeArr.push({
                     from: n,
                     to: v.id,
+                    color: {
+                        color: '#ff69b4',
+                    },
                 });
             });
             v.relationChildren.forEach((n) => {
@@ -96,11 +118,17 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
                     edgeArr.push({
                         from: n,
                         to: v.id,
+                        color: {
+                            color: '#8a2be2',
+                        },
                     });
                 } else {
                     edgeArr.push({
                         from: v.id,
                         to: n,
+                        color: {
+                            color: '#3cb371',
+                        },
                     });
                 }
             });
@@ -141,30 +169,28 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
                     enabled: true,
                 },
             },
-            arrowStrikethrough: false,
             color: {
                 color: '#999999',
             },
+            length: 200,
         };
-        const nodesOption = {
-            font: {
-                color: '#ffffff',
+        const nt = new Network(
+            graphRef.current,
+            { nodes, edges },
+            {
+                autoResize: true,
+                height: '100%',
+                width: '100%',
+                clickToUse: false,
+                edges: edgesOption,
             },
-        };
-        setNetWork(
-            new Network(
-                graphRef.current,
-                { nodes, edges },
-                {
-                    autoResize: true,
-                    height: '100%',
-                    width: '100%',
-                    clickToUse: false,
-                    edges: edgesOption,
-                    nodes: nodesOption,
-                },
-            ),
         );
+        nt.on('click', (p) => {
+            if (p.nodes[0] && p.nodes[0].split(':')[2] !== 'datasetField') {
+                onEntityClick({ urn: p.nodes[0], type: nodeArr.find((v) => v.id === p.nodes[0]).type });
+            }
+        });
+        setNetWork(nt);
     };
 
     useEffect(() => {

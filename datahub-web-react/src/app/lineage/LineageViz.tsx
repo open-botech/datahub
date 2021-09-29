@@ -55,6 +55,6 @@ export default function LineageViz({
             )}
         </Zoom>
     ) : (
-        <LineageNetwork entityAndType={entityAndType} />
+        <LineageNetwork entityAndType={entityAndType} onEntityClick={onEntityClick} />
     );
 }
