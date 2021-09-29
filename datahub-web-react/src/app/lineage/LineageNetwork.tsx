@@ -92,10 +92,17 @@ const LineageNetwork = ({ entityAndType }: NetworkProps) => {
                 });
             });
             v.relationChildren.forEach((n) => {
-                edgeArr.push({
-                    from: v.id,
-                    to: n,
-                });
+                if (v.id.split(':')[2] === 'datasetField' && n.split(':')[2] === 'datasetField') {
+                    edgeArr.push({
+                        from: n,
+                        to: v.id,
+                    });
+                } else {
+                    edgeArr.push({
+                        from: v.id,
+                        to: n,
+                    });
+                }
             });
         });
         return edgeArr;
