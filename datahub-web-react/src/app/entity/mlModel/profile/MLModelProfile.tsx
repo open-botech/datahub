@@ -72,7 +72,7 @@ export const MLModelProfile = ({ urn }: { urn: string }): JSX.Element => {
 
     return (
         <>
-            {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             {data && data.mlModel && (
                 <LegacyEntityProfile
                     titleLink={`/${entityRegistry.getPathName(EntityType.Mlmodel)}/${urn}`}

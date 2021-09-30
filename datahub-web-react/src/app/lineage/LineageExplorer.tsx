@@ -100,7 +100,7 @@ export default function LineageExplorer({ urn, type }: Props) {
 
     return (
         <>
-            {loading && <LoadingMessage type="loading" content="Loading..." />}
+            {loading && <LoadingMessage type="loading" content="加载中..." />}
             {!!data && (
                 <div>
                     <LineageViz

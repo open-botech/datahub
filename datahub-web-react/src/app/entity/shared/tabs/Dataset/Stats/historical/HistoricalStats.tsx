@@ -194,7 +194,7 @@ export default function HistoricalStats({ urn, lookbackWindow }: Props) {
 
     return (
         <>
-            {profilesLoading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {profilesLoading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             <StatSection>
                 <Typography.Title level={5}>Profiling Runs</Typography.Title>
                 <ProfilingRunsChart profiles={profiles} />

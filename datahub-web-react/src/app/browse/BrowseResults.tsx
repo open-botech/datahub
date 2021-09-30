@@ -95,7 +95,7 @@ export const BrowseResults = ({
                             )}
                             bordered
                             locale={{
-                                emptyText: <Empty description="No Entities" image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+                                emptyText: <Empty description="暂无数据" image={Empty.PRESENTED_IMAGE_SIMPLE} />,
                             }}
                         />
                     )}
