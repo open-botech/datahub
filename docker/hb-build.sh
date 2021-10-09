@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+# 如果开启http代理，必须要将HB_PROXY_ON设置为1
 export HB_PROXY_ON=1
 export HB_PROXY_HTTP_IP=192.168.202.59
 export HB_PROXY_HTTP_PORT=7890
