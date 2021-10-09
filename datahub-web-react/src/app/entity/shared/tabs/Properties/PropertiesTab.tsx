@@ -26,14 +26,14 @@ export const PropertiesTab = () => {
     const propertyTableColumns = [
         {
             width: 210,
-            title: 'Name',
+            title: '名称',
             dataIndex: 'key',
             sorter: (a, b) => a?.key.localeCompare(b?.key || '') || 0,
             defaultSortOrder: 'ascend',
             render: (name: string) => <NameText>{name}</NameText>,
         },
         {
-            title: 'Value',
+            title: '值',
             dataIndex: 'value',
             render: (value: string) => <ValueText>{value}</ValueText>,
         },

@@ -52,7 +52,7 @@ export const LineageTab = () => {
             <TabToolbar>
                 <Button type="text" onClick={routeToLineage}>
                     <PartitionOutlined />
-                    Visualize Lineage
+                    血缘关系图
                 </Button>
             </TabToolbar>
             <LineageList

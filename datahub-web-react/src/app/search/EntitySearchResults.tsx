@@ -141,7 +141,7 @@ export const EntitySearchResults = ({
             {loading && <Message type="loading" content="加载中..." style={styles.loading} />}
             <Button onClick={onEditFilters} data-testid="filters-button">
                 <FilterOutlined />
-                Filters{' '}
+                过滤{' '}
                 {filters.length > 0 && (
                     <>
                         {' '}
@@ -149,20 +149,20 @@ export const EntitySearchResults = ({
                     </>
                 )}
             </Button>
-            <Drawer title="Filters" placement="left" closable visible={isEditingFilters} onClose={onCloseEditFilters}>
+            <Drawer title="过滤" placement="left" closable visible={isEditingFilters} onClose={onCloseEditFilters}>
                 <SearchFilters
                     facets={data?.search?.facets || []}
                     selectedFilters={selectedFilters}
                     onFilterSelect={onFilterSelect}
                 />
-                <ApplyButton onClick={onApplyFilters}>Apply</ApplyButton>
+                <ApplyButton onClick={onApplyFilters}>申请</ApplyButton>
             </Drawer>
             <Typography.Paragraph style={styles.resultSummary}>
-                Showing{' '}
+                显示{' '}
                 <b>
                     {lastResultIndex > 0 ? (page - 1) * pageSize + 1 : 0} - {lastResultIndex}
                 </b>{' '}
-                of <b>{totalResults}</b> results
+                中的<b>{totalResults}</b>结果
             </Typography.Paragraph>
             <ResultList<React.FC<ListProps<SearchResult>>>
                 header={

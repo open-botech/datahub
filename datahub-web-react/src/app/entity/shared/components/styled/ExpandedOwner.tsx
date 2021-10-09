@@ -51,13 +51,14 @@ export const ExpandedOwner = ({ owner, updateOwnership, owners }: Props) => {
     const onClose = (e) => {
         e.preventDefault();
         Modal.confirm({
-            title: `Do you want to remove ${name}?`,
-            content: `Are you sure you want to remove ${name} as an owner?`,
+            title: `是否删除${name}?`,
+            content: `你确定要将${name}作为所有者删除吗?`,
             onOk() {
                 onDelete();
             },
             onCancel() {},
-            okText: 'Yes',
+            cancelText: '取消',
+            okText: '确定',
             maskClosable: true,
             closable: true,
         });

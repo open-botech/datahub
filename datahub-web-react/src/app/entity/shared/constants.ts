@@ -19,21 +19,20 @@ export const ANTD_GRAY = {
 
 export const EMPTY_MESSAGES = {
     documentation: {
-        title: 'No documentation or links added yet',
-        description: 'Help those unfamiliar by adding a description or readme and links to helpful resources.',
+        title: '暂无文件或链接创建',
+        description: '',
     },
     tags: {
-        title: 'No tags added yet',
-        description: 'Tag entities to help make them more discoverable and call out their most important attributes.',
+        title: '暂无标注创建',
+        description: '',
     },
     terms: {
-        title: 'No terms added yet',
-        description: 'Apply glossary terms to entities to classify their data.',
+        title: '暂无术语分类创建',
+        description: '',
     },
     owners: {
-        title: 'No owners added yet',
-        description:
-            'It’s best to maintain at least 2 owners. Setting owners helps you keep track of who knows the most about this data.',
+        title: '暂无数据归属创建',
+        description: '',
     },
     properties: {
         title: 'No properties',

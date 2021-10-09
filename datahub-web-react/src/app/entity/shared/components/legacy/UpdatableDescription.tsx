@@ -77,11 +77,11 @@ export default function UpdatableDescription({
             ) : (
                 <>
                     <AddNewDescription color="success" onClick={() => setShowAddDescModal(true)}>
-                        + Add Description
+                        + 添加文档
                     </AddNewDescription>
                     {showAddDescModal && (
                         <UpdateDescriptionModal
-                            title="Add description"
+                            title="添加文档"
                             onClose={() => setShowAddDescModal(false)}
                             onSubmit={onSubmit}
                             isAddDesc

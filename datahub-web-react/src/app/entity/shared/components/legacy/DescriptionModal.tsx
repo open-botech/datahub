@@ -41,12 +41,12 @@ export default function UpdateDescriptionModal({ title, description, original, o
             okText={isAddDesc ? 'Submit' : 'Update'}
             footer={
                 <>
-                    <Button onClick={onClose}>Cancel</Button>
+                    <Button onClick={onClose}>取消</Button>
                     <Button
                         onClick={() => onSubmit(updatedDesc || null)}
                         disabled={updatedDesc === description || !updatedDesc}
                     >
-                        Update
+                        更新
                     </Button>
                 </>
             }

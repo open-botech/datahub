@@ -117,7 +117,7 @@ export default function AddTagTermModal({
     if (!inputExistsInAutocomplete && inputValue.length > 0 && !loading && type === EntityType.Tag) {
         autocompleteOptions.push(
             <Select.Option value={CREATE_TAG_VALUE} key={CREATE_TAG_VALUE}>
-                <Typography.Link> Create {inputValue}</Typography.Link>
+                <Typography.Link> 创建{inputValue}</Typography.Link>
             </Select.Option>,
         );
     }
@@ -208,9 +208,24 @@ export default function AddTagTermModal({
         );
     }
 
+    const regTag = (tp: EntityType) => {
+        let v;
+        switch (tp) {
+            case 'TAG':
+                v = '标签';
+                break;
+            case 'GLOSSARY_TERM':
+                v = '分类';
+                break;
+            default:
+                v = entityRegistry.getEntityName(tp);
+        }
+        return v;
+    };
+
     return (
         <Modal
-            title={`Add ${entityRegistry.getEntityName(type)}`}
+            title={`添加${regTag(type)}`}
             visible={visible}
             onCancel={onClose}
             okButtonProps={{ disabled: selectedValue.length === 0 }}
@@ -218,10 +233,10 @@ export default function AddTagTermModal({
             footer={
                 <>
                     <Button onClick={onClose} type="text">
-                        Cancel
+                        取消
                     </Button>
                     <Button onClick={onOk} disabled={selectedValue.length === 0 || disableAdd}>
-                        Add
+                        添加
                     </Button>
                 </>
             }
@@ -230,7 +245,7 @@ export default function AddTagTermModal({
                 allowClear
                 autoFocus
                 showSearch
-                placeholder={`Find a ${entityRegistry.getEntityName(type)?.toLowerCase()}`}
+                placeholder={`查找${regTag(type)}`}
                 defaultActiveFirstOption={false}
                 showArrow={false}
                 filterOption={false}
@@ -241,7 +256,7 @@ export default function AddTagTermModal({
                 onSelect={(selected) =>
                     selected === CREATE_TAG_VALUE ? setShowCreateModal(true) : setSelectedValue(String(selected))
                 }
-                notFoundContent={loading ? 'loading' : 'type to search'}
+                notFoundContent={loading ? 'loading' : '输入要搜索的内容'}
             >
                 {autocompleteOptions}
             </TagSelect>

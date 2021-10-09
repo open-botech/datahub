@@ -72,22 +72,22 @@ export default function CreateTagModal({
 
     return (
         <Modal
-            title={`Create ${tagName}`}
+            title={`创建${tagName}`}
             visible={visible}
             footer={
                 <>
                     <Button onClick={onBack} type="text">
-                        Back
+                        返回
                     </Button>
                     <Button onClick={onOk} disabled={stagedDescription.length === 0 || disableCreate}>
-                        Create
+                        创建
                     </Button>
                 </>
             }
         >
             <FullWidthSpace direction="vertical">
                 <Input.TextArea
-                    placeholder="Write a description for your new tag..."
+                    placeholder="为你的新标签写一个描述..."
                     value={stagedDescription}
                     onChange={(e) => setStagedDescription(e.target.value)}
                 />

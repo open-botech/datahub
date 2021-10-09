@@ -43,7 +43,7 @@ export const DocumentationTab = () => {
                                 type="text"
                                 onClick={() => routeToTab({ tabName: 'Documentation', tabParams: { editing: true } })}
                             >
-                                <EditOutlined /> Edit
+                                <EditOutlined /> 编辑
                             </Button>
                             <AddLinkModal buttonProps={{ type: 'text' }} />
                         </div>
@@ -52,7 +52,7 @@ export const DocumentationTab = () => {
                         {description ? (
                             <MDEditor.Markdown style={{ fontWeight: 400 }} source={description} />
                         ) : (
-                            <Typography.Text type="secondary">No documentation added yet.</Typography.Text>
+                            <Typography.Text type="secondary">尚未添加任何文档.</Typography.Text>
                         )}
                         <Divider />
                         <LinkList />
@@ -61,7 +61,7 @@ export const DocumentationTab = () => {
             ) : (
                 <EmptyTab tab="documentation">
                     <Button onClick={() => routeToTab({ tabName: 'Documentation', tabParams: { editing: true } })}>
-                        <EditOutlined /> Add Documentation
+                        <EditOutlined /> 添加文档
                     </Button>
                     <AddLinkModal />
                 </EmptyTab>

@@ -81,31 +81,31 @@ export class DatasetEntity implements Entity<Dataset> {
             getOverrideProperties={this.getOverrideProperties}
             tabs={[
                 {
-                    name: 'Schema',
+                    name: '模式',
                     component: SchemaTab,
                 },
                 {
-                    name: 'Documentation',
+                    name: '文档',
                     component: DocumentationTab,
                 },
                 {
-                    name: 'Properties',
+                    name: '配置',
                     component: PropertiesTab,
                 },
                 {
-                    name: 'Lineage',
+                    name: '血缘',
                     component: LineageTab,
                     shouldHide: (_, dataset: GetDatasetQuery) =>
                         (dataset?.dataset?.upstreamLineage?.entities?.length || 0) === 0 &&
                         (dataset?.dataset?.downstreamLineage?.entities?.length || 0) === 0,
                 },
                 {
-                    name: 'Queries',
+                    name: '查询',
                     component: QueriesTab,
                     shouldHide: (_, dataset: GetDatasetQuery) => !dataset?.dataset?.usageStats?.buckets?.length,
                 },
                 {
-                    name: 'Stats',
+                    name: '统计',
                     component: StatsTab,
                     shouldHide: (_, dataset: GetDatasetQuery) =>
                         !dataset?.dataset?.datasetProfiles?.length && !dataset?.dataset?.usageStats?.buckets?.length,

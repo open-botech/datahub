@@ -48,7 +48,7 @@ export const SidebarAboutSection = () => {
     return (
         <div>
             <SidebarHeader
-                title="About"
+                title="关于"
                 actions={
                     !isUntouched && (
                         <Button
@@ -69,7 +69,7 @@ export const SidebarAboutSection = () => {
                     <SpacedButton
                         onClick={() => routeToTab({ tabName: 'Documentation', tabParams: { editing: true } })}
                     >
-                        <EditOutlined /> Add Documentation
+                        <EditOutlined /> 添加文档
                     </SpacedButton>
                     <AddLinkModal />
                 </>

@@ -29,7 +29,7 @@ const TableContainer = styled.div`
 
 const defaultColumns = [
     {
-        title: 'Field',
+        title: '字段',
         dataIndex: 'fieldPath',
         key: 'fieldPath',
         width: 250,
@@ -93,7 +93,7 @@ export default function SchemaTable({
 
     const tagColumn = {
         width: 125,
-        title: 'Tags',
+        title: '标注',
         dataIndex: 'globalTags',
         key: 'tag',
         render: tagRenderer,
@@ -102,7 +102,7 @@ export default function SchemaTable({
 
     const termColumn = {
         width: 125,
-        title: 'Terms',
+        title: '分类',
         dataIndex: 'globalTags',
         key: 'tag',
         render: termRenderer,
@@ -111,13 +111,13 @@ export default function SchemaTable({
 
     const usageColumn = {
         width: 50,
-        title: 'Usage',
+        title: '用法',
         dataIndex: 'fieldPath',
         key: 'usage',
         render: usageStatsRenderer,
     };
     const descriptionColumn = {
-        title: 'Description',
+        title: '详细描述',
         dataIndex: 'description',
         key: 'description',
         render: descriptionRender,

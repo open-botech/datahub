@@ -133,7 +133,7 @@ export default function LineageExplorer({ urn, type }: Props) {
                     selectedEntity && (
                         <FooterButtonGroup>
                             <Button onClick={handleClose} type="text">
-                                Close
+                                关闭
                             </Button>
                             <Button href={entityRegistry.getEntityUrl(selectedEntity.type, selectedEntity.urn)}>
                                 <InfoCircleOutlined /> {capitalizeFirstLetter(selectedEntity.type)} Details

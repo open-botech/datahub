@@ -76,8 +76,10 @@ export default function TagTermGroup({
         onOpenModal?.();
         const tagToRemove = editableTags?.tags?.find((tag) => tag.tag.urn === urnToRemove);
         Modal.confirm({
-            title: `Do you want to remove ${tagToRemove?.tag.name} tag?`,
-            content: `Are you sure you want to remove the ${tagToRemove?.tag.name} tag?`,
+            title: `是否删除${tagToRemove?.tag.name}标签?`,
+            content: `你确定要删除${tagToRemove?.tag.name}标签?`,
+            cancelText: '取消',
+            okText: '确定',
             onOk() {
                 if (entityUrn) {
                     removeTagMutation({
@@ -92,18 +94,17 @@ export default function TagTermGroup({
                     })
                         .then(({ errors }) => {
                             if (!errors) {
-                                message.success({ content: 'Removed Tag!', duration: 2 });
+                                message.success({ content: '删除标签成功!', duration: 2 });
                             }
                         })
                         .then(refetch)
                         .catch((e) => {
                             message.destroy();
-                            message.error({ content: `Failed to remove tag: \n ${e.message || ''}`, duration: 3 });
+                            message.error({ content: `删除标签失败: \n ${e.message || ''}`, duration: 3 });
                         });
                 }
             },
             onCancel() {},
-            okText: 'Yes',
             maskClosable: true,
             closable: true,
         });
@@ -113,8 +114,9 @@ export default function TagTermGroup({
         onOpenModal?.();
         const termToRemove = editableGlossaryTerms?.terms?.find((term) => term.term.urn === urnToRemove);
         Modal.confirm({
-            title: `Do you want to remove ${termToRemove?.term.name} term?`,
-            content: `Are you sure you want to remove the ${termToRemove?.term.name} tag?`,
+            title: `是否删除${termToRemove?.term.name}分类?`,
+            content: `你确定要删除${termToRemove?.term.name}分类?`,
+            cancelText: '取消',
             onOk() {
                 if (entityUrn) {
                     removeTermMutation({
@@ -129,18 +131,18 @@ export default function TagTermGroup({
                     })
                         .then(({ errors }) => {
                             if (!errors) {
-                                message.success({ content: 'Removed Term!', duration: 2 });
+                                message.success({ content: '删除分类成功!', duration: 2 });
                             }
                         })
                         .then(refetch)
                         .catch((e) => {
                             message.destroy();
-                            message.error({ content: `Failed to remove term: \n ${e.message || ''}`, duration: 3 });
+                            message.error({ content: `删除分类失败: \n ${e.message || ''}`, duration: 3 });
                         });
                 }
             },
             onCancel() {},
-            okText: 'Yes',
+            okText: '确定',
             maskClosable: true,
             closable: true,
         });
@@ -229,7 +231,7 @@ export default function TagTermGroup({
                     {...buttonProps}
                 >
                     <PlusOutlined />
-                    Add Tag
+                    添加标注
                 </NoElementButton>
             )}
             {canAddTerm &&
@@ -243,7 +245,7 @@ export default function TagTermGroup({
                         {...buttonProps}
                     >
                         <PlusOutlined />
-                        Add Term
+                        添加分类
                     </NoElementButton>
                 )}
             {showAddModal && !!entityUrn && !!entityType && (

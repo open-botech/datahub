@@ -34,7 +34,7 @@ export const SidebarOwnerSection = () => {
 
     return (
         <div>
-            <SidebarHeader title="Owners" />
+            <SidebarHeader title="数据归属" />
             <div>
                 {entityData?.ownership?.owners?.map((owner) => (
                     <ExpandedOwner
@@ -50,7 +50,7 @@ export const SidebarOwnerSection = () => {
                 )}
 
                 <Button type={ownersEmpty ? 'default' : 'text'} onClick={() => setShowAddModal(true)}>
-                    <PlusOutlined /> Add Owner
+                    <PlusOutlined /> 添加归属
                 </Button>
             </div>
             <AddOwnerModal
