@@ -8,10 +8,11 @@ RUN apk --no-cache add curl
 FROM adoptopenjdk/openjdk8:alpine-slim as prod-build
 RUN apk --no-cache add perl
 ARG ENABLE_EMBER="false"
+ARG HB_PROXY_GRADLE_OPT
 ENV CI=true
 ENV GRADLE_OPTS="-Xms256m -Xmx512m"
 COPY . datahub-src
-RUN cd datahub-src && ./gradlew :datahub-frontend:dist -PenableEmber=${ENABLE_EMBER} -x test -x yarnTest -x yarnLint \
+RUN cd datahub-src && ./gradlew ${HB_PROXY_GRADLE_OPT} :datahub-frontend:dist -PenableEmber=${ENABLE_EMBER} -x test -x yarnTest -x yarnLint \
     && cp datahub-frontend/build/distributions/datahub-frontend.zip ../datahub-frontend.zip \
     && cd .. && rm -rf datahub-src && unzip datahub-frontend.zip
 

@@ -1,8 +1,9 @@
 FROM alpine:3
+ARG HB_PROXY_CURL_OPT
 
 ENV DOCKERIZE_VERSION v0.6.1
 RUN apk add --no-cache postgresql-client curl tar \
-    && curl -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
+    && curl ${HB_PROXY_CURL_OPT} -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
 
 COPY docker/postgres-setup/init.sql /init.sql
 COPY docker/postgres-setup/init.sh /init.sh

@@ -1,10 +1,12 @@
 # Defining environment
 ARG APP_ENV=prod
 
+
 FROM adoptopenjdk/openjdk8:alpine-jre as base
 ENV DOCKERIZE_VERSION v0.6.1
+ARG HB_PROXY_CURL_OPT
 RUN apk --no-cache add curl tar \
-    && curl -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
+    && curl ${HB_PROXY_CURL_OPT} -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
 
 # Workaround alpine issue with /lib64 not being in the ld library path
 # https://gitlab.alpinelinux.org/alpine/aports/-/issues/10140
@@ -14,8 +16,9 @@ ENV LD_LIBRARY_PATH=/lib64
 RUN apk add libc6-compat
 
 FROM openjdk:8 as prod-build
+ARG HB_PROXY_GRADLE_OPT
 COPY . datahub-src
-RUN cd datahub-src && ./gradlew :datahub-gms-graphql-service:build
+RUN cd datahub-src && ./gradlew ${HB_PROXY_GRADLE_OPT} :datahub-gms-graphql-service:build
 RUN cd datahub-src && cp datahub-gms-graphql-service/build/libs/datahub-gms-graphql-service.jar ../datahub-gms-graphql-service.jar
 
 FROM base as prod-install
