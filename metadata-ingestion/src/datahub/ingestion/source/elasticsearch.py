@@ -125,17 +125,18 @@ class ElasticsearchSource(Source):
 
         # append each schema field (sort so output is consistent)
         for columnName, column in raw_schema.items():
-            schema_field = SchemaField(
-                fieldPath=columnName,
-                type=get_column_type(
-                    self.report, dataset_name, column["type"]
-                ),
-                nativeDataType=column["type"],
-                description=None,
-                nullable=True,
-                recursive=False,
-            )
-            canonical_schema.append(schema_field)
+            if "type" in column:
+                schema_field = SchemaField(
+                    fieldPath=columnName,
+                    type=get_column_type(
+                        self.report, dataset_name, column["type"]
+                    ),
+                    nativeDataType=column["type"],
+                    description=None,
+                    nullable=True,
+                    recursive=False,
+                )
+                canonical_schema.append(schema_field)
         schema_metadata = SchemaMetadata(
             schemaName=index,
             platform=f"urn:li:dataPlatform:{platform}",
