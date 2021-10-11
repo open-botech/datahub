@@ -109,18 +109,18 @@ export default function TagProfile() {
 
     return (
         <PageContainer>
-            {loading && <LoadingMessage type="loading" content="Loading..." />}
+            {loading && <LoadingMessage type="loading" content="加载中..." />}
             <Card
                 title={
                     <HeaderLayout>
                         <div>
                             <div>
-                                <TitleLabel>Tag</TitleLabel>
+                                <TitleLabel>标签</TitleLabel>
                                 <TitleText>{data?.tag?.name}</TitleText>
                             </div>
                             <div>
                                 <div>
-                                    <CreatedByLabel>Created by</CreatedByLabel>
+                                    <CreatedByLabel>创建者</CreatedByLabel>
                                 </div>
                                 <AvatarsGroup
                                     owners={data?.tag?.ownership?.owners}
@@ -130,15 +130,15 @@ export default function TagProfile() {
                             </div>
                         </div>
                         <StatsBox>
-                            <StatsLabel>Applied to</StatsLabel>
+                            <StatsLabel>适用于</StatsLabel>
                             {statsLoading && (
                                 <div>
-                                    <EmptyStatsText>Loading...</EmptyStatsText>
+                                    <EmptyStatsText>加载中...</EmptyStatsText>
                                 </div>
                             )}
                             {!statsLoading && !someStats && (
                                 <div>
-                                    <EmptyStatsText>No entities</EmptyStatsText>
+                                    <EmptyStatsText>暂无数据</EmptyStatsText>
                                 </div>
                             )}
                             {!statsLoading &&
@@ -177,7 +177,7 @@ export default function TagProfile() {
                 }
             >
                 <Typography.Paragraph strong style={{ color: grey[2], fontSize: 13 }}>
-                    Description
+                    文档
                 </Typography.Paragraph>
                 <Typography.Text>{data?.tag?.description}</Typography.Text>
             </Card>

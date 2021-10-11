@@ -19,7 +19,7 @@ describe('SearchPage', () => {
                 </TestPageContainer>
             </MockedProvider>,
         );
-        await waitFor(() => expect(getByText('Loading...')).toBeInTheDocument());
+        await waitFor(() => expect(getByText('加载中...')).toBeInTheDocument());
         await act(() => promise);
     });
 

@@ -30,8 +30,28 @@ export type FetchedEntity = {
     // children?: Array<string>;
     upstreamChildren?: Array<string>;
     downstreamChildren?: Array<string>;
+    relationChildren?: Array<string>;
     fullyFetched?: boolean;
     platform?: string;
+};
+
+export type NetWorkEntity = {
+    id: string;
+    label: string;
+    type: EntityType;
+    icon?: string;
+    // children?: Array<string>;
+    upstreamChildren?: Array<string>;
+    downstreamChildren?: Array<string>;
+    relationChildren?: Array<string>;
+    fullyFetched?: boolean;
+    platform?: string;
+    isdatafield?: boolean;
+    color?: string;
+    shape?: string;
+    widthConstraint?: any;
+    font?: any;
+    margin?: any;
 };
 
 export type NodeData = {
@@ -52,6 +72,7 @@ export type FetchedEntities = { [x: string]: FetchedEntity };
 export enum Direction {
     Upstream = 'Upstream',
     Downstream = 'Downstream',
+    Relation = 'Relation',
 }
 
 export type LineageExplorerParams = {
@@ -68,6 +89,11 @@ export type TreeProps = {
     onLineageExpand: (LineageExpandParams) => void;
     selectedEntity?: EntitySelectParams;
     hoveredEntity?: EntitySelectParams;
+};
+
+export type NetworkProps = {
+    entityAndType: EntityAndType | null | undefined;
+    onEntityClick: (EntitySelectParams) => void;
 };
 
 export type EntityAndType =

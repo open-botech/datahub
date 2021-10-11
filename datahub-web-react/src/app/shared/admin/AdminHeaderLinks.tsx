@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import * as React from 'react';
-import { BankOutlined, BarChartOutlined } from '@ant-design/icons';
+import { BarChartOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
@@ -16,10 +16,8 @@ export function AdminHeaderLinks() {
     const { config } = useAppConfig();
 
     const isAnalyticsEnabled = config?.analyticsConfig.enabled;
-    const isPoliciesEnabled = config?.policiesConfig.enabled;
 
     const showAnalytics = (isAnalyticsEnabled && me && me.platformPrivileges.viewAnalytics) || false;
-    const showPolicyBuilder = (isPoliciesEnabled && me && me.platformPrivileges.managePolicies) || false;
 
     return (
         <>
@@ -27,16 +25,7 @@ export function AdminHeaderLinks() {
                 <AdminLink>
                     <Link to="/analytics">
                         <Button type="text">
-                            <BarChartOutlined /> Analytics
-                        </Button>
-                    </Link>
-                </AdminLink>
-            )}
-            {showPolicyBuilder && (
-                <AdminLink>
-                    <Link to="/policies">
-                        <Button type="text">
-                            <BankOutlined /> Policies
+                            <BarChartOutlined /> 分析工作台
                         </Button>
                     </Link>
                 </AdminLink>

@@ -18,7 +18,7 @@ export const SidebarTagsSection = ({ properties }: { properties?: any }) => {
     const refetch = useRefetch();
     return (
         <div>
-            <SidebarHeader title="Tags" />
+            <SidebarHeader title="标签" />
             <TagTermGroup
                 editableTags={entityData?.globalTags}
                 canAddTag={canAddTag}
@@ -29,7 +29,7 @@ export const SidebarTagsSection = ({ properties }: { properties?: any }) => {
                 refetch={refetch}
             />
             <TermSection>
-                <SidebarHeader title="Glossary Terms" />
+                <SidebarHeader title="术语分类" />
                 <TagTermGroup
                     editableGlossaryTerms={entityData?.glossaryTerms}
                     canAddTerm={canAddTerm}

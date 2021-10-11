@@ -38,6 +38,36 @@ fragment upstreamRelationshipFields on UpstreamEntityRelationships {
                     }
                 }
             }
+            relationships(types:["HasField"],direction: OUTGOING) {
+                start
+                count
+                total
+                relationships {
+                    type
+                    direction
+                    entity {
+                    ... on DatasetField{
+                        urn,
+                        type,
+                        relationships(types:["DataDerivedFrom"],direction: OUTGOING){
+                                start
+                                count
+                                total
+                                relationships {
+                                    type
+                                    direction
+                                    entity {
+                                    ... on DatasetField{
+                                        urn,
+                                        type
+                                    }
+                                }
+                                }
+                        }
+                    }
+                    }
+                }
+            }
             ... on DataJob {
                 urn
                 type
@@ -156,6 +186,36 @@ fragment downstreamRelationshipFields on DownstreamEntityRelationships {
         entity {
             urn
             type
+            relationships(types:["HasField"],direction: OUTGOING) {
+                start
+                count
+                total
+                relationships {
+                    type
+                    direction
+                    entity {
+                    ... on DatasetField{
+                        urn,
+                        type,
+                        relationships(types:["DataDerivedFrom"],direction: OUTGOING){
+                                start
+                                count
+                                total
+                                relationships {
+                                    type
+                                    direction
+                                    entity {
+                                    ... on DatasetField{
+                                        urn,
+                                        type
+                                    }
+                                }
+                                }
+                        }
+                    }
+                    }
+                }
+            }
             ... on DataJob {
                 ...dataJobFields
                 editableProperties {

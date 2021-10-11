@@ -9,11 +9,10 @@ export default function constructTree(
     direction: Direction,
     entityRegistry: EntityRegistry,
 ): NodeData {
-    if (!entityAndType?.entity) return { name: 'loading...', children: [] };
+    if (!entityAndType?.entity) return { name: '加载中...', children: [] };
     const constructedNodes = {};
 
     const fetchedEntity = entityRegistry.getLineageVizConfig(entityAndType.type, entityAndType.entity);
-
     const root: NodeData = {
         name: fetchedEntity?.name || '',
         urn: fetchedEntity?.urn,

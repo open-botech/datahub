@@ -22,7 +22,7 @@ export const AllEntitiesSearchResults = ({ query, allSearchResultsByType, loadin
 
     return (
         <>
-            {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             {noResults && noResultsView}
             {Object.keys(allSearchResultsByType).map((type: any) => {
                 const searchResults = allSearchResultsByType[type].data?.search?.searchResults;

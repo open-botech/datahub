@@ -13,4 +13,4 @@ sink:
   type: "datahub-kafka"
   config:
     connection:
-      bootstrap: "localhost:9092"
+      bootstrap: "broker:9092"

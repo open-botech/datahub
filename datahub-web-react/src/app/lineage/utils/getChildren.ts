@@ -21,6 +21,17 @@ export default function getChildren(entityAndType: EntityAndType, direction: Dir
             ) || []
         );
     }
+    if (direction === Direction.Relation) {
+        return (
+            entityAndType.entity.relationships?.relationships?.map(
+                (entity) =>
+                    ({
+                        type: entity?.entity?.type,
+                        entity: entity?.entity,
+                    } as EntityAndType),
+            ) || []
+        );
+    }
     if (direction === Direction.Downstream) {
         if (entityAndType.type === EntityType.MlfeatureTable) {
             const entities = [

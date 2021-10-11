@@ -78,7 +78,7 @@ export default function UserProfile() {
 
     return (
         <>
-            {contentLoading && <Message type="loading" content="Loading..." style={messageStyle} />}
+            {contentLoading && <Message type="loading" content="加载中..." style={messageStyle} />}
             {data && data.corpUser && (
                 <LegacyEntityProfile
                     title=""

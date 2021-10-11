@@ -41,7 +41,7 @@ export class DataFlowEntity implements Entity<DataFlow> {
 
     getPathName = () => 'pipelines';
 
-    getCollectionName = () => 'Pipelines';
+    getCollectionName = () => '数据管道';
 
     renderProfile = (urn: string) => <DataFlowProfile urn={urn} />;
 

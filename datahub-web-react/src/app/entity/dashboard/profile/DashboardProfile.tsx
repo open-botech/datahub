@@ -75,7 +75,7 @@ export default function DashboardProfile({ urn }: { urn: string }) {
 
     return (
         <>
-            {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+            {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
             {data && data.dashboard && (
                 <LegacyEntityProfile
                     title={data.dashboard.info?.name || ''}

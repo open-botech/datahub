@@ -161,11 +161,11 @@ export default function DescriptionField({
                     </StripMarkdownText>
                 </>
             )}
-            {editable && isEdited && <EditedLabel>(edited)</EditedLabel>}
+            {editable && isEdited && <EditedLabel>(编辑)</EditedLabel>}
             {showAddModal && (
                 <div>
                     <UpdateDescriptionModal
-                        title={description ? 'Update description' : 'Add description'}
+                        title={description ? '更新文档' : '添加文档'}
                         description={description}
                         original={original || ''}
                         onClose={onCloseModal}
@@ -176,7 +176,7 @@ export default function DescriptionField({
             )}
             {showAddDescription && (
                 <AddNewDescription type="text" onClick={() => setShowAddModal(true)}>
-                    + Add Description
+                    + 添加详细描述
                 </AddNewDescription>
             )}
         </DescriptionContainer>

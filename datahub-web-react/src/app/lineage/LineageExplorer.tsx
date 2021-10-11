@@ -62,13 +62,11 @@ export default function LineageExplorer({ urn, type }: Props) {
     const [isDrawerVisible, setIsDrawVisible] = useState(false);
     const [selectedEntity, setSelectedEntity] = useState<EntitySelectParams | undefined>(undefined);
     const [asyncEntities, setAsyncEntities] = useState<FetchedEntities>({});
-
     const maybeAddAsyncLoadedEntity = useCallback(
         (entityAndType: EntityAndType) => {
             if (entityAndType?.entity.urn && !asyncEntities[entityAndType?.entity.urn]?.fullyFetched) {
                 // record that we have added this entity
                 let newAsyncEntities = extendAsyncEntities(asyncEntities, entityRegistry, entityAndType, true);
-
                 // add the partially fetched downstream & upstream datasets
                 getChildren(entityAndType, Direction.Downstream).forEach((downstream) => {
                     newAsyncEntities = extendAsyncEntities(newAsyncEntities, entityRegistry, downstream, false);
@@ -102,7 +100,7 @@ export default function LineageExplorer({ urn, type }: Props) {
 
     return (
         <>
-            {loading && <LoadingMessage type="loading" content="Loading..." />}
+            {loading && <LoadingMessage type="loading" content="加载中..." />}
             {!!data && (
                 <div>
                     <LineageViz
@@ -135,7 +133,7 @@ export default function LineageExplorer({ urn, type }: Props) {
                     selectedEntity && (
                         <FooterButtonGroup>
                             <Button onClick={handleClose} type="text">
-                                Close
+                                关闭
                             </Button>
                             <Button href={entityRegistry.getEntityUrl(selectedEntity.type, selectedEntity.urn)}>
                                 <InfoCircleOutlined /> {capitalizeFirstLetter(selectedEntity.type)} Details

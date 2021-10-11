@@ -143,7 +143,7 @@ export const EntityProfile = <T, U>({
                 }}
             >
                 <div>
-                    {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+                    {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
                     {!loading && error && (
                         <Alert type="error" message={error?.message || `Entity failed to load for urn ${urn}`} />
                     )}
@@ -173,7 +173,7 @@ export const EntityProfile = <T, U>({
         >
             <>
                 <EntityProfileNavBar urn={urn} entityData={entityData} entityType={entityType} />
-                {loading && <Message type="loading" content="Loading..." style={{ marginTop: '10%' }} />}
+                {loading && <Message type="loading" content="加载中..." style={{ marginTop: '10%' }} />}
                 {!loading && error && (
                     <Alert type="error" message={error?.message || `Entity failed to load for urn ${urn}`} />
                 )}

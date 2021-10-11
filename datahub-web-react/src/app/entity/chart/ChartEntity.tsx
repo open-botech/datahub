@@ -49,7 +49,7 @@ export class ChartEntity implements Entity<Chart> {
 
     getPathName = () => 'chart';
 
-    getCollectionName = () => 'Charts';
+    getCollectionName = () => '图表';
 
     renderProfile = (urn: string) => <ChartProfile urn={urn} />;
 

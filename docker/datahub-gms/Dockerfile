@@ -2,19 +2,22 @@
 ARG APP_ENV=prod
 
 FROM adoptopenjdk/openjdk8:alpine-jre as base
+ARG HB_PROXY_CURL_OPT
+ARG HB_PROXY_WGET_OPT
 ENV DOCKERIZE_VERSION v0.6.1
 RUN apk --no-cache add curl tar wget \
-    && curl https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.4.20.v20190813/jetty-runner-9.4.20.v20190813.jar --output jetty-runner.jar \
-    && curl https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-jmx/9.4.20.v20190813/jetty-jmx-9.4.20.v20190813.jar --output jetty-jmx.jar \
-    && curl https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.20.v20190813/jetty-util-9.4.20.v20190813.jar --output jetty-util.jar \
-    && wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.4.1/opentelemetry-javaagent-all.jar \
-    && wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar -O jmx_prometheus_javaagent.jar \
-    && curl -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
+    && curl ${HB_PROXY_CURL_OPT} https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.4.20.v20190813/jetty-runner-9.4.20.v20190813.jar --output jetty-runner.jar \
+    && curl ${HB_PROXY_CURL_OPT} https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-jmx/9.4.20.v20190813/jetty-jmx-9.4.20.v20190813.jar --output jetty-jmx.jar \
+    && curl ${HB_PROXY_CURL_OPT} https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.20.v20190813/jetty-util-9.4.20.v20190813.jar --output jetty-util.jar \
+    && wget ${HB_PROXY_WGET_OPT} https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.4.1/opentelemetry-javaagent-all.jar \
+    && wget ${HB_PROXY_WGET_OPT} https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar -O jmx_prometheus_javaagent.jar \
+    && curl ${HB_PROXY_CURL_OPT} -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
 
 FROM adoptopenjdk/openjdk8:alpine-slim as prod-build
+ARG HB_PROXY_GRADLE_OPT
 RUN apk --no-cache add perl
 COPY . /datahub-src
-RUN cd /datahub-src && ./gradlew :metadata-service:war:build -x test
+RUN cd /datahub-src && ./gradlew ${HB_PROXY_GRADLE_OPT} :metadata-service:war:build -x test
 RUN cp /datahub-src/metadata-service/war/build/libs/war.war /war.war
 
 FROM base as prod-install

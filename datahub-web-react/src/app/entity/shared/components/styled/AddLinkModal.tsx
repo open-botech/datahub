@@ -46,11 +46,11 @@ export const AddLinkModal = ({ buttonProps }: { buttonProps?: Record<string, unk
                 await updateEntity({
                     variables: { input: { urn, institutionalMemory: { elements: newLinks } } },
                 });
-                message.success({ content: 'Link Added', duration: 2 });
+                message.success({ content: '链接添加成功!', duration: 2 });
             } catch (e: unknown) {
                 message.destroy();
                 if (e instanceof Error) {
-                    message.error({ content: `Failed to add link: \n ${e.message || ''}`, duration: 3 });
+                    message.error({ content: `链接添加失败: \n ${e.message || ''}`, duration: 3 });
                 }
             }
 
@@ -63,34 +63,34 @@ export const AddLinkModal = ({ buttonProps }: { buttonProps?: Record<string, unk
     return (
         <>
             <Button icon={<PlusOutlined />} onClick={showModal} {...buttonProps}>
-                Add Link
+                添加链接
             </Button>
             <Modal
-                title="Add Link"
+                title="添加链接"
                 visible={isModalVisible}
                 destroyOnClose
                 onCancel={handleClose}
                 footer={[
                     <Button type="text" onClick={handleClose}>
-                        Cancel
+                        取消
                     </Button>,
                     <Button form="addLinkForm" key="submit" htmlType="submit">
-                        Add
+                        添加
                     </Button>,
                 ]}
             >
                 <Form form={form} name="addLinkForm" onFinish={handleAdd} layout="vertical">
                     <Form.Item
                         name="url"
-                        label="URL"
+                        label="链接地址"
                         rules={[
                             {
                                 required: true,
-                                message: 'A URL is required.',
+                                message: '请输入一个链接地址.',
                             },
                             {
                                 type: 'url',
-                                message: 'This field must be a valid url.',
+                                message: '请输入一个有效的链接地址.',
                             },
                         ]}
                     >
@@ -98,15 +98,15 @@ export const AddLinkModal = ({ buttonProps }: { buttonProps?: Record<string, unk
                     </Form.Item>
                     <Form.Item
                         name="description"
-                        label="Label"
+                        label="标签"
                         rules={[
                             {
                                 required: true,
-                                message: 'A label is required.',
+                                message: '请输入一个标签.',
                             },
                         ]}
                     >
-                        <Input placeholder="A short label for this link" />
+                        <Input placeholder="此链接的简短标签" />
                     </Form.Item>
                 </Form>
             </Modal>

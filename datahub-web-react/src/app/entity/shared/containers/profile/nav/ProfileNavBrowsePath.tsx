@@ -129,7 +129,7 @@ export const ProfileNavBrowsePath = ({ type, path, upstreams, downstreams }: Pro
                         }}
                     >
                         <DetailIcon />
-                        Details
+                        详情
                     </IconGroup>
                     <IconGroup
                         disabled={!hasLineage}
@@ -141,7 +141,7 @@ export const ProfileNavBrowsePath = ({ type, path, upstreams, downstreams }: Pro
                         }}
                     >
                         <LineageIcon />
-                        Lineage
+                        血缘
                     </IconGroup>
                 </LineageIconGroup>
                 <LineageSummary>

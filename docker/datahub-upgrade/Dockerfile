@@ -2,17 +2,19 @@
 ARG APP_ENV=prod
 
 FROM adoptopenjdk/openjdk8:alpine-jre as base
+ARG HB_PROXY_CURL_OPT
 ENV DOCKERIZE_VERSION v0.6.1
 RUN apk --no-cache add curl tar \
-    && curl -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
+    && curl ${HB_PROXY_CURL_OPT} -L https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzv
 
 # Workaround alpine issue with /lib64 not being in the ld library path
 # https://gitlab.alpinelinux.org/alpine/aports/-/issues/10140
 ENV LD_LIBRARY_PATH=/lib64
 
 FROM openjdk:8 as prod-build
+ARG HB_PROXY_GRADLE_OPT
 COPY . datahub-src
-RUN cd datahub-src && ./gradlew :datahub-upgrade:build
+RUN cd datahub-src && ./gradlew ${HB_PROXY_GRADLE_OPT} :datahub-upgrade:build
 RUN cd datahub-src && cp datahub-upgrade/build/libs/datahub-upgrade.jar ../datahub-upgrade.jar
 
 FROM base as prod-install

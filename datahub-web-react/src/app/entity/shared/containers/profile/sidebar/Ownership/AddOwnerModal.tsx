@@ -42,15 +42,15 @@ export const AddOwnerModal = ({ visible, onClose, owners, updateOwnership }: Pro
 
     return (
         <Modal
-            title="Add owner"
+            title="添加数据归属"
             visible={visible}
             onCancel={onClose}
             footer={
                 <>
                     <Button onClick={onClose} type="text">
-                        Cancel
+                        取消
                     </Button>
-                    <Button onClick={onOk}>Add</Button>
+                    <Button onClick={onOk}>添加</Button>
                 </>
             }
         >
