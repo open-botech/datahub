@@ -9,6 +9,7 @@ services:
     hostname: ingestion
     container_name: ingestion
     command: "ingest -c /elasticsearch_to_datahub.yml"
+    #entrypoint: ["tail","-F","/dev/null"]
     volumes: 
       # Most of the config is embedded inside the sample recipe file.
       - ../../metadata-ingestion/examples/recipes/elasticsearch_to_datahub.yml:/elasticsearch_to_datahub.yml:ro

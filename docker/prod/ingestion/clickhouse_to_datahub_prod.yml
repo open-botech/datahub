@@ -6,6 +6,8 @@ source:
       host_port: 172.16.8.230:8123
       username: default
       password: haibo@123456
+      schema_pattern:
+        allow: ["default"]
 # see https://datahubproject.io/docs/metadata-ingestion/sink_docs/datahub for complete documentation
 sink:
   type: "datahub-rest"

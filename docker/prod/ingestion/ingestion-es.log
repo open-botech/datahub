@@ -1,0 +1,1210 @@
+Found orphan containers (mysql, datahub-gms, datahub-frontend-react, elasticsearch, schema-registry, mysql-setup, elasticsearch-setup, neo4j, broker, zookeeper, kafka-setup) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+Recreating ingestion ... 
+Recreating ingestion ... done
+Attaching to ingestion
+[36mingestion    |[0m [2021-10-11 11:12:16,174] INFO     {datahub.cli.ingest_cli:57} - Starting metadata ingestion
+[36mingestion    |[0m [2021-10-11 11:12:16,228] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-07-18
+[36mingestion    |[0m [2021-10-11 11:12:16,246] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:16,278] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-09
+[36mingestion    |[0m [2021-10-11 11:12:16,311] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-24
+[36mingestion    |[0m [2021-10-11 11:12:16,330] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:16,365] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:16,404] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-24
+[36mingestion    |[0m [2021-10-11 11:12:16,449] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.1.2
+[36mingestion    |[0m [2021-10-11 11:12:16,494] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-13
+[36mingestion    |[0m [2021-10-11 11:12:16,540] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-11
+[36mingestion    |[0m [2021-10-11 11:12:16,579] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-24
+[36mingestion    |[0m [2021-10-11 11:12:16,633] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.1.3
+[36mingestion    |[0m [2021-10-11 11:12:16,669] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-04
+[36mingestion    |[0m [2021-10-11 11:12:16,707] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-07
+[36mingestion    |[0m [2021-10-11 11:12:16,764] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-26
+[36mingestion    |[0m [2021-10-11 11:12:16,819] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-30
+[36mingestion    |[0m [2021-10-11 11:12:16,881] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:16,923] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-01
+[36mingestion    |[0m [2021-10-11 11:12:16,964] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-20
+[36mingestion    |[0m [2021-10-11 11:12:17,003] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07-28
+[36mingestion    |[0m [2021-10-11 11:12:17,043] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-06
+[36mingestion    |[0m [2021-10-11 11:12:17,087] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-27
+[36mingestion    |[0m [2021-10-11 11:12:17,129] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-31
+[36mingestion    |[0m [2021-10-11 11:12:17,168] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-05
+[36mingestion    |[0m [2021-10-11 11:12:17,207] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-15
+[36mingestion    |[0m [2021-10-11 11:12:17,243] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-26
+[36mingestion    |[0m [2021-10-11 11:12:17,334] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2027-08
+[36mingestion    |[0m [2021-10-11 11:12:17,370] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-22
+[36mingestion    |[0m [2021-10-11 11:12:17,405] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-17
+[36mingestion    |[0m [2021-10-11 11:12:17,442] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2027-05-26
+[36mingestion    |[0m [2021-10-11 11:12:17,480] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-05
+[36mingestion    |[0m [2021-10-11 11:12:17,516] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-01
+[36mingestion    |[0m [2021-10-11 11:12:17,553] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_capture
+[36mingestion    |[0m [2021-10-11 11:12:17,590] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.4.2
+[36mingestion    |[0m [2021-10-11 11:12:17,626] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-04
+[36mingestion    |[0m [2021-10-11 11:12:17,663] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-26
+[36mingestion    |[0m [2021-10-11 11:12:17,698] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-22
+[36mingestion    |[0m [2021-10-11 11:12:17,732] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-25
+[36mingestion    |[0m [2021-10-11 11:12:17,775] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-02
+[36mingestion    |[0m [2021-10-11 11:12:17,823] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-27
+[36mingestion    |[0m [2021-10-11 11:12:17,865] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-02
+[36mingestion    |[0m [2021-10-11 11:12:17,894] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:17,932] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-07
+[36mingestion    |[0m [2021-10-11 11:12:17,955] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2000-01
+[36mingestion    |[0m [2021-10-11 11:12:17,994] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-10
+[36mingestion    |[0m [2021-10-11 11:12:18,032] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-06
+[36mingestion    |[0m [2021-10-11 11:12:18,051] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:18,091] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-24
+[36mingestion    |[0m [2021-10-11 11:12:18,129] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:18,169] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-02
+[36mingestion    |[0m [2021-10-11 11:12:18,206] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07-25
+[36mingestion    |[0m [2021-10-11 11:12:18,245] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-20
+[36mingestion    |[0m [2021-10-11 11:12:18,289] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-24
+[36mingestion    |[0m [2021-10-11 11:12:18,325] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-24
+[36mingestion    |[0m [2021-10-11 11:12:18,345] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-02
+[36mingestion    |[0m [2021-10-11 11:12:18,380] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-23
+[36mingestion    |[0m [2021-10-11 11:12:18,417] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-19
+[36mingestion    |[0m [2021-10-11 11:12:18,456] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-12
+[36mingestion    |[0m [2021-10-11 11:12:18,496] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-13
+[36mingestion    |[0m [2021-10-11 11:12:18,535] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-09
+[36mingestion    |[0m [2021-10-11 11:12:18,573] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-04
+[36mingestion    |[0m [2021-10-11 11:12:18,600] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:18,619] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2610-06
+[36mingestion    |[0m [2021-10-11 11:12:18,656] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-28
+[36mingestion    |[0m [2021-10-11 11:12:18,694] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-30
+[36mingestion    |[0m [2021-10-11 11:12:18,731] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-26
+[36mingestion    |[0m [2021-10-11 11:12:18,768] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-02
+[36mingestion    |[0m [2021-10-11 11:12:18,810] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-07-25
+[36mingestion    |[0m [2021-10-11 11:12:18,840] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:18,881] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-10
+[36mingestion    |[0m [2021-10-11 11:12:18,925] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-10
+[36mingestion    |[0m [2021-10-11 11:12:18,963] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-09
+[36mingestion    |[0m [2021-10-11 11:12:19,002] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.2.1
+[36mingestion    |[0m [2021-10-11 11:12:19,031] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:19,069] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-07
+[36mingestion    |[0m [2021-10-11 11:12:19,105] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-03
+[36mingestion    |[0m [2021-10-11 11:12:19,143] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:19,162] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:19,191] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:19,215] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:19,256] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2027-05
+[36mingestion    |[0m [2021-10-11 11:12:19,301] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:19,341] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-31
+[36mingestion    |[0m [2021-10-11 11:12:19,381] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-18
+[36mingestion    |[0m [2021-10-11 11:12:19,417] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-11
+[36mingestion    |[0m [2021-10-11 11:12:19,481] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-02
+[36mingestion    |[0m [2021-10-11 11:12:19,523] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-09
+[36mingestion    |[0m [2021-10-11 11:12:19,545] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-04-bak
+[36mingestion    |[0m [2021-10-11 11:12:19,590] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-16
+[36mingestion    |[0m [2021-10-11 11:12:19,628] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-07
+[36mingestion    |[0m [2021-10-11 11:12:19,650] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-door-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:19,693] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:19,734] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-03
+[36mingestion    |[0m [2021-10-11 11:12:19,776] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-19
+[36mingestion    |[0m [2021-10-11 11:12:19,820] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-15
+[36mingestion    |[0m [2021-10-11 11:12:19,859] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-08
+[36mingestion    |[0m [2021-10-11 11:12:19,904] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-25
+[36mingestion    |[0m [2021-10-11 11:12:19,943] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-30
+[36mingestion    |[0m [2021-10-11 11:12:19,983] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-11
+[36mingestion    |[0m [2021-10-11 11:12:20,026] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-05
+[36mingestion    |[0m [2021-10-11 11:12:20,048] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:20,091] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-02
+[36mingestion    |[0m [2021-10-11 11:12:20,117] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-community-face-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:20,191] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-10
+[36mingestion    |[0m [2021-10-11 11:12:20,251] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-01
+[36mingestion    |[0m [2021-10-11 11:12:20,287] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-30
+[36mingestion    |[0m [2021-10-11 11:12:20,322] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-14
+[36mingestion    |[0m [2021-10-11 11:12:20,358] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-30
+[36mingestion    |[0m [2021-10-11 11:12:20,387] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-04
+[36mingestion    |[0m [2021-10-11 11:12:20,431] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-20
+[36mingestion    |[0m [2021-10-11 11:12:20,507] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:20,544] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-20
+[36mingestion    |[0m [2021-10-11 11:12:20,580] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-28
+[36mingestion    |[0m [2021-10-11 11:12:20,628] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-29
+[36mingestion    |[0m [2021-10-11 11:12:20,670] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-12
+[36mingestion    |[0m [2021-10-11 11:12:20,747] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:20,793] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-face-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:20,841] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.3.3
+[36mingestion    |[0m [2021-10-11 11:12:20,885] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-15
+[36mingestion    |[0m [2021-10-11 11:12:20,921] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:20,966] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-31
+[36mingestion    |[0m [2021-10-11 11:12:21,006] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-26
+[36mingestion    |[0m [2021-10-11 11:12:21,046] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-04
+[36mingestion    |[0m [2021-10-11 11:12:21,081] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:21,126] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-17
+[36mingestion    |[0m [2021-10-11 11:12:21,208] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-27
+[36mingestion    |[0m [2021-10-11 11:12:21,240] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-2wheel-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:21,280] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.2.2
+[36mingestion    |[0m [2021-10-11 11:12:21,334] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-29
+[36mingestion    |[0m [2021-10-11 11:12:21,372] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-03
+[36mingestion    |[0m [2021-10-11 11:12:21,410] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-25
+[36mingestion    |[0m [2021-10-11 11:12:21,448] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-21
+[36mingestion    |[0m [2021-10-11 11:12:21,492] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-02
+[36mingestion    |[0m [2021-10-11 11:12:21,531] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-12
+[36mingestion    |[0m [2021-10-11 11:12:21,557] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-community-face-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:21,581] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-rxsb-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:21,628] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08
+[36mingestion    |[0m [2021-10-11 11:12:21,666] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-27
+[36mingestion    |[0m [2021-10-11 11:12:21,705] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-28
+[36mingestion    |[0m [2021-10-11 11:12:21,743] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-21
+[36mingestion    |[0m [2021-10-11 11:12:21,781] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-26
+[36mingestion    |[0m [2021-10-11 11:12:21,820] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-04
+[36mingestion    |[0m [2021-10-11 11:12:21,858] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-22
+[36mingestion    |[0m [2021-10-11 11:12:21,896] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-01
+[36mingestion    |[0m [2021-10-11 11:12:21,920] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:21,977] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-07
+[36mingestion    |[0m [2021-10-11 11:12:22,021] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-24
+[36mingestion    |[0m [2021-10-11 11:12:22,060] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-15
+[36mingestion    |[0m [2021-10-11 11:12:22,084] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-door-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:22,103] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:22,141] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-11
+[36mingestion    |[0m [2021-10-11 11:12:22,180] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-28
+[36mingestion    |[0m [2021-10-11 11:12:22,220] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:22,262] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-07-27
+[36mingestion    |[0m [2021-10-11 11:12:22,300] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-18
+[36mingestion    |[0m [2021-10-11 11:12:22,335] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-face-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:22,369] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:22,408] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-09
+[36mingestion    |[0m [2021-10-11 11:12:22,458] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-09
+[36mingestion    |[0m [2021-10-11 11:12:22,501] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:22,536] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-06
+[36mingestion    |[0m [2021-10-11 11:12:22,574] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-27
+[36mingestion    |[0m [2021-10-11 11:12:22,599] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-face-recognition
+[36mingestion    |[0m [2021-10-11 11:12:22,639] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.4.1
+[36mingestion    |[0m [2021-10-11 11:12:22,676] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-22
+[36mingestion    |[0m [2021-10-11 11:12:22,718] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-06
+[36mingestion    |[0m [2021-10-11 11:12:22,757] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2027-08-07
+[36mingestion    |[0m [2021-10-11 11:12:22,805] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-26
+[36mingestion    |[0m [2021-10-11 11:12:22,866] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-10
+[36mingestion    |[0m [2021-10-11 11:12:22,922] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-15
+[36mingestion    |[0m [2021-10-11 11:12:22,961] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-15
+[36mingestion    |[0m [2021-10-11 11:12:23,003] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-03
+[36mingestion    |[0m [2021-10-11 11:12:23,040] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-18
+[36mingestion    |[0m [2021-10-11 11:12:23,075] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-19
+[36mingestion    |[0m [2021-10-11 11:12:23,117] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.3.2
+[36mingestion    |[0m [2021-10-11 11:12:23,157] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2032-11
+[36mingestion    |[0m [2021-10-11 11:12:23,196] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-21
+[36mingestion    |[0m [2021-10-11 11:12:23,214] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:23,252] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:23,290] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07-01
+[36mingestion    |[0m [2021-10-11 11:12:23,327] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:23,364] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-02
+[36mingestion    |[0m [2021-10-11 11:12:23,402] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-07
+[36mingestion    |[0m [2021-10-11 11:12:23,439] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:23,477] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-10
+[36mingestion    |[0m [2021-10-11 11:12:23,495] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:23,533] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-20
+[36mingestion    |[0m [2021-10-11 11:12:23,572] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-01
+[36mingestion    |[0m [2021-10-11 11:12:23,609] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-08
+[36mingestion    |[0m [2021-10-11 11:12:23,642] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-29
+[36mingestion    |[0m [2021-10-11 11:12:23,680] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-08
+[36mingestion    |[0m [2021-10-11 11:12:23,713] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-28
+[36mingestion    |[0m [2021-10-11 11:12:23,748] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07-31
+[36mingestion    |[0m [2021-10-11 11:12:23,785] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-11
+[36mingestion    |[0m [2021-10-11 11:12:23,843] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-23
+[36mingestion    |[0m [2021-10-11 11:12:23,881] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-13
+[36mingestion    |[0m [2021-10-11 11:12:23,917] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-09
+[36mingestion    |[0m [2021-10-11 11:12:23,955] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-12
+[36mingestion    |[0m [2021-10-11 11:12:23,994] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:24,032] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-20
+[36mingestion    |[0m [2021-10-11 11:12:24,067] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-03
+[36mingestion    |[0m [2021-10-11 11:12:24,103] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-21
+[36mingestion    |[0m [2021-10-11 11:12:24,138] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-29
+[36mingestion    |[0m [2021-10-11 11:12:24,174] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-10
+[36mingestion    |[0m [2021-10-11 11:12:24,208] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:24,248] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-05
+[36mingestion    |[0m [2021-10-11 11:12:24,296] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-16
+[36mingestion    |[0m [2021-10-11 11:12:24,335] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-04
+[36mingestion    |[0m [2021-10-11 11:12:24,373] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-18
+[36mingestion    |[0m [2021-10-11 11:12:24,411] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-30
+[36mingestion    |[0m [2021-10-11 11:12:24,450] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-24
+[36mingestion    |[0m [2021-10-11 11:12:24,488] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-25
+[36mingestion    |[0m [2021-10-11 11:12:24,529] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-23
+[36mingestion    |[0m [2021-10-11 11:12:24,608] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-27
+[36mingestion    |[0m [2021-10-11 11:12:24,644] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-16
+[36mingestion    |[0m [2021-10-11 11:12:24,665] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-rxsb-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:24,702] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-27
+[36mingestion    |[0m [2021-10-11 11:12:24,725] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-door-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:24,762] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-29
+[36mingestion    |[0m [2021-10-11 11:12:24,788] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-3wheel-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:24,833] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-11
+[36mingestion    |[0m [2021-10-11 11:12:24,868] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-31
+[36mingestion    |[0m [2021-10-11 11:12:24,905] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-02
+[36mingestion    |[0m [2021-10-11 11:12:24,940] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-03
+[36mingestion    |[0m [2021-10-11 11:12:24,986] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.3.1
+[36mingestion    |[0m [2021-10-11 11:12:25,023] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-14
+[36mingestion    |[0m [2021-10-11 11:12:25,060] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-12
+[36mingestion    |[0m [2021-10-11 11:12:25,120] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-21
+[36mingestion    |[0m [2021-10-11 11:12:25,161] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-test
+[36mingestion    |[0m [2021-10-11 11:12:25,202] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-08
+[36mingestion    |[0m [2021-10-11 11:12:25,240] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-07-26
+[36mingestion    |[0m [2021-10-11 11:12:25,280] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-19
+[36mingestion    |[0m [2021-10-11 11:12:25,317] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-16
+[36mingestion    |[0m [2021-10-11 11:12:25,357] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-22
+[36mingestion    |[0m [2021-10-11 11:12:25,383] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-02-bak
+[36mingestion    |[0m [2021-10-11 11:12:25,423] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-25
+[36mingestion    |[0m [2021-10-11 11:12:25,465] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-09
+[36mingestion    |[0m [2021-10-11 11:12:25,503] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-04
+[36mingestion    |[0m [2021-10-11 11:12:25,541] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:25,559] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:25,592] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-21
+[36mingestion    |[0m [2021-10-11 11:12:25,630] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-01
+[36mingestion    |[0m [2021-10-11 11:12:25,771] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-15
+[36mingestion    |[0m [2021-10-11 11:12:25,812] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-16
+[36mingestion    |[0m [2021-10-11 11:12:25,848] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-20
+[36mingestion    |[0m [2021-10-11 11:12:25,877] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-2wheel-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:25,924] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-08
+[36mingestion    |[0m [2021-10-11 11:12:25,957] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-06
+[36mingestion    |[0m [2021-10-11 11:12:26,019] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-04
+[36mingestion    |[0m [2021-10-11 11:12:26,038] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:26,074] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:26,130] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-03
+[36mingestion    |[0m [2021-10-11 11:12:26,166] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-29
+[36mingestion    |[0m [2021-10-11 11:12:26,203] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-31
+[36mingestion    |[0m [2021-10-11 11:12:26,238] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-01
+[36mingestion    |[0m [2021-10-11 11:12:26,273] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-27
+[36mingestion    |[0m [2021-10-11 11:12:26,319] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-09-10
+[36mingestion    |[0m [2021-10-11 11:12:26,355] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-25
+[36mingestion    |[0m [2021-10-11 11:12:26,375] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2020-05
+[36mingestion    |[0m [2021-10-11 11:12:26,414] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-16
+[36mingestion    |[0m [2021-10-11 11:12:26,441] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-2wheel-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:26,460] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:26,525] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:26,576] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.5.1
+[36mingestion    |[0m [2021-10-11 11:12:26,616] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-26
+[36mingestion    |[0m [2021-10-11 11:12:26,651] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:26,691] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-13
+[36mingestion    |[0m [2021-10-11 11:12:26,726] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-25
+[36mingestion    |[0m [2021-10-11 11:12:26,770] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:26,807] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-05
+[36mingestion    |[0m [2021-10-11 11:12:26,855] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-human-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:26,921] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:26,942] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-01-bak
+[36mingestion    |[0m [2021-10-11 11:12:26,977] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-18
+[36mingestion    |[0m [2021-10-11 11:12:27,012] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-05
+[36mingestion    |[0m [2021-10-11 11:12:27,054] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-28
+[36mingestion    |[0m [2021-10-11 11:12:27,090] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-22
+[36mingestion    |[0m [2021-10-11 11:12:27,110] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2020-09
+[36mingestion    |[0m [2021-10-11 11:12:27,148] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-18
+[36mingestion    |[0m [2021-10-11 11:12:27,189] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-27
+[36mingestion    |[0m [2021-10-11 11:12:27,228] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-02
+[36mingestion    |[0m [2021-10-11 11:12:27,268] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-19
+[36mingestion    |[0m [2021-10-11 11:12:27,310] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-17
+[36mingestion    |[0m [2021-10-11 11:12:27,346] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-23
+[36mingestion    |[0m [2021-10-11 11:12:27,388] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:27,419] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-14
+[36mingestion    |[0m [2021-10-11 11:12:27,456] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-14
+[36mingestion    |[0m [2021-10-11 11:12:27,474] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:27,510] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-04
+[36mingestion    |[0m [2021-10-11 11:12:27,527] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:27,547] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition
+[36mingestion    |[0m [2021-10-11 11:12:27,583] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-11
+[36mingestion    |[0m [2021-10-11 11:12:27,619] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-04
+[36mingestion    |[0m [2021-10-11 11:12:27,656] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:27,703] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-10-11
+[36mingestion    |[0m [2021-10-11 11:12:27,724] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:27,761] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:27,798] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-19
+[36mingestion    |[0m [2021-10-11 11:12:27,834] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-23
+[36mingestion    |[0m [2021-10-11 11:12:27,861] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:27,893] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-community-face-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:27,933] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-14
+[36mingestion    |[0m [2021-10-11 11:12:27,973] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-18
+[36mingestion    |[0m [2021-10-11 11:12:28,010] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-03
+[36mingestion    |[0m [2021-10-11 11:12:28,049] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-03
+[36mingestion    |[0m [2021-10-11 11:12:28,069] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-03
+[36mingestion    |[0m [2021-10-11 11:12:28,116] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-17
+[36mingestion    |[0m [2021-10-11 11:12:28,153] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:28,191] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.4.3
+[36mingestion    |[0m [2021-10-11 11:12:28,225] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-28
+[36mingestion    |[0m [2021-10-11 11:12:28,260] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-19
+[36mingestion    |[0m [2021-10-11 11:12:28,301] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-15
+[36mingestion    |[0m [2021-10-11 11:12:28,336] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-21
+[36mingestion    |[0m [2021-10-11 11:12:28,373] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-22
+[36mingestion    |[0m [2021-10-11 11:12:28,410] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-11
+[36mingestion    |[0m [2021-10-11 11:12:28,427] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-system-state
+[36mingestion    |[0m [2021-10-11 11:12:28,465] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-02
+[36mingestion    |[0m [2021-10-11 11:12:28,491] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-2wheel-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:28,526] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-21
+[36mingestion    |[0m [2021-10-11 11:12:28,566] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-23
+[36mingestion    |[0m [2021-10-11 11:12:28,591] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-rxsb-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:28,631] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-28
+[36mingestion    |[0m [2021-10-11 11:12:28,773] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-01
+[36mingestion    |[0m [2021-10-11 11:12:28,809] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-12
+[36mingestion    |[0m [2021-10-11 11:12:28,846] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-30
+[36mingestion    |[0m [2021-10-11 11:12:28,885] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:28,907] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-06
+[36mingestion    |[0m [2021-10-11 11:12:28,962] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-30
+[36mingestion    |[0m [2021-10-11 11:12:28,979] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-01
+[36mingestion    |[0m [2021-10-11 11:12:28,998] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-community-face-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:29,016] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-vehicle-recognition-2021-08
+[36mingestion    |[0m [2021-10-11 11:12:29,052] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-14
+[36mingestion    |[0m [2021-10-11 11:12:29,076] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:29,091] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-07
+[36mingestion    |[0m [2021-10-11 11:12:29,126] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-29
+[36mingestion    |[0m [2021-10-11 11:12:29,160] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-07
+[36mingestion    |[0m [2021-10-11 11:12:29,196] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07-24
+[36mingestion    |[0m [2021-10-11 11:12:29,229] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-06
+[36mingestion    |[0m [2021-10-11 11:12:29,261] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-17
+[36mingestion    |[0m [2021-10-11 11:12:29,294] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-12
+[36mingestion    |[0m [2021-10-11 11:12:29,331] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-13
+[36mingestion    |[0m [2021-10-11 11:12:29,351] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2020-12-bak
+[36mingestion    |[0m [2021-10-11 11:12:29,385] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-13
+[36mingestion    |[0m [2021-10-11 11:12:29,423] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-26
+[36mingestion    |[0m [2021-10-11 11:12:29,459] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-06-17
+[36mingestion    |[0m [2021-10-11 11:12:29,529] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:29,560] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-08
+[36mingestion    |[0m [2021-10-11 11:12:29,595] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-28
+[36mingestion    |[0m [2021-10-11 11:12:29,630] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-face-recognition-scrutiny-2021-09-08
+[36mingestion    |[0m [2021-10-11 11:12:29,663] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-07-25
+[36mingestion    |[0m [2021-10-11 11:12:29,700] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.2.3
+[36mingestion    |[0m [2021-10-11 11:12:29,717] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:29,755] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-01
+[36mingestion    |[0m [2021-10-11 11:12:29,796] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-04
+[36mingestion    |[0m [2021-10-11 11:12:29,843] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-05
+[36mingestion    |[0m [2021-10-11 11:12:29,861] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-community-device-state
+[36mingestion    |[0m [2021-10-11 11:12:29,897] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-09-16
+[36mingestion    |[0m [2021-10-11 11:12:29,933] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-17
+[36mingestion    |[0m [2021-10-11 11:12:29,971] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-04
+[36mingestion    |[0m [2021-10-11 11:12:30,006] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-29
+[36mingestion    |[0m [2021-10-11 11:12:30,040] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-10-08
+[36mingestion    |[0m [2021-10-11 11:12:30,073] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-09-14
+[36mingestion    |[0m [2021-10-11 11:12:30,105] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:30,136] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-08-13
+[36mingestion    |[0m [2021-10-11 11:12:30,168] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-vehicle-motorecognition-2021-09
+[36mingestion    |[0m [2021-10-11 11:12:30,221] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-30
+[36mingestion    |[0m [2021-10-11 11:12:30,278] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-07-23
+[36mingestion    |[0m [2021-10-11 11:12:30,298] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-community-face-recognition-2021-05
+[36mingestion    |[0m [2021-10-11 11:12:30,345] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-08-11
+[36mingestion    |[0m [2021-10-11 11:12:30,387] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-10-06
+[36mingestion    |[0m [2021-10-11 11:12:30,440] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-yisa-push-kako-vehicle-recognition-2021-08-23
+[36mingestion    |[0m [2021-10-11 11:12:30,515] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-20
+[36mingestion    |[0m [2021-10-11 11:12:30,537] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-flink-etl-error-log-rxsb-2021-10
+[36mingestion    |[0m [2021-10-11 11:12:30,579] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-push-yisa-kako-vehicle-recognition-2021-08-22
+[36mingestion    |[0m [2021-10-11 11:12:30,614] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb_qdgakk.2021.1.1
+[36mingestion    |[0m [2021-10-11 11:12:30,663] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-kako-vehicle-recognition-2023-07
+[36mingestion    |[0m [2021-10-11 11:12:30,703] INFO     {datahub.ingestion.run.pipeline:61} - sink wrote workunit hb-origin-face-recognition-2021-09-29
+[36mingestion    |[0m [2021-10-11 11:12:30,703] INFO     {datahub.cli.ingest_cli:59} - Finished metadata ingestion
+[36mingestion    |[0m 
+[36mingestion    |[0m Source (elasticsearch) report:
+[36mingestion    |[0m {'failures': {},
+[36mingestion    |[0m  'filtered': ['.watcher-history-10-2021.10.09',
+[36mingestion    |[0m               'rollup-hb-3wheel-recognition',
+[36mingestion    |[0m               'metricbeat-7.4.2-2021.06.15-000001',
+[36mingestion    |[0m               '.ml-annotations-6',
+[36mingestion    |[0m               'flink-etl-error-log-2021-04',
+[36mingestion    |[0m               'rollup-hb-2wheel-recognition',
+[36mingestion    |[0m               'botech-face-object',
+[36mingestion    |[0m               'rollup-hb-community-face-recognition',
+[36mingestion    |[0m               '.kibana_task_manager_1',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.07',
+[36mingestion    |[0m               '.tasks',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.11',
+[36mingestion    |[0m               '.security-7',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.10',
+[36mingestion    |[0m               '.kibana_1.bak',
+[36mingestion    |[0m               '.kibana_2.bak',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.11',
+[36mingestion    |[0m               'metricbeat-7.9.1-2021.09.17-000003',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.08',
+[36mingestion    |[0m               'reindex-hb-community-face-recognition-2021-08',
+[36mingestion    |[0m               'metricbeat-7.4.2-2021.07.15-000002',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.11',
+[36mingestion    |[0m               'rollup-hb-community-system-state',
+[36mingestion    |[0m               'reindex-hb-community-face-recognition-2021-05',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.08',
+[36mingestion    |[0m               '.kibana_4.bak',
+[36mingestion    |[0m               '.reporting-2021.04.18',
+[36mingestion    |[0m               '.watches',
+[36mingestion    |[0m               '.kibana_3',
+[36mingestion    |[0m               'rollup-hb-kako-vehicle-recognition',
+[36mingestion    |[0m               '.kibana_3.bak',
+[36mingestion    |[0m               '.kibana_5',
+[36mingestion    |[0m               '.ml-anomalies-shared',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.10',
+[36mingestion    |[0m               'metricbeat-7.9.1-2021.08.18-000002',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.06',
+[36mingestion    |[0m               '.kibana236_237.bak',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.09',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.05',
+[36mingestion    |[0m               '.ml-config',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.06',
+[36mingestion    |[0m               '.kibana_1',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.09',
+[36mingestion    |[0m               '.monitoring-alerts-7',
+[36mingestion    |[0m               'haikang-test',
+[36mingestion    |[0m               'reindex-hb-origin-community-face-recognition-2021-10',
+[36mingestion    |[0m               'rollup-hb-community-vehicle-recognition',
+[36mingestion    |[0m               'allocaion',
+[36mingestion    |[0m               'metricbeat-8.0.0-2021.09.09-000001',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.07',
+[36mingestion    |[0m               '.kibana236.bak',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.08',
+[36mingestion    |[0m               '.monitoring-es-7-2021.10.05',
+[36mingestion    |[0m               '.ml-state',
+[36mingestion    |[0m               '.triggered_watches',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.06',
+[36mingestion    |[0m               'rollup-hb-human-recognition',
+[36mingestion    |[0m               'metricbeat-7.4.2-2021.09.13-000004',
+[36mingestion    |[0m               'reindex-hb-community-face-recognition-2021-07',
+[36mingestion    |[0m               '.apm-agent-configuration',
+[36mingestion    |[0m               '.kibana_2',
+[36mingestion    |[0m               'rollup-hb-face-recognition',
+[36mingestion    |[0m               '.ml-notifications',
+[36mingestion    |[0m               'metricbeat-7.4.2-2021.08.14-000003',
+[36mingestion    |[0m               'metricbeat-8.0.0-2021.09.20-000002',
+[36mingestion    |[0m               '.kibana236_237',
+[36mingestion    |[0m               'rollup-hb-vehicle-motorecognition',
+[36mingestion    |[0m               'reindex-hb-community-face-recognition-2021-06',
+[36mingestion    |[0m               '.watcher-history-10-2021.10.10',
+[36mingestion    |[0m               'metricbeat-7.9.1-2021.07.19-000001',
+[36mingestion    |[0m               'rollup-hb-community-device-state',
+[36mingestion    |[0m               'metricbeat-8.0.0-2021.10.01-000003',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.07',
+[36mingestion    |[0m               'reindex-hb-community-face-recognition-2021-09',
+[36mingestion    |[0m               '.monitoring-kibana-7-2021.10.05'],
+[36mingestion    |[0m  'index_scanned': 452,
+[36mingestion    |[0m  'warnings': {'hb-2wheel-recognition-2021-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-2wheel-recognition-2021-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-2wheel-recognition-2021-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-2wheel-recognition-2021-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-3wheel-recognition-2021-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-community-door-recognition-2021-08': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-community-door-recognition-2021-09': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-community-door-recognition-2021-10': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-community-face-recognition': ["unable to map type 'long' to metadata schema", "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-community-face-recognition-2021-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-community-face-recognition-2021-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-2021-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-07-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-07-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-07-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-07-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-09-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-face-recognition-scrutiny-2021-09-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-04': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-05': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-06': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-07': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-08': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-09': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-human-recognition-2021-10': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2021-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-07-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2023-08-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2027-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2027-05-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2027-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2027-08-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-2032-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-kako-vehicle-recognition-test': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2020-12-bak': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2021-01-bak': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2021-02-bak': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2021-03': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2021-04-bak': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-community-face-recognition-2021-05': ["unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-07-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-08-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-09-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-origin-face-recognition-2021-10-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-06-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-07-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-08-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-09-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-push-yisa-kako-vehicle-recognition-2021-10-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-04': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-05': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-06': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-07': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-08': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-09': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-vehicle-motorecognition-2021-10': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'double' to metadata schema",
+[36mingestion    |[0m                                                      "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-08-31': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-12': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-13': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-14': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-15': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-16': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-17': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-18': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-19': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-20': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-21': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-22': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-23': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-24': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-25': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-26': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-27': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-28': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-29': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-09-30': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-01': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-02': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-03': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-04': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-05': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-06': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-07': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-08': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-09': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-10': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb-yisa-push-kako-vehicle-recognition-2021-10-11': ["unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_capture': ["unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'float' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema",
+[36mingestion    |[0m                              "unable to map type 'long' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.1.1': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.1.2': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.1.3': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.2.1': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.2.2': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.2.3': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.3.1': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.3.2': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.3.3': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.4.1': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.4.2': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.4.3': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"],
+[36mingestion    |[0m               'hb_qdgakk.2021.5.1': ["unable to map type 'double' to metadata schema", "unable to map type 'double' to metadata schema"]},
+[36mingestion    |[0m  'workunit_ids': ['hb-face-recognition-scrutiny-2021-07-18',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-10',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-09',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-24',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-06',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-06',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-24',
+[36mingestion    |[0m                   'hb_qdgakk.2021.1.2',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-13',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-11',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-24',
+[36mingestion    |[0m                   'hb_qdgakk.2021.1.3',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-04',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-26',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-30',
+[36mingestion    |[0m                   'hb-human-recognition-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-01',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-20',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07-28',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-06',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-27',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-31',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-05',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-15',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-26',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2027-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-22',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-17',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2027-05-26',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-05',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-01',
+[36mingestion    |[0m                   'hb_capture',
+[36mingestion    |[0m                   'hb_qdgakk.2021.4.2',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-04',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-26',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-22',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-25',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-02',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-27',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-02',
+[36mingestion    |[0m                   'hb-community-system-state-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-07',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2000-01',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-06',
+[36mingestion    |[0m                   'hb-community-device-state-2021-08',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-24',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-02',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07-25',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-20',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-24',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-24',
+[36mingestion    |[0m                   'hb-community-device-state-2021-02',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-23',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-19',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-12',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-13',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-09',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-04',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-07',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2610-06',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-28',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-30',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-26',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-02',
+[36mingestion    |[0m                   'hb-face-recognition-scrutiny-2021-07-25',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-10',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-10',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-09',
+[36mingestion    |[0m                   'hb_qdgakk.2021.2.1',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-05',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-03',
+[36mingestion    |[0m                   'hb-face-recognition-2021-10',
+[36mingestion    |[0m                   'hb-community-system-state-2021-05',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-08',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-07',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2027-05',
+[36mingestion    |[0m                   'hb-human-recognition-2021-06',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-31',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-18',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-11',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-02',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-09',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-04-bak',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-16',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-07',
+[36mingestion    |[0m                   'hb-community-door-recognition-2021-09',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-03',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-19',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-15',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-08',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-25',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-30',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-11',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-05',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-02',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-community-face-2021-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-01',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-30',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-14',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-30',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-04',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-20',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-20',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-28',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-29',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-12',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-06',
+[36mingestion    |[0m                   'hb-community-face-recognition-2021-10',
+[36mingestion    |[0m                   'hb_qdgakk.2021.3.3',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-15',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-06',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-31',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-26',
+[36mingestion    |[0m                   'hb-human-recognition-2021-04',
+[36mingestion    |[0m                   'hb-face-recognition-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-17',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-27',
+[36mingestion    |[0m                   'hb-2wheel-recognition-2021-07',
+[36mingestion    |[0m                   'hb_qdgakk.2021.2.2',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-29',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-03',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-25',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-21',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-02',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-12',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-community-face-2021-10',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-rxsb-2021-07',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-27',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-28',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-21',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-26',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-04',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-22',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-01',
+[36mingestion    |[0m                   'hb-community-device-state-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-07',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-24',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-15',
+[36mingestion    |[0m                   'hb-community-door-recognition-2021-08',
+[36mingestion    |[0m                   'hb-community-system-state-2021-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-11',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-28',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-08',
+[36mingestion    |[0m                   'hb-face-recognition-scrutiny-2021-07-27',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-18',
+[36mingestion    |[0m                   'hb-community-face-recognition-2021-09',
+[36mingestion    |[0m                   'hb-face-recognition-2021-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-09',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-09',
+[36mingestion    |[0m                   'hb-human-recognition-2021-05',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-06',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-27',
+[36mingestion    |[0m                   'hb-community-face-recognition',
+[36mingestion    |[0m                   'hb_qdgakk.2021.4.1',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-22',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-06',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2027-08-07',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-26',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-10',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-15',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-15',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-03',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-18',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-19',
+[36mingestion    |[0m                   'hb_qdgakk.2021.3.2',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2032-11',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-21',
+[36mingestion    |[0m                   'hb-community-device-state-2021-06',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-07',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07-01',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-06',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-02',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-10',
+[36mingestion    |[0m                   'hb-community-system-state-2021-06',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-20',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-01',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-29',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-28',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07-31',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-11',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-23',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-13',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-09',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-12',
+[36mingestion    |[0m                   'hb-human-recognition-2021-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-20',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-03',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-21',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-29',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-10',
+[36mingestion    |[0m                   'hb-face-recognition-2021-06',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-16',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-04',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-18',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-30',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-24',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-25',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-23',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-27',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-16',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-rxsb-2021-09',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-27',
+[36mingestion    |[0m                   'hb-community-door-recognition-2021-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-29',
+[36mingestion    |[0m                   'hb-3wheel-recognition-2021-10',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-11',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-31',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-02',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-03',
+[36mingestion    |[0m                   'hb_qdgakk.2021.3.1',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-14',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-12',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-21',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-test',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-08',
+[36mingestion    |[0m                   'hb-face-recognition-scrutiny-2021-07-26',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-19',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-16',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-22',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-02-bak',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-25',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-09',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-04',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-09',
+[36mingestion    |[0m                   'hb-community-system-state-2021-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-21',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-01',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-15',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-16',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-20',
+[36mingestion    |[0m                   'hb-2wheel-recognition-2021-09',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-06',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-04',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-08',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-03',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-29',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-31',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-01',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-27',
+[36mingestion    |[0m                   'hb-face-recognition-scrutiny-2021-09-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-25',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2020-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-16',
+[36mingestion    |[0m                   'hb-2wheel-recognition-2021-10',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-09',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-09',
+[36mingestion    |[0m                   'hb_qdgakk.2021.5.1',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-26',
+[36mingestion    |[0m                   'hb-face-recognition-2021-07',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-13',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-25',
+[36mingestion    |[0m                   'hb-human-recognition-2021-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-05',
+[36mingestion    |[0m                   'hb-human-recognition-2021-10',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-08',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-01-bak',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-18',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-28',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-22',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2020-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-18',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-27',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-02',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-19',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-17',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-23',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-10',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-14',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-14',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-07',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-04',
+[36mingestion    |[0m                   'hb-community-device-state-2021-10',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-11',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-04',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-10',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-10-11',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-05',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-07',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-19',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-23',
+[36mingestion    |[0m                   'hb-community-system-state-2021-10',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-community-face-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-14',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-18',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-03',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-03',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-03',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-17',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2021-10',
+[36mingestion    |[0m                   'hb_qdgakk.2021.4.3',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-28',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-19',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-15',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-21',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-22',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-11',
+[36mingestion    |[0m                   'hb-community-system-state',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-02',
+[36mingestion    |[0m                   'hb-2wheel-recognition-2021-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-21',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-23',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-rxsb-2021-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-28',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-01',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-12',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-30',
+[36mingestion    |[0m                   'hb-face-recognition-2021-08',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-06',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-30',
+[36mingestion    |[0m                   'hb-community-device-state-2021-01',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-community-face-2021-07',
+[36mingestion    |[0m                   'hb-community-vehicle-recognition-2021-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-14',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-09',
+[36mingestion    |[0m                   'hb-community-device-state-2021-07',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-29',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-07',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07-24',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-06',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-17',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-12',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-13',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2020-12-bak',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-13',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-26',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-06-17',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-2021-05',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-28',
+[36mingestion    |[0m                   'hb-face-recognition-scrutiny-2021-09-08',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-07-25',
+[36mingestion    |[0m                   'hb_qdgakk.2021.2.3',
+[36mingestion    |[0m                   'hb-community-device-state-2021-05',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-01',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-04',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-05',
+[36mingestion    |[0m                   'hb-community-device-state',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-09-16',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-17',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-04',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-29',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-10-08',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-09-14',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-05',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-08-13',
+[36mingestion    |[0m                   'hb-vehicle-motorecognition-2021-09',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-30',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-07-23',
+[36mingestion    |[0m                   'hb-origin-community-face-recognition-2021-05',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-08-11',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-10-06',
+[36mingestion    |[0m                   'hb-yisa-push-kako-vehicle-recognition-2021-08-23',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-20',
+[36mingestion    |[0m                   'hb-flink-etl-error-log-rxsb-2021-10',
+[36mingestion    |[0m                   'hb-push-yisa-kako-vehicle-recognition-2021-08-22',
+[36mingestion    |[0m                   'hb_qdgakk.2021.1.1',
+[36mingestion    |[0m                   'hb-kako-vehicle-recognition-2023-07',
+[36mingestion    |[0m                   'hb-origin-face-recognition-2021-09-29'],
+[36mingestion    |[0m  'workunits_produced': 377}
+[36mingestion    |[0m Sink (datahub-rest) report:
+[36mingestion    |[0m {'failures': [], 'records_written': 377, 'warnings': []}
+[36mingestion    |[0m 
+[36mingestion    |[0m Pipeline finished with warnings
+[36mingestion exited with code 0
+[0m
