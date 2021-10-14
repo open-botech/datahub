@@ -43,7 +43,7 @@ public final class GetHighlightsResolver implements DataFetcher<List<Highlight>>
         new DateRange(String.valueOf(lastWeekStartDate.getMillis()), String.valueOf(startDate.getMillis()));
 
     // Highlight 1: The Highlights!
-    String title = "Weekly Active Users";
+    String title = "周活跃用户数";
     String eventType = "SearchEvent";
 
     int weeklyActiveUsers =
@@ -60,20 +60,20 @@ public final class GetHighlightsResolver implements DataFetcher<List<Highlight>>
           (Double.valueOf(weeklyActiveUsers) - Double.valueOf(weeklyActiveUsersLastWeek)) / Double.valueOf(
               weeklyActiveUsersLastWeek) * 100;
 
-      String directionChange = percentChange > 0 ? "increase" : "decrease";
+      String directionChange = percentChange > 0 ? "增加" : "减少";
 
       bodyText = Double.isInfinite(percentChange) ? ""
-          : String.format("%.2f%% %s from last week", percentChange, directionChange);
+          : String.format("相比上周，%s %.2f%%  ", directionChange, percentChange);
     }
 
     highlights.add(Highlight.builder().setTitle(title).setValue(weeklyActiveUsers).setBody(bodyText).build());
 
     // Entity metdata statistics
-    highlights.add(getEntityMetadataStats("Datasets", AnalyticsService.DATASET_INDEX));
-    highlights.add(getEntityMetadataStats("Dashboards", AnalyticsService.DASHBOARD_INDEX));
-    highlights.add(getEntityMetadataStats("Charts", AnalyticsService.CHART_INDEX));
-    highlights.add(getEntityMetadataStats("Pipelines", AnalyticsService.DATA_FLOW_INDEX));
-    highlights.add(getEntityMetadataStats("Tasks", AnalyticsService.DATA_JOB_INDEX));
+    highlights.add(getEntityMetadataStats("数据表", AnalyticsService.DATASET_INDEX));
+    highlights.add(getEntityMetadataStats("仪表盘", AnalyticsService.DASHBOARD_INDEX));
+    highlights.add(getEntityMetadataStats("图表", AnalyticsService.CHART_INDEX));
+    highlights.add(getEntityMetadataStats("管道", AnalyticsService.DATA_FLOW_INDEX));
+    highlights.add(getEntityMetadataStats("任务", AnalyticsService.DATA_JOB_INDEX));
     return highlights;
   }
 
@@ -86,7 +86,7 @@ public final class GetHighlightsResolver implements DataFetcher<List<Highlight>>
     String bodyText = "";
     if (numEntities > 0) {
       double percentChange = 100.0 * numEntitiesWithOwners / numEntities;
-      bodyText = String.format("%.2f%% have owners assigned!", percentChange);
+      bodyText = String.format("%.2f%% 指定了所有者!", percentChange);
     }
     return Highlight.builder().setTitle(title).setValue(numEntities).setBody(bodyText).build();
   }
