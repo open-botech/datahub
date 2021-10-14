@@ -35,7 +35,7 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
   @Override
   public final List<AnalyticsChartGroup> get(DataFetchingEnvironment environment) throws Exception {
     final AnalyticsChartGroup group = new AnalyticsChartGroup();
-    group.setTitle("Product Analytics");
+    group.setTitle("产品分析");
     group.setCharts(getProductAnalyticsCharts());
     return ImmutableList.of(group);
   }
@@ -55,7 +55,7 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
         new DateRange(String.valueOf(twoMonthsAgo.getMillis()), String.valueOf(now.getMillis()));
 
     // Chart 1:  Time Series Chart
-    String wauTitle = "Weekly Active Users";
+    String wauTitle = "周活跃用户数";
     DateInterval weeklyInterval = DateInterval.WEEK;
 
     final List<NamedLine> wauTimeseries =
@@ -69,7 +69,7 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
         .build());
 
     // Chart 2:  Time Series Chart
-    String searchesTitle = "Searches Last Week";
+    String searchesTitle = "周搜索次数";
     DateInterval dailyInterval = DateInterval.DAY;
     String searchEventType = "SearchEvent";
 
@@ -84,8 +84,8 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
         .build());
 
     // Chart 3: Table Chart
-    final String topSearchTitle = "Top Search Queries";
-    final List<String> columns = ImmutableList.of("Query", "Count");
+    final String topSearchTitle = "查询语句排名";
+    final List<String> columns = ImmutableList.of("语句", "数量");
 
     final List<Row> topSearchQueries =
         _analyticsService.getTopNTableChart(AnalyticsService.DATAHUB_USAGE_EVENT_INDEX, Optional.of(lastWeekDateRange),
@@ -93,7 +93,7 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
     charts.add(TableChart.builder().setTitle(topSearchTitle).setColumns(columns).setRows(topSearchQueries).build());
 
     // Chart 4: Bar Graph Chart
-    final String sectionViewsTitle = "Section Views across Entity Types";
+    final String sectionViewsTitle = "对象浏览次数";
     final List<NamedBar> sectionViewsPerEntityType =
         _analyticsService.getBarChart(AnalyticsService.DATAHUB_USAGE_EVENT_INDEX, Optional.of(lastWeekDateRange),
             ImmutableList.of("entityType.keyword", "section.keyword"),
@@ -101,7 +101,7 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
     charts.add(BarChart.builder().setTitle(sectionViewsTitle).setBars(sectionViewsPerEntityType).build());
 
     // Chart 5: Bar Graph Chart
-    final String actionsByTypeTitle = "Actions by Entity Type";
+    final String actionsByTypeTitle = "对象操作次数";
     final List<NamedBar> eventsByEventType =
         _analyticsService.getBarChart(AnalyticsService.DATAHUB_USAGE_EVENT_INDEX, Optional.of(lastWeekDateRange),
             ImmutableList.of("entityType.keyword", "actionType.keyword"),
@@ -109,8 +109,8 @@ public final class GetChartsResolver implements DataFetcher<List<AnalyticsChartG
     charts.add(BarChart.builder().setTitle(actionsByTypeTitle).setBars(eventsByEventType).build());
 
     // Chart 6: Table Chart
-    final String topViewedTitle = "Top Viewed Dataset";
-    final List<String> columns5 = ImmutableList.of("Dataset", "#Views");
+    final String topViewedTitle = "数据库浏览排名";
+    final List<String> columns5 = ImmutableList.of("数据表", "浏览次数");
 
     final List<Row> topViewedDatasets =
         _analyticsService.getTopNTableChart(AnalyticsService.DATAHUB_USAGE_EVENT_INDEX, Optional.of(lastWeekDateRange),
