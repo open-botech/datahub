@@ -1,0 +1,154 @@
+# Docker compose file covering DataHub's default configuration, which is to run all containers on a single host.
+
+# Please see the README.md for instructions as to how to use and customize.
+
+# NOTE: This file will cannot build! No dockerfiles are set. See the README.md in this directory.
+---
+version: '3.8'
+services:
+  zookeeper:
+    restart: always
+    image: confluentinc/cp-zookeeper:5.4.0
+    env_file: zookeeper/env/docker-prod.env
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - zkdata:/var/opt/zookeeper
+
+  broker:
+    restart: always
+    image: confluentinc/cp-kafka:5.4.0
+    env_file: broker/env/docker-prod.env
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+
+  # This "container" is a workaround to pre-create topics
+  kafka-setup:
+    restart: always
+    image: linkedin/datahub-kafka-setup:${DATAHUB_VERSION:-head}
+    env_file: kafka-setup/env/docker-prod.env
+    hostname: kafka-setup
+    container_name: kafka-setup
+    depends_on:
+      - broker
+      - schema-registry
+
+  schema-registry:
+    restart: always
+    image: confluentinc/cp-schema-registry:5.4.0
+    env_file: schema-registry/env/docker-prod.env
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - "8081:8081"
+
+  elasticsearch:
+    restart: always
+    image: elasticsearch:7.9.3
+    env_file: elasticsearch/env/docker-prod.env
+    container_name: elasticsearch
+    hostname: elasticsearch
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+        test: ["CMD-SHELL", "curl -sS --fail 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=0s' || exit 1"]
+        start_period: 2m
+        retries: 4
+
+  neo4j:
+    restart: always
+    image: neo4j:4.0.6
+    env_file: neo4j/env/docker-prod.env
+    hostname: neo4j
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4jdata:/data
+
+  # This "container" is a workaround to pre-create search indices
+  elasticsearch-setup:
+    restart: always
+    image: linkedin/datahub-elasticsearch-setup:${DATAHUB_VERSION:-head}
+    env_file: elasticsearch-setup/env/docker-prod.env
+    hostname: elasticsearch-setup
+    container_name: elasticsearch-setup
+    depends_on:
+      - elasticsearch
+  mysql:
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: mysql
+    environment:
+    - MYSQL_DATABASE=datahub
+    - MYSQL_USER=datahub
+    - MYSQL_PASSWORD=datahub
+    - MYSQL_ROOT_PASSWORD=datahub
+    hostname: mysql
+    image: mysql:5.7
+    ports:
+    - 3306:3306
+    volumes:
+    - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - mysqldata:/var/lib/mysql
+  mysql-setup:
+    restart: always
+    container_name: mysql-setup
+    depends_on:
+    - mysql
+    environment:
+    - MYSQL_HOST=mysql
+    - MYSQL_PORT=3306
+    - MYSQL_USERNAME=datahub
+    - MYSQL_PASSWORD=datahub
+    - DATAHUB_DB_NAME=datahub
+    hostname: mysql-setup
+    image: acryldata/datahub-mysql-setup:${DATAHUB_VERSION:-head}
+
+  datahub-gms:
+    restart: always
+    image: linkedin/datahub-gms:${DATAHUB_VERSION:-head}
+    env_file: datahub-gms/env/docker-prod.env
+    hostname: datahub-gms
+    container_name: datahub-gms
+    ports:
+      - "8080:8080"
+    depends_on:
+      - elasticsearch-setup
+      - kafka-setup
+      - mysql
+      - neo4j
+
+  datahub-frontend-react:
+    restart: always
+    image: linkedin/datahub-frontend-react:${DATAHUB_VERSION:-head}
+    env_file: datahub-frontend/env/docker-prod.env
+    hostname: datahub-frontend-react
+    container_name: datahub-frontend-react
+    ports:
+      - "9002:9002"
+    depends_on:
+      - datahub-gms
+
+networks:
+  default:
+    name: datahub_network
+
+volumes:
+  esdata:
+  neo4jdata:
+  zkdata:
+  mysqldata:

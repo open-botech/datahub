@@ -7,10 +7,8 @@ source:
             host: "http://elastic:123456@10.233.31.201:9200"
     index_patterns:
       allow:
-        - "hb-3wheel-recognition-2001-01"
-# see https://datahubproject.io/docs/metadata-ingestion/sink_docs/datahub for complete documentation
+        - "hb-3wheel-recognition-*"
 sink:
-  type: "datahub-kafka"
+  type: "datahub-rest"
   config:
-    connection:
-      bootstrap: "broker:9092"
+    server: "http://datahub-gms:8080"

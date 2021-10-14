@@ -2,16 +2,13 @@
 version: '3.5'
 services:
   ingestion:
-    build:
-      context: ../../
-      dockerfile: docker/datahub-ingestion/Dockerfile
     image: linkedin/datahub-ingestion:${DATAHUB_VERSION:-head}
     hostname: ingestion
     container_name: ingestion
-    command: "ingest -c /elasticsearch_to_datahub.yml"
+    command: "ingest -c /clickhouse_to_datahub.yml"
     volumes: 
       # Most of the config is embedded inside the sample recipe file.
-      - ../../metadata-ingestion/examples/recipes/elasticsearch_to_datahub.yml:/elasticsearch_to_datahub.yml:ro
+      - ./clickhouse_to_datahub_prod.yml:/clickhouse_to_datahub.yml:ro
 
 networks:
   default:
