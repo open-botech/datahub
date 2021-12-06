@@ -7,7 +7,7 @@ import com.datahub.metadata.authorization.Authorizer;
 
 /**
  * Implementation of {@link Authorizer} that allows all authorization requests. Used to keep backwards
- * compatibility with the deprecated DataHub Standalone GraphQL service.
+ * compatibility with the deprecated DataHub Standalone GraphQL service....
  */
 public class AllowAllAuthorizer implements Authorizer {
 
