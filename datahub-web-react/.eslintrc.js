@@ -1,3 +1,5 @@
+const { AutoComplete } = require("antd");
+
 module.exports = {
     parser: '@typescript-eslint/parser', // Specifies the ESLint parser
     extends: [
@@ -38,6 +40,9 @@ module.exports = {
                 argsIgnorePattern: '^_',
             },
         ],
+        'prettier/prettier':['error',{
+          'endOfLine':'auto',
+        }],
         '@typescript-eslint/no-empty-interface': 'off',
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": 'off',

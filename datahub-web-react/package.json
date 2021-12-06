@@ -80,7 +80,7 @@
         "web-vitals": "^0.2.4"
     },
     "scripts": {
-        "start": "yarn run generate && BROWSER=none REACT_APP_MOCK=false craco start",
+        "start": "yarn run generate && craco start",
         "start:mock": "yarn run generate && BROWSER=none REACT_APP_MOCK=true craco start",
         "start:e2e": "REACT_APP_MOCK=cy BROWSER=none PORT=3010 craco start",
         "ec2-dev": "yarn run generate && CI=true;export CI;BROWSER=none craco start",
