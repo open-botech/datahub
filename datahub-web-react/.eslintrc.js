@@ -19,6 +19,9 @@ module.exports = {
         project: './tsconfig.json',
     },
     rules: {
+        'prettier/prettier':['error',{
+          endOfLine: "auto"
+        }],
         eqeqeq: ['error', 'always'],
         'react/destructuring-assignment': 'off',
         'no-console': 'off',
