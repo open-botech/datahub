@@ -47,7 +47,7 @@ const HeaderContainer = styled.div`
 `;
 
 const NavGroup = styled.div`
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
 `;
@@ -55,7 +55,7 @@ const NavGroup = styled.div`
 const SuggestionsContainer = styled.div`
     padding: 0px 30px;
     max-width: 540px;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: left;
     align-items: start;
