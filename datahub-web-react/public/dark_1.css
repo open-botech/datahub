@@ -1,6 +1,7 @@
 
 :root {
-  --bg-color: rgb(15, 15, 15);
+  --bg-color: #181B1F;
+  ;
   --text-color: rgb(183, 183, 183);
   --a-color: rgb(27, 109, 168);
   /*--a-visited-color: rgb(165, 99, 13);*/
@@ -63,7 +64,7 @@ html *:not(body):not(span):not(a):not([style*=background-image]):not([style*=bac
   box-shadow: none !important;
   background-image: none !important;
   background: none !important;
-  background-color: rgba(0, 0, 0, 0) !important;
+  background-color:  #181B1F!important;
 }
 span[class="jfk-radiobutton-radio"]::after {
   background-color: gray !important;
