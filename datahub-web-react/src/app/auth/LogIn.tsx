@@ -35,7 +35,7 @@ export const LogIn: React.VFC<LogInProps> = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: values.username, password: values.password }),
             };
-            fetch('/logIn', requestOptions)
+            fetch(`${process.env.PRODUCT?'':'/dev'}/logIn`, requestOptions)
                 .then(async (response) => {
                     if (!response.ok) {
                         const data = await response.json();

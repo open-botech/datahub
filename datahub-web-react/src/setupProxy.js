@@ -11,24 +11,33 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
 
     module.exports = function (app) {
         app.use(
-            '/logIn',
+            `${process.env.PRODUCT?'':'/dev'}/logIn`,
             createProxyMiddleware(logInFilter, {
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.186:9999',
                 changeOrigin: true,
+                pathRewrite: {
+                  '^/dev': '/', // rewrite path
+                },
             }),
         );
         app.use(
-            '/authenticate',
+            `${process.env.PRODUCT?'':'/dev'}/authenticate`,
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.186:9999/',
                 changeOrigin: true,
+                pathRewrite: {
+                  '^/dev': '/', // rewrite path
+                },
             }),
         );
         app.use(
-            '/api/v2/graphql',
+            `${process.env.PRODUCT?'':'/dev'}/api/v2/graphql`,
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.186:9999/',
                 changeOrigin: true,
+                pathRewrite: {
+                  '^/dev': '/', // rewrite path
+                },
             }),
         );
     };

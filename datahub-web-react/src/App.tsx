@@ -33,7 +33,7 @@ import { MLModelGroupEntity } from './app/entity/mlModelGroup/MLModelGroupEntity
 /*
     Construct Apollo Client
 */
-const httpLink = createHttpLink({ uri: '/api/v2/graphql' });
+const httpLink = createHttpLink({ uri: `${process.env.PRODUCT?'':'/dev'}/api/v2/graphql` });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (networkError) {
