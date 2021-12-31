@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Divider, Typography } from 'antd';
+import { Divider, Typography,Row, Col} from 'antd';
 import { RecommendationModule as RecommendationModuleType, ScenarioType } from '../../types.generated';
 import { useListRecommendationsQuery } from '../../graphql/recommendations.generated';
 import { RecommendationModule } from '../recommendations/RecommendationModule';
@@ -16,8 +16,6 @@ const RecommendationsContainer = styled.div`
 
 const RecommendationContainer = styled.div`
     margin-bottom: 32px;
-    max-width: 1000px;
-    min-width: 750px;
 `;
 
 const RecommendationTitle = styled(Typography.Title)`
@@ -74,30 +72,13 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
         fetchPolicy: 'no-cache',
     });
     const recommendationModules = data?.listRecommendations?.modules;
-
+    console.log(recommendationModules)
     return (
         <RecommendationsContainer>
-            {orderedEntityCounts && orderedEntityCounts.length > 0 && (
-                <RecommendationContainer>
-                    <RecommendationTitle level={4}>Explore your Metadata</RecommendationTitle>
-                    <ThinDivider />
-                    <BrowseCardContainer>
-                        {orderedEntityCounts.map(
-                            (entityCount) =>
-                                entityCount &&
-                                entityCount.count !== 0 && (
-                                    <BrowseEntityCard
-                                        key={entityCount.entityType}
-                                        entityType={entityCount.entityType}
-                                        count={entityCount.count}
-                                    />
-                                ),
-                        )}
-                    </BrowseCardContainer>
-                </RecommendationContainer>
-            )}
-            {recommendationModules &&
-                recommendationModules.map((module) => (
+           <Row gutter={32}>
+           {recommendationModules &&
+                [recommendationModules[3]].map((module) => (
+                  <Col span={12}>
                     <RecommendationContainer>
                         <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
                         <ThinDivider />
@@ -108,7 +89,93 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                             showTitle={false}
                         />
                     </RecommendationContainer>
+                  </Col>
                 ))}
+            {recommendationModules &&
+                [recommendationModules[4]].map((module) => (
+                  <Col span={12}>
+                    <RecommendationContainer>
+                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        <ThinDivider />
+                        <RecommendationModule
+                            key={module.moduleId}
+                            module={module as RecommendationModuleType}
+                            scenarioType={scenario}
+                            showTitle={false}
+                        />
+                    </RecommendationContainer>
+                  </Col>
+                ))}
+            {orderedEntityCounts && orderedEntityCounts.length > 0 && (
+                <Col span={12}>
+                  <RecommendationContainer>
+                      <RecommendationTitle level={4}>Explore your Metadata</RecommendationTitle>
+                      <ThinDivider />
+                      <BrowseCardContainer>
+
+                            {orderedEntityCounts.map(
+                                (entityCount) =>
+                                    entityCount &&
+                                    entityCount.count !== 0 && (
+                                      
+                                        <BrowseEntityCard
+                                            key={entityCount.entityType}
+                                            entityType={entityCount.entityType}
+                                            count={entityCount.count}
+                                        />
+                                    ),
+                            )}
+                      </BrowseCardContainer>
+                  </RecommendationContainer>
+                </Col>
+            )}
+            {recommendationModules &&
+                [recommendationModules[0]].map((module) => (
+                  <Col span={12}>
+                    <RecommendationContainer>
+                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        <ThinDivider />
+                        <RecommendationModule
+                            key={module.moduleId}
+                            module={module as RecommendationModuleType}
+                            scenarioType={scenario}
+                            showTitle={false}
+                        />
+                    </RecommendationContainer>
+                  </Col>
+                ))}
+            
+            {recommendationModules &&
+                [recommendationModules[1]].map((module) => (
+                  <Col span={12}>
+                    <RecommendationContainer>
+                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        <ThinDivider />
+                        <RecommendationModule
+                            key={module.moduleId}
+                            module={module as RecommendationModuleType}
+                            scenarioType={scenario}
+                            showTitle={false}
+                        />
+                    </RecommendationContainer>
+                  </Col>
+                ))}
+              {recommendationModules &&
+                [recommendationModules[2]].map((module) => (
+                  <Col span={12}>
+                    <RecommendationContainer>
+                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        <ThinDivider />
+                        <RecommendationModule
+                            key={module.moduleId}
+                            module={module as RecommendationModuleType}
+                            scenarioType={scenario}
+                            showTitle={false}
+                        />
+                    </RecommendationContainer>
+                  </Col>
+                ))}
+          </Row>
         </RecommendationsContainer>
     );
 };

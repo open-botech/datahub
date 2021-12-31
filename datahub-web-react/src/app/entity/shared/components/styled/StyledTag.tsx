@@ -15,7 +15,7 @@ export const StyledTag = styled(Tag)<{ $colorHash?: string }>`
                 content: '';
                 width: 8px;
                 height: 8px;
-                background: ${generateColor.hex(props.$colorHash)};
+                background: ${generateColor.hex(props.$colorHash)} !important;
                 border-radius: 100em;
                 margin-right: 3px;
             }

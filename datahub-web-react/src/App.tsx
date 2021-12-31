@@ -76,14 +76,6 @@ const App: React.VFC = () => {
         import(`./conf/theme/${process.env.REACT_APP_THEME_CONFIG}`).then((theme) => {
             setDynamicThemeConfig(theme);
         });
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: 'datahub', password: 'datahub' }),
-        };
-        fetch(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`, requestOptions).then(()=>{
-        
-        })
     }, []);
 
     const entityRegistry = useMemo(() => {
