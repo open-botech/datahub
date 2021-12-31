@@ -15,9 +15,6 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
             createProxyMiddleware(logInFilter, {
                 target: 'http://172.16.1.186:9999',
                 changeOrigin: true,
-                pathRewrite: {
-                  '^/dev': '/', // rewrite path
-                },
             }),
         );
         app.use(
@@ -25,9 +22,6 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
             createProxyMiddleware({
                 target: 'http://172.16.1.186:9999/',
                 changeOrigin: true,
-                pathRewrite: {
-                  '^/dev': '/', // rewrite path
-                },
             }),
         );
         app.use(
@@ -35,9 +29,6 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
             createProxyMiddleware({
                 target: 'http://172.16.1.186:9999/',
                 changeOrigin: true,
-                pathRewrite: {
-                  '^/dev': '/', // rewrite path
-                },
             }),
         );
     };
