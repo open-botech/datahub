@@ -28,13 +28,13 @@ export function makeServer(environment = 'development') {
         routes() {
             const graphQLHandler = createGraphQLHandler(graphQLSchema, this.schema);
 
-            this.post(`${process.env.PRODUCT?'':'/dev'}/api/v2/graphql`, (schema, request) => {
+            this.post(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/api/v2/graphql`, (schema, request) => {
                 return resolveRequest(schema, request) ?? graphQLHandler(schema, request);
             });
 
-            this.get(`${process.env.PRODUCT?'':'/dev'}/authenticate`, () => new Response(200));
+            this.get(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/authenticate`, () => new Response(200));
 
-            this.post(`${process.env.PRODUCT?'':'/dev'}/logIn`, (_schema, request) => {
+            this.post(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`, (_schema, request) => {
                 const payload = JSON.parse(request.requestBody);
                 const cookieExpiration = new Date(Date.now() + 24 * 3600 * 1000);
                 const urn = `urn:li:corpuser:${payload.username}`;
@@ -51,7 +51,7 @@ export function makeServer(environment = 'development') {
                 return new Response(200);
             });
 
-            this.post(`${process.env.PRODUCT?'':'/dev'}/track`, () => new Response(200));
+            this.post(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/track`, () => new Response(200));
         },
     });
 }
