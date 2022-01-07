@@ -24,7 +24,10 @@ const ProtectedRoute = ({
       };
       fetch(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`, requestOptions).then(()=>{
         isLoggedInVar(true);
-        window.location.reload()
+        setTimeout(()=>{
+          window.location.reload()
+        },200)
+        
       })
         // window.location.replace(`${PageRoutes.AUTHENTICATE}?redirect_uri=${encodeURIComponent(currentPath)}`);
         return null;
