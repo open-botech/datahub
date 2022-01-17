@@ -13,21 +13,21 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
         app.use(
             `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`,
             createProxyMiddleware(logInFilter, {
-                target: 'http://172.16.1.186:9999',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );
         app.use(
             `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/authenticate`,
             createProxyMiddleware({
-                target: 'http://172.16.1.186:9999/',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );
         app.use(
             `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/api/v2/graphql`,
             createProxyMiddleware({
-                target: 'http://172.16.1.186:9999/',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );
