@@ -76,7 +76,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
     return (
         <RecommendationsContainer>
            <Row gutter={32}>
-           {recommendationModules &&
+           {recommendationModules &&recommendationModules[3]&&
                 [recommendationModules[3]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
@@ -91,7 +91,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                     </RecommendationContainer>
                   </Col>
                 ))}
-            {recommendationModules &&
+            {recommendationModules && recommendationModules[4]&&
                 [recommendationModules[4]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
@@ -129,7 +129,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                   </RecommendationContainer>
                 </Col>
             )}
-            {recommendationModules &&
+            {recommendationModules &&recommendationModules[0]&&
                 [recommendationModules[0]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
@@ -145,7 +145,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                   </Col>
                 ))}
             
-            {recommendationModules &&
+            {recommendationModules && recommendationModules[1]&&
                 [recommendationModules[1]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
@@ -160,7 +160,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                     </RecommendationContainer>
                   </Col>
                 ))}
-              {recommendationModules &&
+              {recommendationModules && recommendationModules[2]&&
                 [recommendationModules[2]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
