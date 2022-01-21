@@ -109,7 +109,7 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
             {orderedEntityCounts && orderedEntityCounts.length > 0 && (
                 <Col span={12}>
                   <RecommendationContainer>
-                      <RecommendationTitle level={4}>Explore your Metadata</RecommendationTitle>
+                      <RecommendationTitle level={4}>元数据</RecommendationTitle>
                       <ThinDivider />
                       <BrowseCardContainer>
 
@@ -133,7 +133,8 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                 [recommendationModules[0]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
-                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        {/* <RecommendationTitle level={4}>{module.title}</RecommendationTitle> */}
+                        <RecommendationTitle level={4}>平台</RecommendationTitle>
                         <ThinDivider />
                         <RecommendationModule
                             key={module.moduleId}
@@ -149,7 +150,8 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                 [recommendationModules[1]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
-                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        {/* <RecommendationTitle level={4}>{module.title}</RecommendationTitle> */}
+                        <RecommendationTitle level={4}>最近浏览</RecommendationTitle>
                         <ThinDivider />
                         <RecommendationModule
                             key={module.moduleId}
@@ -164,7 +166,8 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                 [recommendationModules[2]].map((module) => (
                   <Col span={12}>
                     <RecommendationContainer>
-                        <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                        {/* <RecommendationTitle level={4}>{module.title}</RecommendationTitle> */}
+                        <RecommendationTitle level={4}>最受欢迎</RecommendationTitle>
                         <ThinDivider />
                         <RecommendationModule
                             key={module.moduleId}
