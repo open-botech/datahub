@@ -12,6 +12,7 @@
 /build
 /dist
 /datahub-web
+datahub-web.zip
 
 # misc
 .DS_Store
