@@ -53,27 +53,32 @@ fragment relationshipFields on Entity {
         ...chartRelationshipsLeaf
     }
     ... on Dataset {
-        name
-        properties {
-            description
-        }
-        editableProperties {
-            description
-        }
-        platform {
             name
-            info {
-                logoUrl
+            properties {
+                description
             }
+            editableProperties {
+                description
+            }
+            platform {
+                name
+                info {
+                    logoUrl
+                }
+            }
+            ownership {
+                ...ownershipFields
+            }
+            subTypes {
+                typeNames
+            }
+            ...datasetRelationships
         }
-        ownership {
-            ...ownershipFields
+    ... on DatasetField {
+           urn,
+           type,
+            ...datasetFieldRelationships
         }
-        subTypes {
-            typeNames
-        }
-        ...datasetRelationshipsLeaf
-    }
     ... on MLModelGroup {
         urn
         type
@@ -151,7 +156,7 @@ fragment dataJobRelationshipsLeaf on DataJob {
     }
 }
 
-fragment datasetRelationshipsLeaf on Dataset {
+fragment datasetRelationships on Dataset {
     incoming: relationships(
         input: { types: ["DownstreamOf", "Consumes", "Produces"], direction: INCOMING, start: 0, count: 100 }
     ) {
@@ -159,6 +164,19 @@ fragment datasetRelationshipsLeaf on Dataset {
     }
     outgoing: relationships(
         input: { types: ["DownstreamOf", "Consumes", "Produces"], direction: OUTGOING, start: 0, count: 100 }
+    ) {
+        ...leafRelationshipResults
+    }
+}
+
+fragment datasetFieldRelationships on DatasetField {
+    incoming: relationships(
+        input: { types: ["DataDerivedFrom"], direction: INCOMING, start: 0, count: 100 }
+    ) {
+        ...leafRelationshipResults
+    }
+    outgoing: relationships(
+        input: { types: ["DataDerivedFrom"], direction: OUTGOING, start: 0, count: 100 }
     ) {
         ...leafRelationshipResults
     }

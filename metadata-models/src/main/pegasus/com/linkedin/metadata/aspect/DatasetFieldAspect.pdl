@@ -1,0 +1,12 @@
+namespace com.linkedin.metadata.aspect
+
+import com.linkedin.metadata.key.DatasetFieldKey
+import com.linkedin.datasetfield.UpstreamLineage
+
+/**
+ * A union of all supported metadata aspects for a DatasetField
+ */
+typeref DatasetFieldAspect = union[
+  DatasetFieldKey,
+  UpstreamLineage,
+]

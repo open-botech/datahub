@@ -110,7 +110,7 @@ query getDataset($urn: String!) {
             ...fullRelationshipResults
         }
         outgoing: relationships(
-            input: { types: ["DownstreamOf", "Consumes", "Produces"], direction: OUTGOING, start: 0, count: 100 }
+            input: { types: ["DownstreamOf", "Consumes", "Produces","HasField"], direction: OUTGOING, start: 0, count: 100 }
         ) {
             ...fullRelationshipResults
         }
@@ -124,6 +124,7 @@ query getDataset($urn: String!) {
                 key
             }
         }
+
     }
 }
 

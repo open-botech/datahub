@@ -1,0 +1,14 @@
+namespace com.linkedin.dataset
+
+import com.linkedin.common.DatasetFieldUrn
+
+
+record DatasetField {
+  @Relationship = {
+    "name": "HasField",
+    "entityTypes": [ "datasetField" ]
+  }
+
+  datasetField: DatasetFieldUrn
+
+}

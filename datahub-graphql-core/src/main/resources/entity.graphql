@@ -28,7 +28,10 @@ type Query {
     Fetch a Dataset by primary key (urn)
     """
     dataset(urn: String!): Dataset
-
+    """
+    Fetch a DatasetField by primary key
+    """
+    datasetField(urn: String!): DatasetField
     """
     Fetch a Dashboard by primary key (urn)
     """
@@ -259,7 +262,10 @@ enum EntityType {
     The Dataset Entity
     """
     DATASET
-
+    """
+    The DatasetField Entity
+    """
+    DATASET_FIELD
     """
     The CorpUser Entity
     """
@@ -619,6 +625,22 @@ type Dataset implements EntityWithRelationships & Entity {
     aspects(input: AspectParams): [RawAspect!]
 }
 
+type DatasetField implements EntityWithRelationships & Entity {
+    """
+    The unique DatasetField URN
+    """
+    urn: String!
+
+    """
+    GMS Entity Type
+    """
+    type: EntityType!
+
+    """
+    Edges extending from this entity.
+    """
+    relationships(input: RelationshipsInput!): EntityRelationshipsResult
+}
 
 """
 Params to configure what list of aspects should be fetched by the aspects property

@@ -20,7 +20,7 @@ import com.linkedin.datahub.graphql.generated.MLModel;
 import com.linkedin.datahub.graphql.generated.MLModelGroup;
 import com.linkedin.datahub.graphql.types.mappers.ModelMapper;
 import javax.annotation.Nonnull;
-
+import com.linkedin.datahub.graphql.generated.DatasetField;
 
 public class UrnToEntityMapper implements ModelMapper<com.linkedin.common.urn.Urn, Entity>  {
   public static final UrnToEntityMapper INSTANCE = new UrnToEntityMapper();
@@ -36,6 +36,10 @@ public class UrnToEntityMapper implements ModelMapper<com.linkedin.common.urn.Ur
       partialEntity = new Dataset();
       ((Dataset) partialEntity).setUrn(input.toString());
       ((Dataset) partialEntity).setType(EntityType.DATASET);
+    }
+    if (input.getEntityType().equals("datasetField")) {
+      partialEntity = new DatasetField();
+      ((DatasetField) partialEntity).setUrn(input.toString());
     }
     if (input.getEntityType().equals("glossaryTerm")) {
       partialEntity = new GlossaryTerm();

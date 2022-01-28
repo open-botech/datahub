@@ -1,0 +1,32 @@
+namespace com.linkedin.metadata.key
+
+import com.linkedin.common.Urn
+import com.linkedin.common.FabricType
+
+/**
+ * Key for a Dataset
+ */
+@Aspect = {
+  "name": "datasetFieldKey"
+}
+record DatasetFieldKey {
+  /**
+  * Dataset urn associated with the datasetField
+  */
+  @Searchable = {
+    "fieldType": "URN",
+    "addToFilters": true
+  }
+  dataset: Urn
+
+  /**
+  * DatasetField native name e.g. /<name>
+  */
+  @Searchable = {
+    "fieldType": "TEXT_PARTIAL",
+    "enableAutocomplete": true,
+    "boostScore": 10.0
+  }
+  name: string
+
+}

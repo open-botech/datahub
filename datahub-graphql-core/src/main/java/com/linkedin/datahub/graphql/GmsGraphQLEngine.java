@@ -97,6 +97,7 @@ import com.linkedin.datahub.graphql.resolvers.search.SearchResolver;
 import com.linkedin.datahub.graphql.resolvers.type.EntityInterfaceTypeResolver;
 import com.linkedin.datahub.graphql.resolvers.type.PlatformSchemaUnionTypeResolver;
 import com.linkedin.datahub.graphql.types.dataset.mappers.DatasetProfileMapper;
+import com.linkedin.datahub.graphql.types.datasetfield.DatasetFieldType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLFeatureTableType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLFeatureType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLPrimaryKeyType;
@@ -154,6 +155,7 @@ public class GmsGraphQLEngine {
     private final TokenService tokenService;
 
     private final DatasetType datasetType;
+    private final DatasetFieldType datasetFieldType;
     private final CorpUserType corpUserType;
     private final CorpGroupType corpGroupType;
     private final ChartType chartType;
@@ -231,6 +233,7 @@ public class GmsGraphQLEngine {
         this.entityRegistry = entityRegistry;
 
         this.datasetType = new DatasetType(entityClient);
+        this.datasetFieldType = new DatasetFieldType(entityClient);
         this.corpUserType = new CorpUserType(entityClient);
         this.corpGroupType = new CorpGroupType(entityClient);
         this.chartType = new ChartType(entityClient);
@@ -249,7 +252,7 @@ public class GmsGraphQLEngine {
         this.usageType = new UsageType(this.usageClient);
 
         // Init Lists
-        this.entityTypes = ImmutableList.of(datasetType, corpUserType, corpGroupType,
+        this.entityTypes = ImmutableList.of(datasetType, datasetFieldType, corpUserType, corpGroupType,
             dataPlatformType, chartType, dashboardType, tagType, mlModelType, mlModelGroupType, mlFeatureType,
             mlFeatureTableType, mlPrimaryKeyType, dataFlowType, dataJobType, glossaryTermType
         );
@@ -355,6 +358,7 @@ public class GmsGraphQLEngine {
         configureMutationResolvers(builder);
         configureGenericEntityResolvers(builder);
         configureDatasetResolvers(builder);
+        configureDatasetFieldResolvers(builder);
         configureCorpUserResolvers(builder);
         configureCorpGroupResolvers(builder);
         configureDashboardResolvers(builder);
@@ -597,6 +601,14 @@ public class GmsGraphQLEngine {
                                 (env) -> ((InstitutionalMemoryMetadata) env.getSource()).getAuthor().getUrn()))
                 )
             );
+    }
+
+    private void configureDatasetFieldResolvers(final RuntimeWiring.Builder builder) {
+        builder.type("DatasetField", typeWiring -> typeWiring
+                .dataFetcher("relationships", new AuthenticatedResolver<>(
+                        new EntityRelationshipsResultResolver(graphClient)
+                ))
+        );
     }
 
     /**

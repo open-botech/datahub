@@ -1,0 +1,10 @@
+namespace com.linkedin.datasetfield
+
+
+@Aspect = {
+  "name": "upstreamLineage"
+}
+record UpstreamLineage {
+
+  upstreams: array[Upstream]
+}
