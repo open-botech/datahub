@@ -8,26 +8,26 @@ if (process.env.REACT_APP_MOCK === 'true' || process.env.REACT_APP_MOCK === 'cy'
 } else {
     // create a proxy to the graphql server running in docker container
     const { createProxyMiddleware } = require('http-proxy-middleware');
-
+    console.log(process.env)
     module.exports = function (app) {
         app.use(
-            '/logIn',
+            `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`,
             createProxyMiddleware(logInFilter, {
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );
         app.use(
-            '/authenticate',
+            `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/authenticate`,
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );
         app.use(
-            '/api/v2/graphql',
+            `${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/api/v2/graphql`,
             createProxyMiddleware({
-                target: 'http://localhost:9002',
+                target: 'http://172.16.1.190:9002/',
                 changeOrigin: true,
             }),
         );

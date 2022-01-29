@@ -14,9 +14,22 @@ const ProtectedRoute = ({
 }: {
     isLoggedIn: boolean;
 } & RouteProps) => {
-    const currentPath = window.location.pathname + window.location.search;
+    // const currentPath = window.location.pathname + window.location.search;
+    
     if (!isLoggedIn) {
-        window.location.replace(`${PageRoutes.AUTHENTICATE}?redirect_uri=${encodeURIComponent(currentPath)}`);
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'datahub', password: 'datahub' }),
+      };
+      fetch(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/logIn`, requestOptions).then(()=>{
+        isLoggedInVar(true);
+        setTimeout(()=>{
+          window.location.reload()
+        },200)
+        
+      })
+        // window.location.replace(`${PageRoutes.AUTHENTICATE}?redirect_uri=${encodeURIComponent(currentPath)}`);
         return null;
     }
     return <Route {...props} />;

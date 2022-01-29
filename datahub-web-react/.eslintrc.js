@@ -38,6 +38,7 @@ module.exports = {
                 argsIgnorePattern: '^_',
             },
         ],
+        "prettier/prettier": "off",
         '@typescript-eslint/no-empty-interface': 'off',
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": 'off',

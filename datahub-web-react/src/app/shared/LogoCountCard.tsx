@@ -15,10 +15,9 @@ const Container = styled.div`
     align-items: center;
     flex-direction: column;
     border: 1px solid ${ANTD_GRAY[4]};
-    box-shadow: ${(props) => props.theme.styles['box-shadow']};
     &&:hover {
         box-shadow: ${(props) => props.theme.styles['box-shadow-hover']};
-    }
+    };
 `;
 
 const PlatformLogo = styled(Image)`
@@ -48,7 +47,7 @@ type Props = {
 
 export const LogoCountCard = ({ logoUrl, logoComponent, name, count }: Props) => {
     return (
-        <Container>
+        <Container className='containerNew'>
             <LogoContainer>
                 {(logoUrl && <PlatformLogo preview={false} src={logoUrl} alt={name} />) || logoComponent}
             </LogoContainer>

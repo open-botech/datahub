@@ -4,7 +4,7 @@ import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
 import { HomePageRecommendations } from './HomePageRecommendations';
 
 const BodyContainer = styled.div`
-    padding: 20px 100px;
+    padding: 0px 20px 20px;
     margin: 0;
     background-color: ${(props) => props.theme.styles['homepage-background-lower-fade']};
     > div {

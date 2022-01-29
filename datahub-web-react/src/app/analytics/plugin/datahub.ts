@@ -4,7 +4,7 @@ const { datahub } = analyticsConfig;
 const isEnabled: boolean = (datahub && datahub.enabled) || false;
 
 const track = (payload) => {
-    fetch('/track', {
+    fetch(`${process.env.REACT_APP_PRODUCT==='true'?'':'/dev'}/track`, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'same-origin',
