@@ -1,0 +1,18 @@
+---
+version: '3.5'
+services:
+  ingestion:
+    build:
+      context: ../../
+      dockerfile: docker/datahub-ingestion/Dockerfile
+    image: linkedin/datahub-ingestion:${DATAHUB_VERSION:-head}
+    hostname: ingestion
+    container_name: ingestion
+    command: "ingest -c /clickhouse_to_datahub.yml"
+    volumes:
+      # Most of the config is embedded inside the sample recipe file.
+      - ../../metadata-ingestion/examples/recipes/clickhouse_to_datahub.yml:/clickhouse_to_datahub.yml:ro
+
+networks:
+  default:
+    name: datahub_network
