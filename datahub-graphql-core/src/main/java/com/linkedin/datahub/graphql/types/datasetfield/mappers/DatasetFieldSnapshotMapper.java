@@ -20,7 +20,7 @@ public class DatasetFieldSnapshotMapper implements ModelMapper<DatasetFieldSnaps
     public DatasetField apply(@Nonnull final DatasetFieldSnapshot datasetField) {
         DatasetField result = new DatasetField();
         result.setUrn(datasetField.getUrn().toString());
-        result.setType(EntityType.DATASET);
+        result.setType(EntityType.DATASET_FIELD);
 
         return result;
     }

@@ -40,6 +40,7 @@ public class UrnToEntityMapper implements ModelMapper<com.linkedin.common.urn.Ur
     if (input.getEntityType().equals("datasetField")) {
       partialEntity = new DatasetField();
       ((DatasetField) partialEntity).setUrn(input.toString());
+      ((DatasetField) partialEntity).setType(EntityType.DATASET_FIELD);
     }
     if (input.getEntityType().equals("glossaryTerm")) {
       partialEntity = new GlossaryTerm();

@@ -3,6 +3,8 @@ package com.linkedin.metadata.kafka;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
+import com.linkedin.common.urn.DatasetFieldUrn;
+import com.linkedin.common.urn.DatasetUrn;
 import com.linkedin.common.urn.Urn;
 import com.linkedin.data.element.DataElement;
 import com.linkedin.data.template.RecordTemplate;
@@ -27,6 +29,7 @@ import com.linkedin.metadata.query.filter.Filter;
 import com.linkedin.metadata.query.filter.RelationshipDirection;
 import com.linkedin.metadata.search.EntitySearchService;
 import com.linkedin.metadata.search.transformer.SearchDocumentTransformer;
+import com.linkedin.metadata.snapshot.DatasetSnapshot;
 import com.linkedin.metadata.systemmetadata.SystemMetadataService;
 import com.linkedin.metadata.utils.PegasusUtils;
 import com.linkedin.metadata.utils.metrics.MetricUtils;
@@ -147,6 +150,18 @@ public class MetadataAuditEventsProcessor {
       log.info("Invalid source urn: {}", e.getLocalizedMessage());
       return;
     }
+    //extract  field paths from SchemaMetadata and build HasFiled rels between Dataset and DatasetField
+    if(snapshot instanceof DatasetSnapshot){
+      List<String> fields = FieldExtractor.extractDataFieldsFromDataset((DatasetSnapshot) snapshot);
+      for (String field : fields) {
+
+        try {
+          edgesToAdd.add(new Edge(sourceUrn , new DatasetFieldUrn(DatasetUrn.createFromString(sourceUrnStr), field),"HasField"));
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+        }
+      }
+   }
 
     Map<RelationshipFieldSpec, List<Object>> extractedFields =
         FieldExtractor.extractFieldsFromSnapshot(snapshot, entitySpec, AspectSpec::getRelationshipFieldSpecs);

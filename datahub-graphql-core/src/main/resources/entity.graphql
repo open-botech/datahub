@@ -625,7 +625,7 @@ type Dataset implements EntityWithRelationships & Entity {
     aspects(input: AspectParams): [RawAspect!]
 }
 
-type DatasetField implements EntityWithRelationships & Entity {
+type DatasetField implements Entity {
     """
     The unique DatasetField URN
     """

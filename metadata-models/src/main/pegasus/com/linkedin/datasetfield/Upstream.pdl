@@ -1,16 +1,9 @@
 namespace com.linkedin.datasetfield
 
-import com.linkedin.common.AuditStamp
 import com.linkedin.common.DatasetFieldUrn
 
 record Upstream {
 
-
-  @deprecated = "we no longer associate a timestamp per upstream edge"
-  auditStamp: AuditStamp = {
-    "time": 0,
-    "actor": "urn:li:corpuser:unknown"
-  }
   @Relationship = {
     "name": "DataDerivedFrom",
     "entityTypes": [ "datasetField" ]
