@@ -29,6 +29,9 @@ fragment relationshipFields on Entity {
         editableProperties {
             description
         }
+        domain {
+            ...entityDomain
+        }
     }
     ... on Dashboard {
         ...dashboardRelationshipsLeaf
@@ -50,30 +53,23 @@ fragment relationshipFields on Entity {
         ownership {
             ...ownershipFields
         }
+        domain {
+            ...entityDomain
+        }
         ...chartRelationshipsLeaf
     }
     ... on Dataset {
-            name
-            properties {
-                description
-            }
-            editableProperties {
-                description
-            }
-            platform {
-                name
-                info {
-                    logoUrl
-                }
-            }
-            ownership {
-                ...ownershipFields
-            }
-            subTypes {
-                typeNames
-            }
-            ...datasetRelationships
+        name
+        properties {
+            description
         }
+        editableProperties {
+            description
+        }
+        platform {
+            ...platformFields
+        }
+   }     
     ... on DatasetField {
            urn,
            type,
@@ -86,11 +82,7 @@ fragment relationshipFields on Entity {
         description
         origin
         platform {
-            name
-            info {
-                displayName
-                logoUrl
-            }
+            ...platformFields
         }
         ownership {
             ...ownershipFields
@@ -103,11 +95,7 @@ fragment relationshipFields on Entity {
         description
         origin
         platform {
-            name
-            info {
-                displayName
-                logoUrl
-            }
+            ...platformFields
         }
         ownership {
             ...ownershipFields
