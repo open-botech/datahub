@@ -2,6 +2,8 @@ package com.linkedin.metadata.kafka.hook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.linkedin.common.urn.DatasetFieldUrn;
+import com.linkedin.common.urn.DatasetUrn;
 import com.linkedin.common.urn.Urn;
 import com.linkedin.data.template.RecordTemplate;
 import com.linkedin.events.metadata.ChangeType;
@@ -23,6 +25,7 @@ import com.linkedin.metadata.query.filter.Filter;
 import com.linkedin.metadata.query.filter.RelationshipDirection;
 import com.linkedin.metadata.search.EntitySearchService;
 import com.linkedin.metadata.search.transformer.SearchDocumentTransformer;
+import com.linkedin.metadata.snapshot.DatasetSnapshot;
 import com.linkedin.metadata.systemmetadata.SystemMetadataService;
 import com.linkedin.metadata.timeseries.TimeseriesAspectService;
 import com.linkedin.metadata.timeseries.transformer.TimeseriesAspectTransformer;
@@ -111,7 +114,7 @@ public class UpdateIndicesHook implements MetadataChangeLogHook {
       if (aspectSpec.isTimeseries()) {
         updateTimeseriesFields(event.getEntityType(), event.getAspectName(), urn, aspect, aspectSpec,
             event.getSystemMetadata());
-      } else {
+       } else {
         updateSearchService(entitySpec.getName(), urn, aspectSpec, aspect);
         updateGraphService(urn, aspectSpec, aspect);
         updateSystemMetadata(event.getSystemMetadata(), urn, aspectSpec);
@@ -144,6 +147,18 @@ public class UpdateIndicesHook implements MetadataChangeLogHook {
   private Pair<List<Edge>, Set<String>> getEdgesAndRelationshipTypesFromAspect(Urn urn, AspectSpec aspectSpec, RecordTemplate aspect) {
     final Set<String> relationshipTypesBeingAdded = new HashSet<>();
     final List<Edge> edgesToAdd = new ArrayList<>();
+    //extract  field paths from SchemaMetadata and build HasFiled rels between Dataset and DatasetField
+    if(aspect instanceof DatasetSnapshot){
+      List<String> fields = FieldExtractor.extractDataFieldsFromDataset((DatasetSnapshot) aspect);
+      for (String field : fields) {
+
+        try {
+          edgesToAdd.add(new Edge(urn , new DatasetFieldUrn(DatasetUrn.createFromString(urn.toString()), field),"HasField"));
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+        }
+      }
+    }
 
     Map<RelationshipFieldSpec, List<Object>> extractedFields =
         FieldExtractor.extractFields(aspect, aspectSpec.getRelationshipFieldSpecs());
