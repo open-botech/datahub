@@ -1,16 +1,11 @@
----
-# see https://datahubproject.io/docs/metadata-ingestion/source_docs/kafka for complete documentation
 source:
   type: "elasticsearch"
   config:
-    connection:
-            host: "http://elastic:123456@10.233.31.201:9200"
-    index_patterns:
-      allow:
-        - "hb-3wheel-recognition-2001-01"
-# see https://datahubproject.io/docs/metadata-ingestion/sink_docs/datahub for complete documentation
+    host: 'localhost:9200'
+    username: ""
+    password: ""
+
 sink:
-  type: "datahub-kafka"
+  type: "datahub-rest"
   config:
-    connection:
-      bootstrap: "localhost:9092"
+    server: "http://localhost:8080"
