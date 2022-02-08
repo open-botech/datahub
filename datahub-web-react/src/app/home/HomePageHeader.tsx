@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router';
-import { Typography, Button, Tag } from 'antd';
-// import {  Row } from 'antd';
+import { Typography, Image, Row, Button, Tag } from 'antd';
 import styled, { useTheme } from 'styled-components';
 
-// import { ManageAccount } from '../shared/ManageAccount';
-// import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
+import { ManageAccount } from '../shared/ManageAccount';
+import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
 import { useEntityRegistry } from '../useEntityRegistry';
 import { navigateToSearchUrl } from '../search/utils/navigateToSearchUrl';
 import { SearchBar } from '../search/SearchBar';
@@ -13,7 +12,7 @@ import { GetSearchResultsQuery, useGetAutoCompleteMultipleResultsLazyQuery } fro
 import { useGetAllEntitySearchResults } from '../../utils/customGraphQL/useGetAllEntitySearchResults';
 import { EntityType } from '../../types.generated';
 import analytics, { EventType } from '../analytics';
-// import { AdminHeaderLinks } from '../shared/admin/AdminHeaderLinks';
+import { AdminHeaderLinks } from '../shared/admin/AdminHeaderLinks';
 import { ANTD_GRAY } from '../entity/shared/constants';
 
 const Background = styled.div`
@@ -25,11 +24,11 @@ const Background = styled.div`
     );
 `;
 
-// const WelcomeText = styled(Typography.Text)`
-//     font-size: 16px;
-//     color: ${(props) =>
-//         props.theme.styles['homepage-text-color'] || props.theme.styles['homepage-background-lower-fade']};
-// `;
+const WelcomeText = styled(Typography.Text)`
+    font-size: 16px;
+    color: ${(props) =>
+        props.theme.styles['homepage-text-color'] || props.theme.styles['homepage-background-lower-fade']};
+`;
 
 const styles = {
     navBar: { padding: '24px' },
@@ -41,18 +40,22 @@ const styles = {
 
 const HeaderContainer = styled.div`
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 `;
 
-// const NavGroup = styled.div`
-//     display: none;
-//     align-items: center;
-//     justify-content: center;
-// `;
+const NavGroup = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
 
 const SuggestionsContainer = styled.div`
     padding: 0px 30px;
     max-width: 540px;
-    display: none;
+    display: flex;
     flex-direction: column;
     justify-content: left;
     align-items: start;
@@ -89,6 +92,7 @@ const SuggestedQueriesText = styled(Typography.Text)`
 `;
 
 const SearchBarContainer = styled.div`
+    text-align: center;
 `;
 
 function getSuggestionFieldsFromResult(result: GetSearchResultsQuery | undefined): string[] {
@@ -128,7 +132,7 @@ export const HomePageHeader = () => {
     const history = useHistory();
     const entityRegistry = useEntityRegistry();
     const [getAutoCompleteResultsForMultiple, { data: suggestionsData }] = useGetAutoCompleteMultipleResultsLazyQuery();
-    // const user = useGetAuthenticatedUser()?.corpUser;
+    const user = useGetAuthenticatedUser()?.corpUser;
     const themeConfig = useTheme();
 
     const onSearch = (query: string, type?: EntityType) => {
@@ -196,7 +200,14 @@ export const HomePageHeader = () => {
 
     return (
         <Background>
-            {/* <Row justify="space-between" style={styles.navBar}>
+            <Row justify="space-between" style={styles.navBar}>
+                <WelcomeText>
+                    {!!user && (
+                        <>
+                            Welcome back, <b>{user.info?.firstName || user.username}</b>.
+                        </>
+                    )}
+                </WelcomeText>
                 <NavGroup>
                     <AdminHeaderLinks />
                     <ManageAccount
@@ -205,9 +216,9 @@ export const HomePageHeader = () => {
                         name={user?.info?.firstName || user?.username || undefined}
                     />
                 </NavGroup>
-            </Row> */}
+            </Row>
             <HeaderContainer>
-                {/* <Image src={themeConfig.assets.logoUrl} preview={false} style={styles.logoImage} /> */}
+                <Image src={themeConfig.assets.logoUrl} preview={false} style={styles.logoImage} />
                 {!!themeConfig.content.subtitle && (
                     <Typography.Text style={styles.subtitle}>{themeConfig.content.subtitle}</Typography.Text>
                 )}
