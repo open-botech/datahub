@@ -14,7 +14,7 @@ export const ANTD_GRAY = {
     6: '#BFBFBF',
     7: '#8C8C8C',
     8: '#595959',
-    9: '#434343',
+    9: '#434343'
 };
 
 export const EMPTY_MESSAGES = {
