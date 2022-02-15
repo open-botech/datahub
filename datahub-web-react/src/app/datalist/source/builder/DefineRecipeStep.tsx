@@ -82,7 +82,7 @@ export const DefineRecipeStep = ({ state, updateState, goTo, prev }: StepProps) 
             <Section>
                 <SelectTemplateHeader level={5}>Configure {sourceDisplayName} Recipe</SelectTemplateHeader>
             </Section>
-            <BorderedSection>
+            <BorderedSection style={{height: 450}}>
                 <YamlEditor initialText={displayRecipe} onChange={setStagedRecipeYml} />
             </BorderedSection>
             <ControlsContainer>
