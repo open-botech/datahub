@@ -92,7 +92,6 @@
         "start:e2e": "REACT_APP_MOCK=cy BROWSER=none PORT=3010 craco start",
         "ec2-dev": "yarn run generate && CI=true;export CI;BROWSER=none craco start",
         "build": "yarn run generate && CI=false REACT_APP_MOCK=false craco build && rm -rf dist/ && cp -r build/ dist/ && rm -r build/",
-        "build:front": "yarn run generate && CI=false REACT_APP_MOCK=false REACT_APP_PRODUCT=false craco build && rm -rf datahub-web/ && cp -r build/ datahub-web/ && rm -r build/",
         "test": "craco test",
         "cy:run:ci": "cypress run",
         "pretest:e2e:ci": "yarn generate",

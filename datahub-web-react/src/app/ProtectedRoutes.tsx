@@ -13,7 +13,6 @@ import AppConfigProvider from '../AppConfigProvider';
 import { ManageIdentitiesPage } from './identity/ManageIdentitiesPage';
 import { SettingsPage } from './settings/SettingsPage';
 import { ManageIngestionPage } from './ingest/ManageIngestionPage';
-import { DataListPage } from './datalist/DataListPage';
 import { ManageDomainsPage } from './domain/ManageDomainsPage';
 
 /**
@@ -41,7 +40,6 @@ export const ProtectedRoutes = (): JSX.Element => {
                         <Route path={PageRoutes.IDENTITIES} render={() => <ManageIdentitiesPage />} />
                         <Route path={PageRoutes.DOMAINS} render={() => <ManageDomainsPage />} />
                         <Route path={PageRoutes.INGESTION} render={() => <ManageIngestionPage />} />
-                        <Route path={PageRoutes.DATALIST} render={() => <DataListPage />} />
                         <Route path={PageRoutes.SETTINGS} render={() => <SettingsPage />} />
                     </Switch>
                 </Layout>
