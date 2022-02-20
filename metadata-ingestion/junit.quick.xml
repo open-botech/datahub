@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="2" failures="12" skipped="0" tests="226" time="33.598" timestamp="2022-02-19T17:26:39.244861" hostname="wangqh"><testcase classname="" name="tests.unit.test_airflow" time="0.000"><error message="collection failure">tests/unit/test_airflow.py:25: in &lt;module&gt;
+    lineage_mce = builder.make_lineage_mce(
+src/datahub/emitter/mce_builder.py:192: in make_lineage_mce
+    upstreams=[
+src/datahub/emitter/mce_builder.py:193: in &lt;listcomp&gt;
+    UpstreamClass(
+E   TypeError: __init__() got an unexpected keyword argument 'dataset'</error></testcase><testcase classname="" name="tests.unit.test_rest_sink" time="0.000"><error message="collection failure">tests/unit/test_rest_sink.py:30: in &lt;module&gt;
+    models.UpstreamClass(
+E   TypeError: __init__() got an unexpected keyword argument 'auditStamp'</error></testcase><testcase classname="tests.unit.test_allow_deny" name="test_allow_all" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_deny_all" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_single_table" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_default_deny" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_fully_speced" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_is_allowed" time="0.001" /><testcase classname="tests.unit.test_allow_deny" name="test_case_sensitivity" time="0.001" /><testcase classname="tests.unit.test_apis" name="test_sources_not_abstract" time="0.000" /><testcase classname="tests.unit.test_apis" name="test_sinks_not_abstract" time="0.000" /><testcase classname="tests.unit.test_check" name="test_cli_help" time="0.003" /><testcase classname="tests.unit.test_check" name="test_cli_version" time="0.002" /><testcase classname="tests.unit.test_check" name="test_check_local_docker" time="0.002" /><testcase classname="tests.unit.test_cli_utils" name="test_first_non_null" time="0.001" /><testcase classname="tests.unit.test_config_clean" name="test_url_without_slash_suffix" time="0.000" /><testcase classname="tests.unit.test_config_clean" name="test_url_with_suffix" time="0.000" /><testcase classname="tests.unit.test_config_clean" name="test_url_with_multiple_slashes" time="0.000" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_no_new" time="0.002" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_no_conflict" time="0.002" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_with_conflict" time="0.002" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_with_conflict_null_source_type_in_existing_owner" time="0.002" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_tags" time="0.002" /><testcase classname="tests.unit.test_dbt_source" name="test_dbt_source_patching_terms" time="0.002" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[.ds-datahub_usage_event-000001]" time="0.002" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[chartindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[corpgroupindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[corpuserindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dashboardindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dataflowindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[datahubpolicyindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[datahubretentionindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[datajobindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dataplatformindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dataprocessindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dataset_datasetprofileaspect_v1]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[dataset_datasetusagestatisticsaspect_v1]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[datasetindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[glossarynodeindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[glossarytermindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[ilm-history-2-000001]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlfeatureindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlfeaturetableindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlmodeldeploymentindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlmodelgroupindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlmodelindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[mlprimarykeyindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[schemafieldindex_v2]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[system_metadata_service_v1]" time="0.001" /><testcase classname="tests.unit.test_elasticsearch_source" name="test_elastic_search_schema_conversion[tagindex_v2]" time="0.001" /><testcase classname="tests.unit.test_glue_source" name="test_column_type[char]" time="0.001" /><testcase classname="tests.unit.test_glue_source" name="test_column_type[array]" time="0.001" /><testcase classname="tests.unit.test_glue_source" name="test_column_type[map]" time="0.001" /><testcase classname="tests.unit.test_glue_source" name="test_column_type[struct]" time="0.001" /><testcase classname="tests.unit.test_glue_source" name="test_glue_ingest" time="4.488" /><testcase classname="tests.unit.test_glue_source" name="test_underlying_platform_takes_precendence" time="4.075" /><testcase classname="tests.unit.test_glue_source" name="test_underlying_platform_cannot_be_other_than_athena" time="4.074" /><testcase classname="tests.unit.test_glue_source" name="test_without_underlying_platform" time="4.216" /><testcase classname="tests.unit.test_kafka_emitter.KafkaEmitterTest" name="test_kafka_emitter_config" time="0.001" /><testcase classname="tests.unit.test_kafka_emitter.KafkaEmitterTest" name="test_kafka_emitter_config_old_and_new" time="0.001" /><testcase classname="tests.unit.test_kafka_emitter.KafkaEmitterTest" name="test_kafka_emitter_config_topic_upgrade" time="0.001" /><testcase classname="tests.unit.test_kafka_sink.KafkaSinkTest" name="test_kafka_callback_class" time="0.014" /><testcase classname="tests.unit.test_kafka_sink.KafkaSinkTest" name="test_kafka_sink_close" time="0.019" /><testcase classname="tests.unit.test_kafka_sink.KafkaSinkTest" name="test_kafka_sink_config" time="0.010" /><testcase classname="tests.unit.test_kafka_sink.KafkaSinkTest" name="test_kafka_sink_mcp" time="0.012" /><testcase classname="tests.unit.test_kafka_sink.KafkaSinkTest" name="test_kafka_sink_write" time="0.013"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">self = &lt;tests.unit.test_kafka_sink.KafkaSinkTest testMethod=test_kafka_sink_write&gt;
+mock_k_callback = &lt;MagicMock name='_KafkaCallback' spec='_KafkaCallback' id='140189826145296'&gt;
+mock_producer = &lt;MagicMock name='SerializingProducer' spec='SerializingProducer' id='140189831258704'&gt;
+mock_context = &lt;MagicMock name='PipelineContext' spec='PipelineContext' id='140189845061200'&gt;
+
+    @patch("datahub.ingestion.sink.datahub_kafka.PipelineContext", autospec=True)
+    @patch("datahub.emitter.kafka_emitter.SerializingProducer", autospec=True)
+    @patch("datahub.ingestion.sink.datahub_kafka._KafkaCallback", autospec=True)
+    def test_kafka_sink_write(self, mock_k_callback, mock_producer, mock_context):
+        mock_k_callback_instance = mock_k_callback.return_value
+        callback = MagicMock(spec=WriteCallback)
+        kafka_sink = DatahubKafkaSink.create(
+            {"connection": {"bootstrap": "foobar:9092"}}, mock_context
+        )
+        mock_producer_instance = kafka_sink.emitter.producers[MCE_KEY]
+    
+&gt;       mce = builder.make_lineage_mce(
+            [
+                builder.make_dataset_urn("bigquery", "upstream1"),
+                builder.make_dataset_urn("bigquery", "upstream2"),
+            ],
+            builder.make_dataset_urn("bigquery", "downstream1"),
+        )
+
+tests/unit/test_kafka_sink.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/emitter/mce_builder.py:192: in make_lineage_mce
+    upstreams=[
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = &lt;list_iterator object at 0x7f807cc82e20&gt;
+
+                    upstreams=[
+&gt;                       UpstreamClass(
+                            dataset=upstream_urn,
+                            type=lineage_type,
+                        )
+                        for upstream_urn in upstream_urns
+                    ]
+                )
+            ],
+        )
+    )
+E   TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/emitter/mce_builder.py:193: TypeError</failure></testcase><testcase classname="tests.unit.test_kafka_source.KafkaSourceTest" name="test_close" time="0.005" /><testcase classname="tests.unit.test_kafka_source.KafkaSourceTest" name="test_get_schema_str_replace_confluent_ref_avro" time="0.005" /><testcase classname="tests.unit.test_kafka_source.KafkaSourceTest" name="test_kafka_source_configuration" time="0.006" /><testcase classname="tests.unit.test_kafka_source.KafkaSourceTest" name="test_kafka_source_workunits_topic_pattern" time="0.013" /><testcase classname="tests.unit.test_kafka_source.KafkaSourceTest" name="test_kafka_source_workunits_wildcard_topic" time="0.010" /><testcase classname="tests.unit.test_mapping" name="test_operation_processor_not_matching" time="0.001" /><testcase classname="tests.unit.test_mapping" name="test_operation_processor_matching" time="0.001" /><testcase classname="tests.unit.test_mapping" name="test_operation_processor_no_email_strip_source_type_not_null" time="0.001" /><testcase classname="tests.unit.test_mariadb_source" name="test_platform_correctly_set_mariadb" time="0.001" /><testcase classname="tests.unit.test_mariadb_source" name="test_platform_correctly_set_mysql" time="0.001" /><testcase classname="tests.unit.test_mce_builder" name="test_can_add_aspect" time="0.001"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">def test_can_add_aspect():
+&gt;       dataset_mce: MetadataChangeEventClass = builder.make_lineage_mce(
+            [
+                builder.make_dataset_urn("bigquery", "upstream1"),
+                builder.make_dataset_urn("bigquery", "upstream2"),
+            ],
+            builder.make_dataset_urn("bigquery", "downstream"),
+        )
+
+tests/unit/test_mce_builder.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/emitter/mce_builder.py:192: in make_lineage_mce
+    upstreams=[
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = &lt;list_iterator object at 0x7f80604396d0&gt;
+
+                    upstreams=[
+&gt;                       UpstreamClass(
+                            dataset=upstream_urn,
+                            type=lineage_type,
+                        )
+                        for upstream_urn in upstream_urns
+                    ]
+                )
+            ],
+        )
+    )
+E   TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/emitter/mce_builder.py:193: TypeError</failure></testcase><testcase classname="tests.unit.test_mce_helpers" name="test_basic_diff_same" time="0.004" /><testcase classname="tests.unit.test_mce_helpers" name="test_basic_diff_only_owner_change" time="0.026" /><testcase classname="tests.unit.test_mce_helpers" name="test_basic_diff_owner_change" time="0.021" /><testcase classname="tests.unit.test_nifi_source" name="test_nifi_s3_provenance_event" time="0.003" /><testcase classname="tests.unit.test_openapi.TestGetEndpoints" name="test_get_endpoints_openapi20" time="0.013" /><testcase classname="tests.unit.test_openapi.TestGetEndpoints" name="test_get_endpoints_openapi30" time="0.020" /><testcase classname="tests.unit.test_openapi.TestExplodeDict" name="test_d1" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_mul_cids" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_mul_ids" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_name_id" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_name_id2" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_no_good_guesses" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_no_k_f" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_one_cid" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_one_id" time="0.001" /><testcase classname="tests.unit.test_openapi.TestGuessing" name="test_only_id" time="0.001" /><testcase classname="tests.unit.test_oracle_source" name="test_oracle_config" time="0.002" /><testcase classname="tests.unit.test_packaging" name="test_datahub_version" time="0.001" /><testcase classname="tests.unit.test_pipeline.PipelineTest" name="test_configure" time="0.045" /><testcase classname="tests.unit.test_pipeline.PipelineTest" name="test_run_including_fake_transformation" time="0.037" /><testcase classname="tests.unit.test_pipeline.PipelineTest" name="test_run_including_registered_transformation" time="0.036" /><testcase classname="tests.unit.test_plugin_system" name="test_registry_nonempty[registry0]" time="0.001" /><testcase classname="tests.unit.test_plugin_system" name="test_registry_nonempty[registry1]" time="0.001" /><testcase classname="tests.unit.test_plugin_system" name="test_registry_nonempty[registry2]" time="0.001" /><testcase classname="tests.unit.test_plugin_system" name="test_registry_nonempty[registry3]" time="0.001" /><testcase classname="tests.unit.test_plugin_system" name="test_list_all[False]" time="0.172" /><testcase classname="tests.unit.test_plugin_system" name="test_list_all[True]" time="0.003" /><testcase classname="tests.unit.test_plugin_system" name="test_registry" time="0.002" /><testcase classname="tests.unit.test_postgres_source" name="test_database_alias_takes_precendence" time="0.001" /><testcase classname="tests.unit.test_postgres_source" name="test_database_in_identifier" time="0.001" /><testcase classname="tests.unit.test_redash_source" name="test_get_dashboard_snapshot" time="0.001" /><testcase classname="tests.unit.test_redash_source" name="test_get_known_viz_chart_snapshot" time="0.002" /><testcase classname="tests.unit.test_redash_source" name="test_get_unknown_viz_chart_snapshot" time="0.002" /><testcase classname="tests.unit.test_redash_source" name="test_get_full_qualified_name" time="0.001" /><testcase classname="tests.unit.test_redash_source" name="test_get_chart_snapshot_parse_table_names_from_sql" time="0.018" /><testcase classname="tests.unit.test_rest_emitter" name="test_datahub_rest_emitter_construction" time="0.001" /><testcase classname="tests.unit.test_rest_emitter" name="test_datahub_rest_emitter_timeout_construction" time="0.001" /><testcase classname="tests.unit.test_rest_emitter" name="test_datahub_rest_emitter_retry_construction" time="0.001" /><testcase classname="tests.unit.test_rest_emitter" name="test_datahub_rest_emitter_extra_params" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_events_with_nullable_fields[optional_field_via_union_type]" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_events_with_nullable_fields[optional_field_via_union_null_not_first]" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_events_with_nullable_fields[optional_field_via_primitive]" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_sample_events_with_different_field_types" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_record_with_two_fields" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_toplevel_isnt_a_record" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_namespacing" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_with_default" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_with_recursion" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_avro_sample_payment_schema_to_mce_fields_with_nesting" time="0.002" /><testcase classname="tests.unit.test_schema_util" name="test_avro_schema_to_mce_fields_with_nesting_across_records" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_simple_record_with_primitive_types" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_simple_nested_record_with_a_string_field_for_key_schema" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_union_with_nested_record_of_union" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_nested_arrays" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_map_of_union_of_int_and_record_of_union" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_recursive_avro" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_needs_disambiguation_nested_union_of_records_with_same_field_name" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_mce_avro_parses_okay" time="0.074" /><testcase classname="tests.unit.test_schema_util" name="test_key_schema_handling" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_logical_types" time="0.001" /><testcase classname="tests.unit.test_schema_util" name="test_ignore_exceptions" time="0.004" /><testcase classname="tests.unit.test_sql_common" name="test_generate_foreign_key" time="0.001" /><testcase classname="tests.unit.test_sql_common" name="test_use_source_schema_for_foreign_key_if_not_specified" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_dataset_ownership_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_dataset_ownership_with_type_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_dataset_ownership_with_invalid_type_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_remove_dataset_ownership" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_mark_status_dataset" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_add_dataset_browse_paths" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_dataset_tags_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_pattern_dataset_tags_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_import_resolver" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_pattern_dataset_ownership_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_pattern_dataset_ownership_with_type_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_pattern_dataset_ownership_with_invalid_type_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_intersect" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_with_nones" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_with_empty_mce_none_server" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_with_empty_mce_nonempty_server" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_with_different_types_1" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_ownership_patching_with_different_types_2" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_add_dataset_properties" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_add_dataset_properties" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_simple_dataset_terms_transformation" time="0.001" /><testcase classname="tests.unit.test_transform_dataset" name="test_pattern_dataset_terms_transformation" time="0.001" /><testcase classname="tests.unit.test_usage_common" name="test_add_one_query_without_columns" time="0.001" /><testcase classname="tests.unit.test_usage_common" name="test_multiple_query_without_columns" time="0.000" /><testcase classname="tests.unit.test_usage_common" name="test_make_usage_workunit" time="0.001" /><testcase classname="tests.unit.test_usage_common" name="test_query_trimming" time="0.001" /><testcase classname="tests.unit.test_usage_common" name="test_top_n_queries_validator_fails" time="0.001" /><testcase classname="tests.unit.test_utilities" name="test_delayed_iter" time="0.001" /><testcase classname="tests.unit.test_utilities" name="test_groupby_unsorted" time="0.000" /><testcase classname="tests.unit.test_utilities" name="test_sqllineage_sql_parser_get_columns_from_simple_query" time="0.003" /><testcase classname="tests.unit.test_utilities" name="test_metadatasql_sql_parser_tables_from_redash_query" time="0.006" /><testcase classname="tests.unit.test_utilities" name="test_sqllineage_sql_parser_tables_from_redash_query" time="0.015" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/basic.yml-golden_config0-env0-None]" time="0.002" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/basic.toml-golden_config1-env1-None]" time="0.002" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/simple_variable_expansion.yml-golden_config2-env2-None]" time="0.002" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/bad_variable_expansion.yml-None-env3-ParameterNullOrNotSet]" time="0.001" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/this_file_does_not_exist.yml-None-env4-ConfigurationError]" time="0.001" /><testcase classname="tests.unit.config.test_config_loader" name="test_load[tests/unit/config/bad_extension.whatevenisthis-None-env5-ConfigurationError]" time="0.001" /><testcase classname="tests.unit.sagemaker.test_sagemaker_source" name="test_sagemaker_ingest" time="2.342" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_json[tests/unit/serde/test_serde_large.json]" time="0.160" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_json[tests/unit/serde/test_serde_chart_snapshot.json]" time="0.054" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_json[tests/unit/serde/test_serde_usage.json]" time="0.056" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_json[tests/unit/serde/test_serde_profile.json]" time="0.053" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_avro[tests/unit/serde/test_serde_large.json]" time="0.071" /><testcase classname="tests.unit.serde.test_serde" name="test_serde_to_avro[tests/unit/serde/test_serde_chart_snapshot.json]" time="0.046" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[tests/unit/serde/test_serde_large.json]" time="0.048" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[tests/unit/serde/test_serde_backwards_compat.json]" time="0.041" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[tests/unit/serde/test_serde_usage.json]" time="0.039" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[tests/unit/serde/test_serde_profile.json]" time="0.039" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[examples/mce_files/single_mce.json]" time="0.041" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[examples/mce_files/mce_list.json]" time="0.038" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema[examples/mce_files/bootstrap_mce.json]" time="0.041"><failure message="ValueError: UpstreamClass does not support field auditStamp">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+json_filename = 'examples/mce_files/bootstrap_mce.json'
+
+    @pytest.mark.parametrize(
+        "json_filename",
+        [
+            # Normal test.
+            "tests/unit/serde/test_serde_large.json",
+            # Check for backwards compatability with specifying all union types.
+            "tests/unit/serde/test_serde_backwards_compat.json",
+            # Usage stats.
+            "tests/unit/serde/test_serde_usage.json",
+            # Profiles with the MetadataChangeProposal format.
+            "tests/unit/serde/test_serde_profile.json",
+            # Ensure sample MCE files are valid.
+            "examples/mce_files/single_mce.json",
+            "examples/mce_files/mce_list.json",
+            "examples/mce_files/bootstrap_mce.json",
+        ],
+    )
+    @freeze_time(FROZEN_TIME)
+    def test_check_mce_schema(pytestconfig: PytestConfig, json_filename: str) -&gt; None:
+        json_file_path = pytestconfig.rootpath / json_filename
+    
+&gt;       run_datahub_cmd(["check", "mce-file", f"{json_file_path}"])
+
+tests/unit/serde/test_serde.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_helpers/click_helpers.py:32: in run_datahub_cmd
+    assert_result_ok(result)
+tests/test_helpers/click_helpers.py:16: in assert_result_ok
+    raise result.exception
+venv/lib/python3.9/site-packages/click/testing.py:408: in invoke
+    return_value = cli.main(args=args or (), prog_name=prog_name, **extra)
+venv/lib/python3.9/site-packages/click/core.py:1053: in main
+    rv = self.invoke(ctx)
+venv/lib/python3.9/site-packages/click/core.py:1659: in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+venv/lib/python3.9/site-packages/click/core.py:1659: in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+venv/lib/python3.9/site-packages/click/core.py:1395: in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+venv/lib/python3.9/site-packages/click/core.py:754: in invoke
+    return __callback(*args, **kwargs)
+src/datahub/cli/check_cli.py:21: in mce_file
+    report = check_mce_file(json_file)
+src/datahub/cli/json_file.py:6: in check_mce_file
+    for _ in mce_source.get_workunits():
+src/datahub/ingestion/source/file.py:62: in get_workunits
+    for i, obj in enumerate(iterate_generic_file(self.config.filename)):
+src/datahub/ingestion/source/file.py:37: in iterate_generic_file
+    item = MetadataChangeEvent.from_obj(obj)
+venv/lib/python3.9/site-packages/avrogen/dict_wrapper.py:41: in from_obj
+    return conv.from_json_object(obj, cls.RECORD_SCHEMA)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:99: in from_json_object
+    return self._generic_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:252: in _generic_from_json
+    result = self._record_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:340: in _record_from_json
+    field_value = self._generic_from_json(json_obj[field.name], writers_field.type, field.type)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:250: in _generic_from_json
+    result = self._union_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:304: in _union_from_json
+    return self._generic_from_json(value, s, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:233: in _generic_from_json
+    return self._generic_from_json(json_obj, writers_schema, s)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:252: in _generic_from_json
+    result = self._record_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:340: in _record_from_json
+    field_value = self._generic_from_json(json_obj[field.name], writers_field.type, field.type)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:246: in _generic_from_json
+    result = self._array_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:277: in _array_from_json
+    return [self._generic_from_json(x, writers_schema.items, readers_schema.items)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:277: in &lt;listcomp&gt;
+    return [self._generic_from_json(x, writers_schema.items, readers_schema.items)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:250: in _generic_from_json
+    result = self._union_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:304: in _union_from_json
+    return self._generic_from_json(value, s, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:233: in _generic_from_json
+    return self._generic_from_json(json_obj, writers_schema, s)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:252: in _generic_from_json
+    result = self._record_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:340: in _record_from_json
+    field_value = self._generic_from_json(json_obj[field.name], writers_field.type, field.type)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:246: in _generic_from_json
+    result = self._array_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:277: in _array_from_json
+    return [self._generic_from_json(x, writers_schema.items, readers_schema.items)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:277: in &lt;listcomp&gt;
+    return [self._generic_from_json(x, writers_schema.items, readers_schema.items)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:252: in _generic_from_json
+    result = self._record_from_json(json_obj, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:354: in _record_from_json
+    return self._instantiate_record(result, writers_schema, readers_schema)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:320: in _instantiate_record
+    return self._make_type(self.schema_types[readers_name], decoded_record)
+venv/lib/python3.9/site-packages/avrogen/avrojson.py:313: in _make_type
+    return tp.construct(record)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = &lt;class 'datahub.metadata.schema_classes.UpstreamClass'&gt;
+inner_dict = {'auditStamp': AuditStampClass({'time': 1581407189000, 'actor': 'urn:li:corpuser:jdoe', 'impersonator': None}), 'dataset': 'urn:li:dataset:(urn:li:dataPlatform:kafka,SampleKafkaDataset,PROD)', 'type': 'TRANSFORMED'}
+
+    @classmethod
+    def construct(cls: Type[TC], inner_dict: dict) -&gt; TC:
+        """
+        Construct an object without any validations or type annotation checks.
+        You should not be using this under normal circumstances.
+        """
+        obj = cls.__new__(cls)
+        obj._inner_dict = {}
+        obj._restore_defaults()
+        for key, value in inner_dict.items():
+            # The call to _restore_defaults() populates the dict with the full set of keys.
+            if key not in obj._inner_dict:
+&gt;               raise ValueError(f"{cls.__name__} does not support field {key}")
+E               ValueError: UpstreamClass does not support field auditStamp
+
+venv/lib/python3.9/site-packages/avrogen/dict_wrapper.py:28: ValueError</failure></testcase><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema_failure[tests/unit/serde/test_serde_extra_field.json]" time="0.001" /><testcase classname="tests.unit.serde.test_serde" name="test_check_mce_schema_failure[tests/unit/serde/test_serde_missing_field.json]" time="0.001" /><testcase classname="tests.unit.serde.test_serde" name="test_field_discriminator" time="0.001" /><testcase classname="tests.integration.azure_ad.test_azure_ad" name="test_azure_ad_config" time="0.001" /><testcase classname="tests.integration.azure_ad.test_azure_ad" name="test_azure_ad_source_default_configs" time="0.060" /><testcase classname="tests.integration.azure_ad.test_azure_ad" name="test_azure_source_ingestion_disabled" time="0.041" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_bq_usage_config" time="0.038" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_bq_timezone_validation" time="0.038" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_bq_usage_source" time="0.325" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_remove_extras[test_table$20220101-test_table]" time="0.001" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_remove_extras[test_table$__PARTITIONS_SUMMARY__-test_table]" time="0.001" /><testcase classname="tests.integration.bigquery-usage.test_bigquery_usage" name="test_remove_extras[test_table_20220101-test_table]" time="0.001" /><testcase classname="tests.integration.looker.test_looker" name="test_looker_ingest" time="0.043"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_looker_ingest0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    def test_looker_ingest(pytestconfig, tmp_path, mock_time):
+        mocked_client = mock.MagicMock()
+        with mock.patch("looker_sdk.init31") as mock_sdk:
+            mock_sdk.return_value = mocked_client
+            mocked_client.all_dashboards.return_value = [Dashboard(id="1")]
+            mocked_client.dashboard.return_value = Dashboard(
+                id="1",
+                title="foo",
+                created_at=datetime.utcfromtimestamp(time.time()),
+                description="lorem ipsum",
+                dashboard_elements=[
+                    DashboardElement(
+                        id="2",
+                        type="",
+                        subtitle_text="Some text",
+                        query=Query(
+                            model="data",
+                            view="my_view",
+                            dynamic_fields='[{"table_calculation":"calc","label":"foobar","expression":"offset(${my_table.value},1)","value_format":null,"value_format_name":"eur","_kind_hint":"measure","_type_hint":"number"}]',
+                        ),
+                    )
+                ],
+            )
+            setup_mock_explore(mocked_client)
+    
+            test_resources_dir = pytestconfig.rootpath / "tests/integration/looker"
+    
+            pipeline = Pipeline.create(
+                {
+                    "run_id": "looker-test",
+                    "source": {
+                        "type": "looker",
+                        "config": {
+                            "base_url": "https://looker.company.com",
+                            "client_id": "foo",
+                            "client_secret": "bar",
+                        },
+                    },
+                    "sink": {
+                        "type": "file",
+                        "config": {
+                            "filename": f"{tmp_path}/looker_mces.json",
+                        },
+                    },
+                }
+            )
+&gt;           pipeline.run()
+
+tests/integration/looker/test_looker.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/looker.py:831: in get_workunits
+    explore_events = self._make_explore_metadata_events()
+src/datahub/ingestion/source/looker.py:576: in _make_explore_metadata_events
+    events, explore_id, start_time, end_time = future.result()
+/usr/lib/python3.9/concurrent/futures/_base.py:438: in result
+    return self.__get_result()
+/usr/lib/python3.9/concurrent/futures/_base.py:390: in __get_result
+    raise self._exception
+/usr/lib/python3.9/concurrent/futures/thread.py:52: in run
+    result = self.fn(*self.args, **self.kwargs)
+src/datahub/ingestion/source/looker.py:600: in fetch_one_explore
+    looker_explore._to_metadata_events(
+src/datahub/ingestion/source/looker_common.py:683: in _to_metadata_events
+    upstreams = [
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = &lt;list_iterator object at 0x7f80a0bc3a60&gt;
+
+    upstreams = [
+&gt;       UpstreamClass(
+            dataset=LookerViewId(
+                project_name=self.project_name,
+                model_name=self.model_name,
+                view_name=view_name,
+            ).get_urn(config),
+            type=DatasetLineageTypeClass.VIEW,
+        )
+        for view_name in sorted(self.upstream_views)
+    ]
+E   TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/looker_common.py:684: TypeError</failure></testcase><testcase classname="tests.integration.looker.test_looker" name="test_looker_ingest_allow_pattern" time="0.042"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_looker_ingest_allow_patte0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    def test_looker_ingest_allow_pattern(pytestconfig, tmp_path, mock_time):
+        mocked_client = mock.MagicMock()
+    
+        with mock.patch("looker_sdk.init31") as mock_sdk:
+            mock_sdk.return_value = mocked_client
+            mocked_client.all_dashboards.return_value = [Dashboard(id="1")]
+            mocked_client.dashboard.return_value = Dashboard(
+                id="1",
+                title="foo",
+                created_at=datetime.utcfromtimestamp(time.time()),
+                description="lorem ipsum",
+                dashboard_elements=[
+                    DashboardElement(
+                        id="2",
+                        type="",
+                        subtitle_text="Some text",
+                        query=Query(
+                            model="data",
+                            view="my_view",
+                            dynamic_fields='[{"table_calculation":"calc","label":"foobar","expression":"offset(${my_table.value},1)","value_format":null,"value_format_name":"eur","_kind_hint":"measure","_type_hint":"number"}]',
+                        ),
+                    ),
+                    DashboardElement(
+                        id="10",
+                        type="",
+                        subtitle_text="Some other text",
+                        query=Query(
+                            model="bogus data",
+                            view="my_view",
+                            dynamic_fields='[{"table_calculation":"calc","label":"foobar","expression":"offset(${my_table.value},1)","value_format":null,"value_format_name":"eur","_kind_hint":"measure","_type_hint":"number"}]',
+                        ),
+                    ),
+                ],
+            )
+            setup_mock_explore(mocked_client)
+    
+            test_resources_dir = pytestconfig.rootpath / "tests/integration/looker"
+    
+            pipeline = Pipeline.create(
+                {
+                    "run_id": "looker-test",
+                    "source": {
+                        "type": "looker",
+                        "config": {
+                            "base_url": "https://looker.company.com",
+                            "client_id": "foo",
+                            "client_secret": "bar",
+                            "chart_pattern": {"allow": ["2"]},
+                        },
+                    },
+                    "sink": {
+                        "type": "file",
+                        "config": {
+                            "filename": f"{tmp_path}/looker_mces.json",
+                        },
+                    },
+                }
+            )
+&gt;           pipeline.run()
+
+tests/integration/looker/test_looker.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/looker.py:831: in get_workunits
+    explore_events = self._make_explore_metadata_events()
+src/datahub/ingestion/source/looker.py:576: in _make_explore_metadata_events
+    events, explore_id, start_time, end_time = future.result()
+/usr/lib/python3.9/concurrent/futures/_base.py:438: in result
+    return self.__get_result()
+/usr/lib/python3.9/concurrent/futures/_base.py:390: in __get_result
+    raise self._exception
+/usr/lib/python3.9/concurrent/futures/thread.py:52: in run
+    result = self.fn(*self.args, **self.kwargs)
+src/datahub/ingestion/source/looker.py:600: in fetch_one_explore
+    looker_explore._to_metadata_events(
+src/datahub/ingestion/source/looker_common.py:683: in _to_metadata_events
+    upstreams = [
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = &lt;list_iterator object at 0x7f807cba2460&gt;
+
+    upstreams = [
+&gt;       UpstreamClass(
+            dataset=LookerViewId(
+                project_name=self.project_name,
+                model_name=self.model_name,
+                view_name=view_name,
+            ).get_urn(config),
+            type=DatasetLineageTypeClass.VIEW,
+        )
+        for view_name in sorted(self.upstream_views)
+    ]
+E   TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/looker_common.py:684: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_ingest" time="0.063"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_ingest0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_ingest(pytestconfig, tmp_path, mock_time):
+        """Test backwards compatibility with previous form of config with new flags turned off"""
+        test_resources_dir = pytestconfig.rootpath / "tests/integration/lookml"
+        mce_out_file = "expected_output.json"
+    
+        # Note this config below is known to create "bad" lineage since the config author has not provided enough information
+        # to resolve relative table names (which are not fully qualified)
+        # We keep this check just to validate that ingestion doesn't croak on this config
+        pipeline = Pipeline.create(
+            {
+                "run_id": "lookml-test",
+                "source": {
+                    "type": "lookml",
+                    "config": {
+                        "base_folder": str(test_resources_dir / "lkml_samples"),
+                        "connection_to_platform_map": {"my_connection": "conn"},
+                        "parse_table_names_from_sql": True,
+                        "tag_measures_and_dimensions": False,
+                        "project_name": "lkml_samples",
+                    },
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": f"{tmp_path}/{mce_out_file}",
+                    },
+                },
+            }
+        )
+&gt;       pipeline.run()
+
+tests/integration/lookml/test_lookml.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f807daeb4c0&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_ingest_offline" time="0.064"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_ingest_offline0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_ingest_offline(pytestconfig, tmp_path, mock_time):
+        """New form of config with offline specification of connection defaults"""
+        test_resources_dir = pytestconfig.rootpath / "tests/integration/lookml"
+        mce_out = "lookml_mces_offline.json"
+        pipeline = Pipeline.create(
+            {
+                "run_id": "lookml-test",
+                "source": {
+                    "type": "lookml",
+                    "config": {
+                        "base_folder": str(test_resources_dir / "lkml_samples"),
+                        "connection_to_platform_map": {
+                            "my_connection": {
+                                "platform": "snowflake",
+                                "default_db": "default_db",
+                                "default_schema": "default_schema",
+                            }
+                        },
+                        "parse_table_names_from_sql": True,
+                        "project_name": "lkml_samples",
+                    },
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": f"{tmp_path}/{mce_out}",
+                    },
+                },
+            }
+        )
+&gt;       pipeline.run()
+
+tests/integration/lookml/test_lookml.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f807dea7a90&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_ingest_offline_platform_instance" time="0.076"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_ingest_offline_pla0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_ingest_offline_platform_instance(pytestconfig, tmp_path, mock_time):
+        """New form of config with offline specification of connection defaults"""
+        test_resources_dir = pytestconfig.rootpath / "tests/integration/lookml"
+        mce_out = "lookml_mces_offline_platform_instance.json"
+        pipeline = Pipeline.create(
+            {
+                "run_id": "lookml-test",
+                "source": {
+                    "type": "lookml",
+                    "config": {
+                        "base_folder": str(test_resources_dir / "lkml_samples"),
+                        "connection_to_platform_map": {
+                            "my_connection": {
+                                "platform": "snowflake",
+                                "platform_instance": "warehouse",
+                                "platform_env": "dev",
+                                "default_db": "default_db",
+                                "default_schema": "default_schema",
+                            }
+                        },
+                        "parse_table_names_from_sql": True,
+                        "project_name": "lkml_samples",
+                    },
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": f"{tmp_path}/{mce_out}",
+                    },
+                },
+            }
+        )
+&gt;       pipeline.run()
+
+tests/integration/lookml/test_lookml.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f809e60d2b0&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_ingest_api_bigquery" time="0.086"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_ingest_api_bigquer0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_ingest_api_bigquery(pytestconfig, tmp_path, mock_time):
+        # test with BigQuery connection
+&gt;       ingestion_test(
+            pytestconfig,
+            tmp_path,
+            mock_time,
+            DBConnection(
+                dialect_name="bigquery", host="project-foo", database="default-db"
+            ),
+        )
+
+tests/integration/lookml/test_lookml.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/lookml/test_lookml.py:219: in ingestion_test
+    pipeline.run()
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f80a0ccba30&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_ingest_api_hive" time="0.130"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_ingest_api_hive0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_ingest_api_hive(pytestconfig, tmp_path, mock_time):
+        # test with Hive connection
+&gt;       ingestion_test(
+            pytestconfig,
+            tmp_path,
+            mock_time,
+            DBConnection(
+                dialect_name="hive2",
+                database="default-hive-db",
+            ),
+        )
+
+tests/integration/lookml/test_lookml.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/lookml/test_lookml.py:219: in ingestion_test
+    pipeline.run()
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f807dddc220&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_bad_sql_parser" time="0.164"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_bad_sql_parser0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_bad_sql_parser(pytestconfig, tmp_path, mock_time):
+        """Incorrect specification of sql parser should not fail ingestion"""
+        test_resources_dir = pytestconfig.rootpath / "tests/integration/lookml"
+        mce_out = "lookml_mces_badsql_parser.json"
+        pipeline = Pipeline.create(
+            {
+                "run_id": "lookml-test",
+                "source": {
+                    "type": "lookml",
+                    "config": {
+                        "base_folder": str(test_resources_dir / "lkml_samples"),
+                        "connection_to_platform_map": {
+                            "my_connection": {
+                                "platform": "snowflake",
+                                "default_db": "default_db",
+                                "default_schema": "default_schema",
+                            }
+                        },
+                        "parse_table_names_from_sql": True,
+                        "project_name": "lkml_samples",
+                        "sql_parser": "bad.sql.Parser",
+                    },
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": f"{tmp_path}/{mce_out}",
+                    },
+                },
+            }
+        )
+&gt;       pipeline.run()
+
+tests/integration/lookml/test_lookml.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f80a0ccde80&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='include_able_view'), absolute_fi... raw_file_content='view: include_able_view {\n  sql_table_name: looker_schema.include_able ;;\n}\n', view_details=None)
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.lookml.test_lookml" name="test_lookml_github_info" time="0.147"><failure message="TypeError: __init__() got an unexpected keyword argument 'dataset'">pytestconfig = &lt;_pytest.config.Config object at 0x7f80b4413a60&gt;
+tmp_path = PosixPath('/tmp/pytest-of-wangqh/pytest-0/test_lookml_github_info0')
+mock_time = None
+
+    @freeze_time(FROZEN_TIME)
+    @pytest.mark.skipif(sys.version_info &lt; (3, 7), reason="lkml requires Python 3.7+")
+    def test_lookml_github_info(pytestconfig, tmp_path, mock_time):
+        """Add github info to config"""
+        test_resources_dir = pytestconfig.rootpath / "tests/integration/lookml"
+        mce_out = "lookml_mces_with_external_urls.json"
+        pipeline = Pipeline.create(
+            {
+                "run_id": "lookml-test",
+                "source": {
+                    "type": "lookml",
+                    "config": {
+                        "base_folder": str(test_resources_dir / "lkml_samples"),
+                        "connection_to_platform_map": {
+                            "my_connection": {
+                                "platform": "snowflake",
+                                "default_db": "default_db",
+                                "default_schema": "default_schema",
+                            }
+                        },
+                        "parse_table_names_from_sql": True,
+                        "project_name": "lkml_samples",
+                        "github_info": {"repo": "datahub/looker-demo", "branch": "master"},
+                    },
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": f"{tmp_path}/{mce_out}",
+                    },
+                },
+            }
+        )
+&gt;       pipeline.run()
+
+tests/integration/lookml/test_lookml.py:312: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/datahub/ingestion/run/pipeline.py:156: in run
+    for wu in itertools.islice(
+src/datahub/ingestion/source/lookml.py:1104: in get_workunits
+    mce = self._build_dataset_mce(maybe_looker_view)
+src/datahub/ingestion/source/lookml.py:989: in _build_dataset_mce
+    upstream_lineage = self._get_upstream_lineage(looker_view)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = LookMLSource(ctx=&lt;datahub.ingestion.api.common.PipelineContext object at 0x7f80a0cccd60&gt;)
+looker_view = LookerView(id=LookerViewId(project_name='lkml_samples', model_name='data', view_name='my_view'), absolute_file_path='/...        city,\n          timestamp,\n          measurement\n        FROM\n          my_table', 'viewLanguage': 'sql'}))
+
+    def _get_upstream_lineage(
+        self, looker_view: LookerView
+    ) -&gt; Optional[UpstreamLineage]:
+        upstreams = []
+        for sql_table_name in looker_view.sql_table_names:
+    
+            sql_table_name = sql_table_name.replace('"', "").replace("`", "")
+    
+&gt;           upstream = UpstreamClass(
+                dataset=self._construct_datalineage_urn(sql_table_name, looker_view),
+                type=DatasetLineageTypeClass.VIEW,
+            )
+E           TypeError: __init__() got an unexpected keyword argument 'dataset'
+
+src/datahub/ingestion/source/lookml.py:918: TypeError</failure></testcase><testcase classname="tests.integration.metabase.test_metabase" name="test_mode_ingest_success" time="0.117" /><testcase classname="tests.integration.metabase.test_metabase" name="test_mode_ingest_failure" time="0.097" /><testcase classname="tests.integration.mode.test_mode" name="test_mode_ingest_success" time="0.144" /><testcase classname="tests.integration.mode.test_mode" name="test_mode_ingest_failure" time="0.081" /><testcase classname="tests.integration.okta.test_okta" name="test_okta_config" time="0.001" /><testcase classname="tests.integration.okta.test_okta" name="test_okta_source_default_configs" time="0.182" /><testcase classname="tests.integration.okta.test_okta" name="test_okta_source_ingestion_disabled" time="0.096" /><testcase classname="tests.integration.okta.test_okta" name="test_okta_source_include_deprovisioned_suspended_users" time="0.177" /><testcase classname="tests.integration.okta.test_okta" name="test_okta_source_custom_user_name_regex" time="0.169" /><testcase classname="tests.integration.redshift-usage.test_redshift_usage" name="test_redshift_usage_config" time="0.002" /><testcase classname="tests.integration.redshift-usage.test_redshift_usage" name="test_redshift_usage_source" time="0.120" /><testcase classname="tests.integration.starburst-trino-usage.test_starburst_trino_usage" name="test_trino_usage_config" time="0.002" /><testcase classname="tests.integration.starburst-trino-usage.test_starburst_trino_usage" name="test_trino_usage_source" time="0.086" /></testsuite></testsuites>

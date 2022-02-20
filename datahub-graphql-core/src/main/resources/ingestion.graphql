@@ -354,6 +354,8 @@ input ListIngestionSourcesInput {
   The number of results to be returned
   """
   count: Int
+
+  name: String
 }
 
 """

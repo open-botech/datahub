@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Empty, Image, message, Modal, Pagination, Tooltip, Typography } from 'antd';
+import {Button, Empty, Image, Input, message, Modal, Pagination, Tooltip, Typography} from 'antd';
 import styled from 'styled-components';
 import cronstrue from 'cronstrue';
 import { DeleteOutlined, PlusOutlined, RedoOutlined } from '@ant-design/icons';
@@ -69,7 +69,7 @@ export const IngestionSourceList = () => {
 
     const pageSize = DEFAULT_PAGE_SIZE;
     const start = (page - 1) * pageSize;
-
+    const ingestionName = "";
     const [isBuildingSource, setIsBuildingSource] = useState<boolean>(false);
     const [focusSourceUrn, setFocusSourceUrn] = useState<undefined | string>(undefined);
     const [lastRefresh, setLastRefresh] = useState(0);
@@ -82,6 +82,7 @@ export const IngestionSourceList = () => {
             input: {
                 start,
                 count: pageSize,
+                name: ingestionName
             },
         },
     });
@@ -390,6 +391,10 @@ export const IngestionSourceList = () => {
                         <Button type="text" onClick={() => setIsBuildingSource(true)}>
                             <PlusOutlined /> Create new source
                         </Button>
+                        <Input
+                            placeholder="Ingestion source name"
+                            value={ingestionName}
+                        />
                         <Button type="text" onClick={onRefresh}>
                             <RedoOutlined /> Refresh
                         </Button>

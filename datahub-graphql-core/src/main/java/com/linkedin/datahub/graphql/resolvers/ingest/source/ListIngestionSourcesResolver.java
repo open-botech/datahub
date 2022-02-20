@@ -1,5 +1,6 @@
 package com.linkedin.datahub.graphql.resolvers.ingest.source;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.linkedin.common.urn.Urn;
 import com.linkedin.datahub.graphql.QueryContext;
@@ -14,6 +15,8 @@ import com.linkedin.metadata.Constants;
 import com.linkedin.metadata.query.ListResult;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import org.apache.commons.collections.map.HashedMap;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,13 +47,17 @@ public class ListIngestionSourcesResolver implements DataFetcher<CompletableFutu
       final ListIngestionSourcesInput input = bindArgument(environment.getArgument("input"), ListIngestionSourcesInput.class);
       final Integer start = input.getStart() == null ? DEFAULT_START : input.getStart();
       final Integer count = input.getCount() == null ? DEFAULT_COUNT : input.getCount();
-
+      final String name = input.getName();
+      Map<String,String> requestFilters = new HashedMap();
+      if(!Strings.isNullOrEmpty(name)){
+        requestFilters.put("name", name);
+      }
       return CompletableFuture.supplyAsync(() -> {
         try {
           // First, get all ingestion sources Urns.
           final ListResult gmsResult = _entityClient.list(
               Constants.INGESTION_SOURCE_ENTITY_NAME,
-              Collections.emptyMap(),
+              requestFilters,
               start,
               count,
               context.getAuthentication());
