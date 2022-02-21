@@ -15,6 +15,16 @@ import oktaConfig from './okta/okta';
 import { SourceConfig } from './types';
 import hiveConfig from './hive/hive';
 import oracleConfig from './oracle/oracle';
+import clickhouseConfig from './clickhouse/clickhouse';
+import elasticsearchConfig from './elasticsearch/elasticsearch';
+import dbtConfig from './dbt/dbt';
+import metabaseConfig from './metabase/metabase';
+import supersetConfig from './superset/superset';
+import tableauConfig from './tableau/tableau';
+import redashConfig from './redash/redash';
+import s3Config from './s3/s3';
+import fileConfig from './file/file';
+import mssqlConfig from './mssql/mssql';
 import icon from '../../../../images/custom.png'
 
 const baseUrl = window.location.origin;
@@ -32,19 +42,29 @@ sink:
     server: "${baseUrl}/api/gms"`;
 
 export const SOURCE_TEMPLATE_CONFIGS: Array<SourceConfig> = [
-    bigqueryConfig,
-    redshiftConfig,
-    snowflakeConfig,
-    kafkaConfig,
-    lookerConfig,
-    mysqlConfig,
-    postgresConfig,
-    mongoConfig,
-    azureAdConfig,
-    oktaConfig,
-    glueConfig,
-    oracleConfig,
-    hiveConfig,
+  bigqueryConfig,
+  redshiftConfig,
+  snowflakeConfig,
+  kafkaConfig,
+  lookerConfig,
+  mysqlConfig,
+  postgresConfig,
+  mongoConfig,
+  azureAdConfig,
+  oktaConfig,
+  glueConfig,
+  oracleConfig,
+  hiveConfig,
+  clickhouseConfig,
+  elasticsearchConfig,
+  dbtConfig,
+  metabaseConfig,
+  supersetConfig,
+  tableauConfig,
+  redashConfig,
+  s3Config,
+  fileConfig,
+  mssqlConfig,
     {
         type: 'custom',
         placeholderRecipe: DEFAULT_PLACEHOLDER_RECIPE,
