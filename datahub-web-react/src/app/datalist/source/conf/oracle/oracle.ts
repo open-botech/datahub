@@ -1,6 +1,7 @@
 import { SourceConfig } from '../types';
 import oracleLogo from '../../../../../images/oraclelogo.png';
 import oracleIcon from '../../../../../images/datalist/oracle.png'
+import icon from '../../../../../images/oracle.png'
 
 const baseUrl = window.location.origin;
 
@@ -29,7 +30,8 @@ const oracleConfig: SourceConfig = {
     displayName: 'Oracle',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/oracle/',
     logoUrl: oracleLogo,
-    iconUrl: oracleIcon
+    iconUrl: oracleIcon,
+    icon
 };
 
 export default oracleConfig;

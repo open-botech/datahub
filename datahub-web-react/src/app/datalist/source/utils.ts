@@ -8,7 +8,7 @@ export const sourceTypeToIconUrl = (type: string) => {
 };
 
 export const sourceTypeToBigIconUrl = (type: string) => {
-  return SOURCE_TEMPLATE_CONFIGS.find((config) => config.type === type)?.iconUrl;
+  return SOURCE_TEMPLATE_CONFIGS.find((config) => config.type === type)?.icon;
 };
 
 export const getSourceConfigs = (sourceType: string) => {

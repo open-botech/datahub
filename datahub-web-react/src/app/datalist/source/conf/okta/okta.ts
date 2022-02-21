@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import oktaLogo from '../../../../../images/oktalogo.png';
+import icon from '../../../../../images/okta.png'
 
 const baseUrl = window.location.origin;
 
@@ -41,6 +42,7 @@ const oktaConfig: SourceConfig = {
     displayName: 'Okta',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/okta',
     logoUrl: oktaLogo,
+    icon
 };
 
 export default oktaConfig;

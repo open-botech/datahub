@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import hiveLogo from '../../../../../images/hivelogo.png';
+import icon from '../../../../../images/hive.png'
 
 const baseUrl = window.location.origin;
 
@@ -26,6 +27,7 @@ const hiveConfig: SourceConfig = {
     displayName: 'Hive',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/hive/',
     logoUrl: hiveLogo,
+    icon
 };
 
 export default hiveConfig;

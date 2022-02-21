@@ -15,6 +15,7 @@ import oktaConfig from './okta/okta';
 import { SourceConfig } from './types';
 import hiveConfig from './hive/hive';
 import oracleConfig from './oracle/oracle';
+import icon from '../../../../images/custom.png'
 
 const baseUrl = window.location.origin;
 
@@ -50,5 +51,6 @@ export const SOURCE_TEMPLATE_CONFIGS: Array<SourceConfig> = [
         displayName: 'Custom',
         docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/',
         logoComponent: <FormOutlined style={{ color: ANTD_GRAY[8], fontSize: 28 }} />,
+        icon
     },
 ];

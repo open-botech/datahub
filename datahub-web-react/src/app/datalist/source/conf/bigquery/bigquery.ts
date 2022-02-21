@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import bigqueryLogo from '../../../../../images/bigquerylogo.png';
+import icon from '../../../../../images/bigquery.png'
 
 const baseUrl = window.location.origin;
 
@@ -27,6 +28,7 @@ const bigqueryConfig: SourceConfig = {
     displayName: 'BigQuery',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/bigquery/',
     logoUrl: bigqueryLogo,
+    icon
 };
 
 export default bigqueryConfig;

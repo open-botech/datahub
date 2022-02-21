@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import snowflakeLogo from '../../../../../images/snowflakelogo.png';
+import icon from '../../../../../images/snowflake.png'
 
 const baseUrl = window.location.origin;
 
@@ -25,6 +26,7 @@ const snowflakeConfig: SourceConfig = {
     displayName: 'Snowflake',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/snowflake/',
     logoUrl: snowflakeLogo,
+    icon
 };
 
 export default snowflakeConfig;

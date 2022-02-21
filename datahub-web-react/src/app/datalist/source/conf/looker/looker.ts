@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import lookerLogo from '../../../../../images/lookerlogo.png';
+import icon from '../../../../../images/looker.png'
 
 const baseUrl = window.location.origin;
 
@@ -24,6 +25,7 @@ const lookerConfig: SourceConfig = {
     displayName: 'Looker',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/looker/',
     logoUrl: lookerLogo,
+    icon
 };
 
 export default lookerConfig;

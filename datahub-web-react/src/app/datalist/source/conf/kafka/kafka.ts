@@ -1,6 +1,7 @@
 import { SourceConfig } from '../types';
 import kafkaLogo from '../../../../../images/kafkalogo.png';
 import kafkaIcon from '../../../../../images/datalist/kafka.png'
+import icon from '../../../../../images/kafka.png'
 
 const baseUrl = window.location.origin;
 
@@ -24,7 +25,8 @@ const kafkaConfig: SourceConfig = {
     displayName: 'Kafka',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/kafka/',
     logoUrl: kafkaLogo,
-    iconUrl: kafkaIcon
+    iconUrl: kafkaIcon,
+    icon
 };
 
 export default kafkaConfig;

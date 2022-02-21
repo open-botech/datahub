@@ -1,6 +1,7 @@
 import { SourceConfig } from '../types';
 import mysqlLogo from '../../../../../images/mysqllogo-2.png';
 import mysqlIcon from '../../../../../images/datalist/MySQL.png'
+import icon from '../../../../../images/mysql.png'
 
 const baseUrl = window.location.origin;
 
@@ -34,7 +35,8 @@ const mysqlConfig: SourceConfig = {
     displayName: 'MySQL',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/mysql/',
     logoUrl: mysqlLogo,
-    iconUrl: mysqlIcon
+    iconUrl: mysqlIcon,
+    icon
 };
 
 export default mysqlConfig;

@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import glueLogo from '../../../../../images/gluelogo.png';
+import icon from '../../../../../images/glue.png'
 
 const baseUrl = window.location.origin;
 
@@ -32,6 +33,7 @@ const glueConfig: SourceConfig = {
     displayName: 'Glue',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/glue',
     logoUrl: glueLogo,
+    icon
 };
 
 export default glueConfig;

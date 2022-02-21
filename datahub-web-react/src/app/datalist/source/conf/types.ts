@@ -35,6 +35,8 @@ export interface SourceConfig {
 
     iconUrl?: string;
 
+    icon?: string;
+
     /**
      * A react component to use in place of a logo.
      */

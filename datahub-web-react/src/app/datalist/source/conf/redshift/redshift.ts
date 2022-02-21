@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import redshiftLogo from '../../../../../images/redshiftlogo.png';
+import icon from '../../../../../images/redshift.png'
 
 const baseUrl = window.location.origin;
 
@@ -33,6 +34,7 @@ const redshiftConfig: SourceConfig = {
     displayName: 'Redshift',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/redshift/',
     logoUrl: redshiftLogo,
+    icon
 };
 
 export default redshiftConfig;

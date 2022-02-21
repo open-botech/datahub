@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import azureLogo from '../../../../../images/azure-ad.png';
+import icon from '../../../../../images/azuread.png'
 
 const baseUrl = window.location.origin;
 
@@ -39,6 +40,7 @@ const azureAdConfig: SourceConfig = {
     displayName: 'Azure AD',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/azure-ad',
     logoUrl: azureLogo,
+    icon
 };
 
 export default azureAdConfig;

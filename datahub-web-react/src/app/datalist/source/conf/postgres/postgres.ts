@@ -1,6 +1,7 @@
 import { SourceConfig } from '../types';
 import postgresLogo from '../../../../../images/postgreslogo.png';
 import postgresqlIcon from '../../../../../images/datalist/postgresql.png'
+import icon from '../../../../../images/postgres.png'
 
 
 const baseUrl = window.location.origin;
@@ -35,7 +36,8 @@ const postgresConfig: SourceConfig = {
     displayName: 'Postgres',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/postgres/',
     logoUrl: postgresLogo,
-    iconUrl: postgresqlIcon
+    iconUrl: postgresqlIcon,
+    icon
 };
 
 export default postgresConfig;

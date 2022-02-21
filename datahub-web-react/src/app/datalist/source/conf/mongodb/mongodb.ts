@@ -1,5 +1,6 @@
 import { SourceConfig } from '../types';
 import mongodbLogo from '../../../../../images/mongodblogo.png';
+import icon from '../../../../../images/mongodb.png'
 
 const baseUrl = window.location.origin;
 
@@ -29,6 +30,7 @@ const mongoConfig: SourceConfig = {
     displayName: 'MongoDB',
     docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/mongodb/',
     logoUrl: mongodbLogo,
+    icon
 };
 
 export default mongoConfig;

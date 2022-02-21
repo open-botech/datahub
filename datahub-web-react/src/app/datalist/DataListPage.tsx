@@ -10,7 +10,7 @@ import {
   useCreateIngestionSourceMutation
 } from '../../graphql/ingestion.generated';
 import {
-  sourceTypeToIconUrl,
+  sourceTypeToBigIconUrl,
 } from './source/utils';
 import { IngestionSourceExecutionList } from './source/IngestionSourceExecutionList';
 import { DEFAULT_EXECUTOR_ID, SourceBuilderState } from './source/builder/types';
@@ -290,7 +290,7 @@ export const DataListPage = () => {
               }
 
               const { type } = source
-              const iconImage = sourceTypeToIconUrl(type);
+              const iconImage = sourceTypeToBigIconUrl(type);
 
               return <div className="table-card">
                 <div className="card-info">
