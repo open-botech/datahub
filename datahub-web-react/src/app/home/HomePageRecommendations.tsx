@@ -12,10 +12,12 @@ const RecommendationsContainer = styled.div`
     margin-top: 32px;
     padding-left: 12px;
     padding-right: 12px;
+    width: 100%;
 `;
 
 const RecommendationContainer = styled.div`
     margin-bottom: 32px;
+    width: 100%;
 `;
 
 const RecommendationTitle = styled(Typography.Title)`
@@ -105,12 +107,14 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                     <RecommendationContainer>
                         <RecommendationTitle level={4}>平台</RecommendationTitle>
                         <ThinDivider />
-                        <RecommendationModule
-                            key={module.moduleId}
+                        {
+                          module && (<RecommendationModule
+                            key={module?.moduleId}
                             module={module as RecommendationModuleType}
                             scenarioType={scenario}
                             showTitle={false}
-                        />
+                        />)
+                        }
                     </RecommendationContainer>
                   </Col>
                 ))}
@@ -121,12 +125,14 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                     <RecommendationContainer>
                         <RecommendationTitle level={4}>最近浏览</RecommendationTitle>
                         <ThinDivider />
-                        <RecommendationModule
-                            key={module.moduleId}
-                            module={module as RecommendationModuleType}
-                            scenarioType={scenario}
-                            showTitle={false}
-                        />
+                        {
+                          module && (<RecommendationModule
+                              key={module?.moduleId}
+                              module={module as RecommendationModuleType}
+                              scenarioType={scenario}
+                              showTitle={false}
+                          />)
+                        }
                     </RecommendationContainer>
                   </Col>
                 ))}
@@ -136,12 +142,15 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                     <RecommendationContainer>
                         <RecommendationTitle level={4}>最受欢迎</RecommendationTitle>
                         <ThinDivider />
-                        <RecommendationModule
-                            key={module.moduleId}
+                        {
+                          module && (<RecommendationModule
+                            key={module?.moduleId}
                             module={module as RecommendationModuleType}
                             scenarioType={scenario}
                             showTitle={false}
-                        />
+                        />)
+                        }
+                        
                     </RecommendationContainer>
                   </Col>
                 ))}
