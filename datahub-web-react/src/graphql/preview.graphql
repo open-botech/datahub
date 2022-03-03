@@ -45,7 +45,9 @@ fragment entityPreview on Entity {
             lastName
             fullName
         }
-        editableInfo {
+        editableProperties {
+            displayName
+            title
             pictureLink
         }
     }
@@ -55,28 +57,8 @@ fragment entityPreview on Entity {
             displayName
             description
         }
-        relationships(input: { types: ["IsMemberOfGroup"], direction: INCOMING }) {
-            relationships {
-                type
-                direction
-                entity {
-                    urn
-                    type
-                    ... on CorpUser {
-                        username
-                        info {
-                            active
-                            displayName
-                            title
-                            firstName
-                            lastName
-                        }
-                        editableInfo {
-                            pictureLink
-                        }
-                    }
-                }
-            }
+        memberCount: relationships(input: { types: ["IsMemberOfGroup"], direction: INCOMING, start: 0, count: 1 }) {
+            total
         }
     }
     ... on Dashboard {
@@ -205,11 +187,14 @@ fragment entityPreview on Entity {
     }
     ... on GlossaryTerm {
         name
-        glossaryTermInfo {
-            definition
+        hierarchicalName
+        properties {
+            name
+            description
             termSource
             sourceRef
             sourceUrl
+            rawSchema
             customProperties {
                 key
                 value
@@ -262,6 +247,11 @@ fragment entityPreview on Entity {
     ... on Tag {
         name
         description
+        properties {
+            name
+            description
+            colorHex
+        }
     }
     ... on DataPlatform {
         ...nonConflictingPlatformFields
@@ -271,5 +261,8 @@ fragment entityPreview on Entity {
         properties {
             name
         }
+    }
+    ... on Container {
+        ...entityContainer
     }
 }

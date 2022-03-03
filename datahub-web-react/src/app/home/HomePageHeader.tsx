@@ -196,13 +196,20 @@ export const HomePageHeader = () => {
 
     return (
         <Background>
-            {/* <Row justify="space-between" style={styles.navBar}>
+            <Row justify="space-between" style={styles.navBar}>
+                <WelcomeText>
+                    {!!user && (
+                        <>
+                            Welcome back, <b>{entityRegistry.getDisplayName(EntityType.CorpUser, user)}</b>.
+                        </>
+                    )}
+                </WelcomeText>
                 <NavGroup>
                     <AdminHeaderLinks />
                     <ManageAccount
                         urn={user?.urn || ''}
-                        pictureLink={user?.editableInfo?.pictureLink || ''}
-                        name={user?.info?.firstName || user?.username || undefined}
+                        pictureLink={user?.editableProperties?.pictureLink || ''}
+                        name={(user && entityRegistry.getDisplayName(EntityType.CorpUser, user)) || undefined}
                     />
                 </NavGroup>
             </Row> */}
@@ -231,7 +238,7 @@ export const HomePageHeader = () => {
                                         onClick={() =>
                                             navigateToSearchUrl({
                                                 type: undefined,
-                                                query: suggestion,
+                                                query: `"${suggestion}"`,
                                                 history,
                                             })
                                         }

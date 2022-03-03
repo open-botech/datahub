@@ -19,6 +19,8 @@ services:
     ports:
     - 29092:29092
     - 9092:9092
+    volumes:
+    - broker:/var/lib/kafka/data/
   datahub-actions:
     depends_on:
     - datahub-gms
@@ -79,6 +81,8 @@ services:
     - ENTITY_REGISTRY_CONFIG_PATH=/datahub/datahub-gms/resources/entity-registry.yml
     - MAE_CONSUMER_ENABLED=true
     - MCE_CONSUMER_ENABLED=true
+    - UI_INGESTION_ENABLED=true
+    - UI_INGESTION_DEFAULT_CLI_VERSION=0.8.26.6
     hostname: datahub-gms
     image: linkedin/datahub-gms:${DATAHUB_VERSION:-head}
     ports:
@@ -190,6 +194,7 @@ services:
     - zkdata:/var/opt/zookeeper
 version: '2.3'
 volumes:
+  broker: null
   esdata: null
   mysqldata: null
   neo4jdata: null
