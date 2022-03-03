@@ -891,6 +891,7 @@ class KafkaConnectSource(Source):
                             source_platform,
                             source_dataset,
                             platform_instance=source_platform_instance,
+                            env=self.config.env,
                         )
                     ]
                     if source_dataset
@@ -901,6 +902,7 @@ class KafkaConnectSource(Source):
                         target_platform,
                         target_dataset,
                         platform_instance=target_platform_instance,
+                        env=self.config.env,
                     )
                 ]
 
@@ -976,7 +978,12 @@ class KafkaConnectSource(Source):
                     changeType=models.ChangeTypeClass.UPSERT,
                     aspectName="dataPlatformInstance",
                     aspect=models.DataPlatformInstanceClass(
-                        platform=builder.make_data_platform_urn(target_platform)
+                        platform=builder.make_data_platform_urn(target_platform),
+                        instance=builder.make_dataplatform_instance_urn(
+                            target_platform, target_platform_instance
+                        )
+                        if target_platform_instance
+                        else None,
                     ),
                 )
 
@@ -995,7 +1002,12 @@ class KafkaConnectSource(Source):
                         changeType=models.ChangeTypeClass.UPSERT,
                         aspectName="dataPlatformInstance",
                         aspect=models.DataPlatformInstanceClass(
-                            platform=builder.make_data_platform_urn(source_platform)
+                            platform=builder.make_data_platform_urn(source_platform),
+                            instance=builder.make_dataplatform_instance_urn(
+                                source_platform, source_platform_instance
+                            )
+                            if source_platform_instance
+                            else None,
                         ),
                     )
 
