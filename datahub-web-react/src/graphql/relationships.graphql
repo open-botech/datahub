@@ -70,11 +70,6 @@ fragment relationshipFields on Entity {
             ...platformFields
         }
    }     
-    ... on DatasetField {
-           urn,
-           type,
-            ...datasetFieldRelationships
-        }
     ... on MLModelGroup {
         urn
         type
@@ -152,19 +147,6 @@ fragment datasetRelationships on Dataset {
     }
     outgoing: relationships(
         input: { types: ["DownstreamOf", "Consumes", "Produces"], direction: OUTGOING, start: 0, count: 100 }
-    ) {
-        ...leafRelationshipResults
-    }
-}
-
-fragment datasetFieldRelationships on DatasetField {
-    incoming: relationships(
-        input: { types: ["DataDerivedFrom"], direction: INCOMING, start: 0, count: 100 }
-    ) {
-        ...leafRelationshipResults
-    }
-    outgoing: relationships(
-        input: { types: ["DataDerivedFrom"], direction: OUTGOING, start: 0, count: 100 }
     ) {
         ...leafRelationshipResults
     }
