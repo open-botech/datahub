@@ -1,6 +1,6 @@
 import { SourceConfig } from '../types';
 import clickhouseLogo from '../../../../../images/clickhouselogo.svg';
-import icon from '../../../../../images/clickhouse.png'
+import icon from '../../../../../images/clickHouse.png'
 
 
 const baseUrl = window.location.origin;
