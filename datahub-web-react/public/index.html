@@ -2,6 +2,19 @@
 <html lang="en">
     <script>
       var PRODUCT= '%PRODUCT%'
+
+      window.addEventListener("message", function(e){
+        const theme = e?.data
+        console.log(theme)
+        if(theme === 'light') {
+          document.getElementById('dark-mode').remove()
+
+          const body = document.getElementsByTagName('body')[0]
+          if(body) {
+            body.setAttribute('class', 'light')
+          }
+        }
+      }, false);
     </script>
     <head>
         <meta charset="utf-8" />

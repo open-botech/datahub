@@ -15,7 +15,6 @@ const Container = styled(Button)`
     border-radius: 4px;
     align-items: center;
     flex-direction: column;
-    background: #25282C;
     &&:hover {
       border: 1px solid ${ANTD_GRAY[4]};
     }

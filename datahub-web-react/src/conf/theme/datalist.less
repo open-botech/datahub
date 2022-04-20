@@ -1,3 +1,82 @@
+.light {
+  .datalist-page{
+    background: #ffffff;
+    .datalist-page-title{
+      border-color: #F0F0F0;
+      .title{
+        color: rgba(0, 0, 0, 0.85);
+      }
+    }
+    .datalist-page-table{
+      .table-card{
+        background: rgba(0, 0, 0, 0.01);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        .card-info{
+          .card-info-item{
+            color: rgba(0, 0, 0, 0.6);
+            .card-info-item-name{
+              color: rgba(0, 0, 0, 0.85);
+            }
+          }
+        }
+      }
+    }
+  }
+  .dark-modal{
+    .ant-modal-content{
+      background-color: #ffffff;
+      .ant-modal-header{
+        background-color: #ffffff;
+        border-bottom: 1px solid #444444;
+        .ant-modal-title{
+          color: rgba(0, 0, 0, 0.85);
+        }
+      }
+      .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
+        display: none;
+      }
+      .ant-modal-close{
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .ant-modal-body{
+        background-color: #ffffff;
+        overflow-y: auto;
+        .ant-table{
+          .ant-table-thead, .ant-table-tbody{
+            .ant-table-cell{
+              background-color: #ffffff;
+              color: rgba(0, 0, 0, 0.85);
+            }
+          }
+          .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
+            border-bottom: 1px solid #444444;
+          }
+        }
+      }
+      .ant-typography{
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+        color: #1890FF
+      }
+      .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+        color: rgba(0, 0, 0, 0.45);
+      }
+      .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+        color: rgba(0, 0, 0, 0.85);
+      }
+    }
+    .ant-btn-background-ghost.ant-btn-primary[disabled], .ant-btn-background-ghost.ant-btn-primary[disabled]:hover, .ant-btn-background-ghost.ant-btn-primary[disabled]:focus, .ant-btn-background-ghost.ant-btn-primary[disabled]:active{
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .ant-btn[disabled], .ant-btn[disabled]:hover, .ant-btn[disabled]:focus, .ant-btn[disabled]:active{
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active{
+      background: transparent;
+    }
+  }
+}
 .datalist-page{
   width: 100%;
   height: 100%;
