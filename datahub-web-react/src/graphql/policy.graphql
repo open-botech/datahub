@@ -13,17 +13,76 @@ query listPolicies($input: ListPoliciesInput!) {
                 type
                 allResources
                 resources
+                filter {
+                    criteria {
+                        field
+                        values {
+                            value
+                            entity {
+                                ...searchResultFields
+                            }
+                        }
+                        condition
+                    }
+                }
             }
             privileges
             actors {
                 users
                 groups
+                roles
                 allUsers
                 allGroups
                 resourceOwners
+                resolvedUsers {
+                    username
+                    urn
+                    properties {
+                        active
+                        displayName
+                        title
+                        firstName
+                        lastName
+                        fullName
+                        email
+                    }
+                    editableProperties {
+                        displayName
+                        pictureLink
+                        teams
+                        title
+                        skills
+                    }
+                }
+                resolvedGroups {
+                    name
+                    urn
+                    properties {
+                        displayName
+                        description
+                        email
+                    }
+                    editableProperties {
+                        description
+                        slack
+                        email
+                    }
+                }
+                resolvedRoles {
+                    urn
+                    type
+                    name
+                    description
+                }
             }
             editable
         }
+    }
+}
+
+query getGrantedPrivileges($input: GetGrantedPrivilegesInput!) {
+    getGrantedPrivileges(input: $input) {
+        privileges
     }
 }
 

@@ -1,6 +1,145 @@
 [
 {
-    "auditHeader": null,
+    "entityType": "container",
+    "entityUrn": "urn:li:container:c7a81f6ed9a7cdd0c74436ac2dc4d1f7",
+    "changeType": "UPSERT",
+    "aspectName": "containerProperties",
+    "aspect": {
+        "value": "{\"customProperties\": {\"platform\": \"trino\", \"instance\": \"PROD\", \"database\": \"hivedb\"}, \"name\": \"hivedb\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:c7a81f6ed9a7cdd0c74436ac2dc4d1f7",
+    "changeType": "UPSERT",
+    "aspectName": "status",
+    "aspect": {
+        "value": "{\"removed\": false}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:c7a81f6ed9a7cdd0c74436ac2dc4d1f7",
+    "changeType": "UPSERT",
+    "aspectName": "dataPlatformInstance",
+    "aspect": {
+        "value": "{\"platform\": \"urn:li:dataPlatform:trino\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:c7a81f6ed9a7cdd0c74436ac2dc4d1f7",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"Database\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84",
+    "changeType": "UPSERT",
+    "aspectName": "containerProperties",
+    "aspect": {
+        "value": "{\"customProperties\": {\"platform\": \"trino\", \"instance\": \"PROD\", \"database\": \"hivedb\", \"schema\": \"db1\"}, \"name\": \"db1\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84",
+    "changeType": "UPSERT",
+    "aspectName": "status",
+    "aspect": {
+        "value": "{\"removed\": false}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84",
+    "changeType": "UPSERT",
+    "aspectName": "dataPlatformInstance",
+    "aspect": {
+        "value": "{\"platform\": \"urn:li:dataPlatform:trino\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"Schema\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "container",
+    "entityUrn": "urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:c7a81f6ed9a7cdd0c74436ac2dc4d1f7\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test,PROD)",
@@ -20,11 +159,10 @@
                             "numrows": "1",
                             "rawdatasize": "32",
                             "totalsize": "33",
-                            "transient_lastddltime": "1639443036"
+                            "transient_lastddltime": "1665201851"
                         },
-                        "externalUrl": null,
+                        "name": "array_struct_test",
                         "description": "This table has array of structs",
-                        "uri": null,
                         "tags": []
                     }
                 },
@@ -35,17 +173,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -55,7 +188,6 @@
                         "fields": [
                             {
                                 "fieldPath": "property_id",
-                                "jsonPath": null,
                                 "nullable": true,
                                 "description": "id of property",
                                 "type": {
@@ -65,35 +197,29 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service",
-                                "jsonPath": null,
                                 "nullable": true,
                                 "description": "service types and providers",
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "record"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))]))",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))]))\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service.[type=string].type",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -101,50 +227,66 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service.[type=array].[type=int].provider",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "int"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(INTEGER())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(INTEGER())\"}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.map_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.map_test,PROD)",
@@ -162,11 +304,9 @@
                             "numrows": "0",
                             "rawdatasize": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443040"
+                            "transient_lastddltime": "1665201853"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "map_test",
                         "tags": []
                     }
                 },
@@ -177,17 +317,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -197,9 +332,7 @@
                         "fields": [
                             {
                                 "fieldPath": "keyvalue",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -207,51 +340,64 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=map].[type=string].recordid",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.MapType": {
-                                            "keyType": null,
-                                            "valueType": null
+                                            "keyType": "string",
+                                            "valueType": "string"
                                         }
                                     }
                                 },
                                 "nativeDataType": "MAP(INTEGER(), VARCHAR())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"MAP(INTEGER(), VARCHAR())\", \"key_type\": {\"type\": \"int\", \"native_data_type\": \"INTEGER()\", \"_nullable\": true}, \"key_native_data_type\": \"INTEGER()\"}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.map_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.nested_struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.nested_struct_test,PROD)",
@@ -269,11 +415,9 @@
                             "numrows": "0",
                             "rawdatasize": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443039"
+                            "transient_lastddltime": "1665201853"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "nested_struct_test",
                         "tags": []
                     }
                 },
@@ -284,17 +428,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -304,9 +443,7 @@
                         "fields": [
                             {
                                 "fieldPath": "property_id",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -314,16 +451,11 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -331,16 +463,12 @@
                                 },
                                 "nativeDataType": "ROW([('type', VARCHAR()), ('provider', ROW([('name', VARCHAR(length=50)), ('id', SMALLINT())]))])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('type', VARCHAR()), ('provider', ROW([('name', VARCHAR(length=50)), ('id', SMALLINT())]))])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=string].type",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -348,16 +476,12 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=struct].provider",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -365,16 +489,12 @@
                                 },
                                 "nativeDataType": "ROW([('name', VARCHAR(length=50)), ('id', SMALLINT())])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('name', VARCHAR(length=50)), ('id', SMALLINT())])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=struct].provider.[type=string].name",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -382,16 +502,12 @@
                                 },
                                 "nativeDataType": "VARCHAR(length=50)",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR(length=50)\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=struct].provider.[type=int].id",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -399,31 +515,49 @@
                                 },
                                 "nativeDataType": "SMALLINT()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"SMALLINT()\", \"_nullable\": true}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.nested_struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.pokes,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.pokes,PROD)",
@@ -436,11 +570,9 @@
                 {
                     "com.linkedin.pegasus2avro.dataset.DatasetProperties": {
                         "customProperties": {
-                            "transient_lastddltime": "1639443026"
+                            "transient_lastddltime": "1665201845"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "pokes",
                         "tags": []
                     }
                 },
@@ -451,17 +583,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -471,9 +598,7 @@
                         "fields": [
                             {
                                 "fieldPath": "foo",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -481,16 +606,11 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "bar",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -498,16 +618,11 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "baz",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -515,31 +630,48 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.pokes,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test,PROD)",
@@ -557,11 +689,9 @@
                             "numrows": "0",
                             "rawdatasize": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443031"
+                            "transient_lastddltime": "1665201847"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "struct_test",
                         "tags": []
                     }
                 },
@@ -572,17 +702,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -592,9 +717,7 @@
                         "fields": [
                             {
                                 "fieldPath": "property_id",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -602,16 +725,11 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -619,16 +737,12 @@
                                 },
                                 "nativeDataType": "ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=string].type",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -636,50 +750,66 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=array].[type=int].provider",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "int"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(INTEGER())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(INTEGER())\"}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test_view_materialized,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test_view_materialized,PROD)",
@@ -694,11 +824,9 @@
                         "customProperties": {
                             "numfiles": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443039"
+                            "transient_lastddltime": "1665201853"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "struct_test_view_materialized",
                         "tags": []
                     }
                 },
@@ -709,17 +837,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -729,9 +852,7 @@
                         "fields": [
                             {
                                 "fieldPath": "property_id",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -739,16 +860,11 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -756,16 +872,12 @@
                                 },
                                 "nativeDataType": "ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=string].type",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -773,50 +885,66 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].service.[type=array].[type=int].provider",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "int"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(INTEGER())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(INTEGER())\"}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.struct_test_view_materialized,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1._test_table_underscore,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1._test_table_underscore,PROD)",
@@ -834,11 +962,9 @@
                             "numrows": "0",
                             "rawdatasize": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443031"
+                            "transient_lastddltime": "1665201847"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "_test_table_underscore",
                         "tags": []
                     }
                 },
@@ -849,17 +975,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -869,9 +990,7 @@
                         "fields": [
                             {
                                 "fieldPath": "foo",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -879,16 +998,11 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "bar",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -896,31 +1010,48 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1._test_table_underscore,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.union_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.union_test,PROD)",
@@ -938,11 +1069,9 @@
                             "numrows": "0",
                             "rawdatasize": "0",
                             "totalsize": "0",
-                            "transient_lastddltime": "1639443040"
+                            "transient_lastddltime": "1665201853"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "union_test",
                         "tags": []
                     }
                 },
@@ -953,17 +1082,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -973,9 +1097,7 @@
                         "fields": [
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -983,16 +1105,12 @@
                                 },
                                 "nativeDataType": "ROW([('tag', SMALLINT()), ('field0', INTEGER()), ('field1', DOUBLE()), ('field2', ARRAY(VARCHAR())), ('field3', ROW([('a', INTEGER()), ('b', VARCHAR())]))])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('tag', SMALLINT()), ('field0', INTEGER()), ('field1', DOUBLE()), ('field2', ARRAY(VARCHAR())), ('field3', ROW([('a', INTEGER()), ('b', VARCHAR())]))])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=int].tag",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -1000,16 +1118,12 @@
                                 },
                                 "nativeDataType": "SMALLINT()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"SMALLINT()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=int].field0",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -1017,16 +1131,12 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"INTEGER()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=double].field1",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -1034,35 +1144,29 @@
                                 },
                                 "nativeDataType": "DOUBLE()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"DOUBLE()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=array].[type=string].field2",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "string"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(VARCHAR())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(VARCHAR())\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=struct].field3",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.RecordType": {}
@@ -1070,16 +1174,12 @@
                                 },
                                 "nativeDataType": "ROW([('a', INTEGER()), ('b', VARCHAR())])",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ROW([('a', INTEGER()), ('b', VARCHAR())])\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=struct].field3.[type=int].a",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -1087,16 +1187,12 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"INTEGER()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=struct].foo.[type=struct].field3.[type=string].b",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -1104,31 +1200,49 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
     }
 },
 {
-    "auditHeader": null,
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.union_test,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"table\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test_view,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "container",
+    "aspect": {
+        "value": "{\"container\": \"urn:li:container:304fd7ad57dc0ab32fb2cb778cbccd84\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
     "proposedSnapshot": {
         "com.linkedin.pegasus2avro.metadata.snapshot.DatasetSnapshot": {
             "urn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test_view,PROD)",
@@ -1141,13 +1255,11 @@
                 {
                     "com.linkedin.pegasus2avro.dataset.DatasetProperties": {
                         "customProperties": {
-                            "transient_lastddltime": "1639443039",
+                            "transient_lastddltime": "1665201853",
                             "view_definition": "SELECT \"property_id\", \"service\"\nFROM \"db1\".\"array_struct_test\"",
                             "is_view": "True"
                         },
-                        "externalUrl": null,
-                        "description": null,
-                        "uri": null,
+                        "name": "array_struct_test_view",
                         "tags": []
                     }
                 },
@@ -1158,17 +1270,12 @@
                         "version": 0,
                         "created": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
                         "lastModified": {
                             "time": 0,
-                            "actor": "urn:li:corpuser:unknown",
-                            "impersonator": null
+                            "actor": "urn:li:corpuser:unknown"
                         },
-                        "deleted": null,
-                        "dataset": null,
-                        "cluster": null,
                         "hash": "",
                         "platformSchema": {
                             "com.linkedin.pegasus2avro.schema.MySqlDDL": {
@@ -1178,9 +1285,7 @@
                         "fields": [
                             {
                                 "fieldPath": "property_id",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.NumberType": {}
@@ -1188,35 +1293,28 @@
                                 },
                                 "nativeDataType": "INTEGER()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
-                                "isPartOfKey": false,
-                                "jsonProps": null
+                                "isPartOfKey": false
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "record"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))]))",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(ROW([('type', VARCHAR()), ('provider', ARRAY(INTEGER()))]))\"}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service.[type=string].type",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.StringType": {}
@@ -1224,46 +1322,63 @@
                                 },
                                 "nativeDataType": "VARCHAR()",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"VARCHAR()\", \"_nullable\": true}"
                             },
                             {
                                 "fieldPath": "[version=2.0].[type=struct].[type=array].[type=struct].service.[type=array].[type=int].provider",
-                                "jsonPath": null,
                                 "nullable": true,
-                                "description": null,
                                 "type": {
                                     "type": {
                                         "com.linkedin.pegasus2avro.schema.ArrayType": {
-                                            "nestedType": null
+                                            "nestedType": [
+                                                "int"
+                                            ]
                                         }
                                     }
                                 },
                                 "nativeDataType": "ARRAY(INTEGER())",
                                 "recursive": false,
-                                "globalTags": null,
-                                "glossaryTerms": null,
                                 "isPartOfKey": false,
                                 "jsonProps": "{\"native_data_type\": \"ARRAY(INTEGER())\"}"
                             }
-                        ],
-                        "primaryKeys": null,
-                        "foreignKeysSpecs": null,
-                        "foreignKeys": null
+                        ]
                     }
                 }
             ]
         }
     },
-    "proposedDelta": null,
     "systemMetadata": {
         "lastObserved": 1632398400000,
-        "runId": "trino-hive-test",
-        "registryName": null,
-        "registryVersion": null,
-        "properties": null
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test_view,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "subTypes",
+    "aspect": {
+        "value": "{\"typeNames\": [\"view\"]}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
+    }
+},
+{
+    "entityType": "dataset",
+    "entityUrn": "urn:li:dataset:(urn:li:dataPlatform:trino,hivedb.db1.array_struct_test_view,PROD)",
+    "changeType": "UPSERT",
+    "aspectName": "viewProperties",
+    "aspect": {
+        "value": "{\"materialized\": false, \"viewLogic\": \"SELECT \\\"property_id\\\", \\\"service\\\"\\nFROM \\\"db1\\\".\\\"array_struct_test\\\"\", \"viewLanguage\": \"SQL\"}",
+        "contentType": "application/json"
+    },
+    "systemMetadata": {
+        "lastObserved": 1632398400000,
+        "runId": "trino-hive-test"
     }
 }
 ]

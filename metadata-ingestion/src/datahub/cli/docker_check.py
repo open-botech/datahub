@@ -1,3 +1,4 @@
+import os
 from contextlib import contextmanager
 from typing import Iterator, List, Optional, Tuple
 
@@ -11,7 +12,6 @@ REQUIRED_CONTAINERS = [
     "kafka-setup",
     "schema-registry",
     "broker",
-    "mysql",
     "zookeeper",
     # These two containers are not necessary - only helpful in debugging.
     # "kafka-topics-ui",
@@ -31,7 +31,10 @@ ENSURE_EXIT_SUCCESS = [
 CONTAINERS_TO_CHECK_IF_PRESENT = [
     # We only add this container in some cases, but if it's present, we
     # definitely want to check that it exits properly.
+    "mysql",
     "mysql-setup",
+    "cassandra",
+    "cassandra-setup",
     "neo4j",
 ]
 
@@ -43,15 +46,34 @@ MIN_MEMORY_NEEDED = 3.8  # GB
 def get_client_with_error() -> Iterator[
     Tuple[docker.DockerClient, Optional[Exception]]
 ]:
+    # This method is structured somewhat strangely because we
+    # need to make sure that we only yield once.
+
+    docker_cli = None
     try:
         docker_cli = docker.from_env()
     except docker.errors.DockerException as error:
-        yield None, error
-    else:
         try:
-            yield docker_cli, None
-        finally:
-            docker_cli.close()
+            # Docker Desktop 4.13.0 broke the docker.sock symlink.
+            # See https://github.com/docker/docker-py/issues/3059.
+            maybe_sock_path = os.path.expanduser("~/.docker/run/docker.sock")
+            if os.path.exists(maybe_sock_path):
+                docker_cli = docker.DockerClient(base_url=f"unix://{maybe_sock_path}")
+            else:
+                yield None, error
+        except docker.errors.DockerException as error:
+            yield None, error
+
+    if docker_cli is not None:
+        try:
+            docker_cli.ping()
+        except docker.errors.DockerException as error:
+            yield None, error
+        else:
+            try:
+                yield docker_cli, None
+            finally:
+                docker_cli.close()
 
 
 def memory_in_gb(mem_bytes: int) -> float:
@@ -86,10 +108,11 @@ def check_local_docker_containers(preflight_only: bool = False) -> List[str]:
         if len(containers) == 0:
             issues.append("quickstart.sh or dev.sh is not running")
         else:
-            existing_containers = set(container.name for container in containers)
+            existing_containers = {container.name for container in containers}
             missing_containers = set(REQUIRED_CONTAINERS) - existing_containers
-            for missing in missing_containers:
-                issues.append(f"{missing} container is not present")
+            issues.extend(
+                f"{missing} container is not present" for missing in missing_containers
+            )
 
         # Check that the containers are running and healthy.
         for container in containers:

@@ -22,7 +22,7 @@ public class SearchDocumentTransformerTest {
 
   @Test
   public void testTransform() throws IOException {
-    SearchDocumentTransformer searchDocumentTransformer = new SearchDocumentTransformer(1000);
+    SearchDocumentTransformer searchDocumentTransformer = new SearchDocumentTransformer(1000, 1000);
     TestEntitySnapshot snapshot = TestEntityUtil.getSnapshot();
     EntitySpec testEntitySpec = TestEntitySpecBuilder.getSpec();
     Optional<String> result = searchDocumentTransformer.transformSnapshot(snapshot, testEntitySpec, false);
@@ -48,11 +48,13 @@ public class SearchDocumentTransformerTest {
     assertEquals(browsePaths.size(), 2);
     assertEquals(browsePaths.get(0).asText(), "/a/b/c");
     assertEquals(browsePaths.get(1).asText(), "d/e/f");
+    assertEquals(parsedJson.get("feature1").asInt(), 2);
+    assertEquals(parsedJson.get("feature2").asInt(), 1);
   }
 
   @Test
   public void testTransformForDelete() throws IOException {
-    SearchDocumentTransformer searchDocumentTransformer = new SearchDocumentTransformer(1000);
+    SearchDocumentTransformer searchDocumentTransformer = new SearchDocumentTransformer(1000, 1000);
     TestEntitySnapshot snapshot = TestEntityUtil.getSnapshot();
     EntitySpec testEntitySpec = TestEntitySpecBuilder.getSpec();
     Optional<String> result = searchDocumentTransformer.transformSnapshot(snapshot, testEntitySpec, true);
@@ -67,5 +69,7 @@ public class SearchDocumentTransformerTest {
     parsedJson.get("browsePaths").getNodeType().equals(JsonNodeType.NULL);
     parsedJson.get("nestedArrayStringField").getNodeType().equals(JsonNodeType.NULL);
     parsedJson.get("nestedIntegerField").getNodeType().equals(JsonNodeType.NULL);
+    parsedJson.get("feature1").getNodeType().equals(JsonNodeType.NULL);
+    parsedJson.get("feature2").getNodeType().equals(JsonNodeType.NULL);
   }
 }

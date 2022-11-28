@@ -1,10 +1,10 @@
 package datahub.spark.model;
 
-import datahub.event.MetadataChangeProposalWrapper;
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
 
+import datahub.event.MetadataChangeProposalWrapper;
+import lombok.Data;
 
 @Data
 public abstract class LineageEvent {
@@ -15,7 +15,7 @@ public abstract class LineageEvent {
 
   public abstract List<MetadataChangeProposalWrapper> asMetadataEvents();
 
-  protected String timeStr() {
+  public String timeStr() {
     return new Date(getTime()).toInstant().toString();
   }
 }

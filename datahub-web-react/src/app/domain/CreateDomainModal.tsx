@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { message, Button, Input, Modal, Typography, Form, Collapse, Tag } from 'antd';
 import { useCreateDomainMutation } from '../../graphql/domain.generated';
+import { useEnterKeyListener } from '../shared/useEnterKeyListener';
+import { groupIdTextValidation } from '../shared/textUtil';
+import analytics, { EventType } from '../analytics';
 
 const SuggestedNamesGroup = styled.div`
     margin-top: 12px;
@@ -14,85 +17,128 @@ const ClickableTag = styled(Tag)`
 `;
 
 type Props = {
-    visible: boolean;
     onClose: () => void;
-    onCreate: (id: string | undefined, name: string, description: string) => void;
+    onCreate: (urn: string, id: string | undefined, name: string, description: string) => void;
 };
 
 const SUGGESTED_DOMAIN_NAMES = ['Engineering', 'Marketing', 'Sales', 'Product'];
 
-export default function CreateDomainModal({ visible, onClose, onCreate }: Props) {
-    const [stagedName, setStagedName] = useState('');
-    const [stagedDescription, setStagedDescription] = useState('');
-    const [stagedId, setStagedId] = useState<string | undefined>(undefined);
+const ID_FIELD_NAME = 'id';
+const NAME_FIELD_NAME = 'name';
+const DESCRIPTION_FIELD_NAME = 'description';
+
+export default function CreateDomainModal({ onClose, onCreate }: Props) {
     const [createDomainMutation] = useCreateDomainMutation();
+    const [createButtonEnabled, setCreateButtonEnabled] = useState(true);
+    const [form] = Form.useForm();
+
+    const setStagedName = (name) => {
+        form.setFieldsValue({
+            name,
+        });
+    };
 
     const onCreateDomain = () => {
         createDomainMutation({
             variables: {
                 input: {
-                    id: stagedId,
-                    name: stagedName,
-                    description: stagedDescription,
+                    id: form.getFieldValue(ID_FIELD_NAME),
+                    name: form.getFieldValue(NAME_FIELD_NAME),
+                    description: form.getFieldValue(DESCRIPTION_FIELD_NAME),
                 },
             },
         })
+            .then(({ data, errors }) => {
+                if (!errors) {
+                    analytics.event({
+                        type: EventType.CreateDomainEvent,
+                    });
+                    message.success({
+                        content: `Created domain!`,
+                        duration: 3,
+                    });
+                    onCreate(
+                        data?.createDomain || '',
+                        form.getFieldValue(ID_FIELD_NAME),
+                        form.getFieldValue(NAME_FIELD_NAME),
+                        form.getFieldValue(DESCRIPTION_FIELD_NAME),
+                    );
+                    form.resetFields();
+                }
+            })
             .catch((e) => {
                 message.destroy();
                 message.error({ content: `Failed to create Domain!: \n ${e.message || ''}`, duration: 3 });
-            })
-            .finally(() => {
-                message.success({
-                    content: `Created domain!`,
-                    duration: 3,
-                });
-                onCreate(stagedId, stagedName, stagedDescription);
-                setStagedName('');
-                setStagedDescription('');
-                setStagedId(undefined);
             });
         onClose();
     };
 
+    // Handle the Enter press
+    useEnterKeyListener({
+        querySelectorToExecuteClick: '#createDomainButton',
+    });
+
     return (
         <Modal
             title="Create new Domain"
-            visible={visible}
+            visible
             onCancel={onClose}
             footer={
                 <>
                     <Button onClick={onClose} type="text">
                         Cancel
                     </Button>
-                    <Button onClick={onCreateDomain} disabled={stagedName === ''}>
+                    <Button id="createDomainButton" onClick={onCreateDomain} disabled={createButtonEnabled}>
                         Create
                     </Button>
                 </>
             }
         >
-            <Form layout="vertical">
-                <Form.Item name="name" label={<Typography.Text strong>Name</Typography.Text>}>
+            <Form
+                form={form}
+                initialValues={{}}
+                layout="vertical"
+                onFieldsChange={() =>
+                    setCreateButtonEnabled(form.getFieldsError().some((field) => field.errors.length > 0))
+                }
+            >
+                <Form.Item label={<Typography.Text strong>Name</Typography.Text>}>
                     <Typography.Paragraph>Give your new Domain a name. </Typography.Paragraph>
-                    <Input
-                        placeholder="A name for your domain"
-                        value={stagedName}
-                        onChange={(event) => setStagedName(event.target.value)}
-                    />
+                    <Form.Item
+                        name={NAME_FIELD_NAME}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Enter a Domain name.',
+                            },
+                            { whitespace: true },
+                            { min: 1, max: 50 },
+                        ]}
+                        hasFeedback
+                    >
+                        <Input placeholder="A name for your domain" />
+                    </Form.Item>
                     <SuggestedNamesGroup>
                         {SUGGESTED_DOMAIN_NAMES.map((name) => {
-                            return <ClickableTag onClick={() => setStagedName(name)}>{name}</ClickableTag>;
+                            return (
+                                <ClickableTag key={name} onClick={() => setStagedName(name)}>
+                                    {name}
+                                </ClickableTag>
+                            );
                         })}
                     </SuggestedNamesGroup>
                 </Form.Item>
-                <Form.Item name="description" label={<Typography.Text strong>Description</Typography.Text>}>
+                <Form.Item label={<Typography.Text strong>Description</Typography.Text>}>
                     <Typography.Paragraph>
                         An optional description for your new domain. You can change this later.
                     </Typography.Paragraph>
-                    <Input
-                        placeholder="A description for your domain"
-                        value={stagedDescription}
-                        onChange={(event) => setStagedDescription(event.target.value)}
-                    />
+                    <Form.Item
+                        name={DESCRIPTION_FIELD_NAME}
+                        rules={[{ whitespace: true }, { min: 1, max: 500 }]}
+                        hasFeedback
+                    >
+                        <Input placeholder="A description for your domain" />
+                    </Form.Item>
                 </Form.Item>
                 <Collapse ghost>
                     <Collapse.Panel header={<Typography.Text type="secondary">Advanced</Typography.Text>} key="1">
@@ -103,11 +149,21 @@ export default function CreateDomainModal({ visible, onClose, onCreate }: Props)
                                 you may provide it here. Be careful, you cannot easily change the domain id after
                                 creation.
                             </Typography.Paragraph>
-                            <Input
-                                placeholder="engineering"
-                                value={stagedId || ''}
-                                onChange={(event) => setStagedId(event.target.value)}
-                            />
+                            <Form.Item
+                                name={ID_FIELD_NAME}
+                                rules={[
+                                    () => ({
+                                        validator(_, value) {
+                                            if (value && groupIdTextValidation(value)) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Please enter a valid Domain id'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input placeholder="engineering" />
+                            </Form.Item>
                         </Form.Item>
                     </Collapse.Panel>
                 </Collapse>

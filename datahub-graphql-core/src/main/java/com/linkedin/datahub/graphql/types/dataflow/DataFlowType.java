@@ -2,7 +2,6 @@ package com.linkedin.datahub.graphql.types.dataflow;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
 import com.linkedin.common.urn.CorpuserUrn;
 import com.linkedin.common.urn.DataFlowUrn;
 import com.linkedin.common.urn.Urn;
@@ -12,16 +11,13 @@ import com.linkedin.datahub.graphql.QueryContext;
 import com.linkedin.datahub.graphql.authorization.AuthorizationUtils;
 import com.linkedin.datahub.graphql.authorization.ConjunctivePrivilegeGroup;
 import com.linkedin.datahub.graphql.authorization.DisjunctivePrivilegeGroup;
-import com.linkedin.entity.EntityResponse;
-import com.linkedin.entity.client.EntityClient;
-import com.linkedin.metadata.Constants;
-import com.linkedin.metadata.authorization.PoliciesConfig;
 import com.linkedin.datahub.graphql.exception.AuthorizationException;
 import com.linkedin.datahub.graphql.generated.AutoCompleteResults;
 import com.linkedin.datahub.graphql.generated.BrowsePath;
 import com.linkedin.datahub.graphql.generated.BrowseResults;
 import com.linkedin.datahub.graphql.generated.DataFlow;
 import com.linkedin.datahub.graphql.generated.DataFlowUpdateInput;
+import com.linkedin.datahub.graphql.generated.Entity;
 import com.linkedin.datahub.graphql.generated.EntityType;
 import com.linkedin.datahub.graphql.generated.FacetFilterInput;
 import com.linkedin.datahub.graphql.generated.SearchResults;
@@ -30,34 +26,38 @@ import com.linkedin.datahub.graphql.types.BrowsableEntityType;
 import com.linkedin.datahub.graphql.types.MutableType;
 import com.linkedin.datahub.graphql.types.SearchableEntityType;
 import com.linkedin.datahub.graphql.types.dataflow.mappers.DataFlowMapper;
-import com.linkedin.datahub.graphql.types.dataflow.mappers.DataFlowUpdateInputSnapshotMapper;
+import com.linkedin.datahub.graphql.types.dataflow.mappers.DataFlowUpdateInputMapper;
 import com.linkedin.datahub.graphql.types.mappers.AutoCompleteResultsMapper;
 import com.linkedin.datahub.graphql.types.mappers.BrowsePathsMapper;
 import com.linkedin.datahub.graphql.types.mappers.BrowseResultMapper;
 import com.linkedin.datahub.graphql.types.mappers.UrnSearchResultsMapper;
-import com.linkedin.entity.Entity;
+import com.linkedin.entity.EntityResponse;
+import com.linkedin.entity.client.EntityClient;
+import com.linkedin.metadata.Constants;
+import com.linkedin.metadata.authorization.PoliciesConfig;
 import com.linkedin.metadata.browse.BrowseResult;
 import com.linkedin.metadata.query.AutoCompleteResult;
 import com.linkedin.metadata.search.SearchResult;
-import com.linkedin.metadata.snapshot.DataFlowSnapshot;
-import com.linkedin.metadata.snapshot.Snapshot;
+import com.linkedin.mxe.MetadataChangeProposal;
 import com.linkedin.r2.RemoteInvocationException;
 import graphql.execution.DataFetcherResult;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.linkedin.datahub.graphql.Constants.BROWSE_PATH_DELIMITER;
+import static com.linkedin.datahub.graphql.Constants.*;
 import static com.linkedin.metadata.Constants.*;
 
 
-public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEntityType<DataFlow>, MutableType<DataFlowUpdateInput> {
+public class DataFlowType implements SearchableEntityType<DataFlow, String>, BrowsableEntityType<DataFlow, String>,
+                                     MutableType<DataFlowUpdateInput, DataFlow> {
 
     private static final Set<String> ASPECTS_TO_RESOLVE = ImmutableSet.of(
         DATA_FLOW_KEY_ASPECT_NAME,
@@ -68,7 +68,9 @@ public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEn
         GLOBAL_TAGS_ASPECT_NAME,
         GLOSSARY_TERMS_ASPECT_NAME,
         STATUS_ASPECT_NAME,
-        DOMAINS_ASPECT_NAME
+        DOMAINS_ASPECT_NAME,
+        DEPRECATION_ASPECT_NAME,
+        DATA_PLATFORM_INSTANCE_ASPECT_NAME
     );
     private static final Set<String> FACET_FIELDS = ImmutableSet.of("orchestrator", "cluster");
     private final EntityClient _entityClient;
@@ -83,6 +85,11 @@ public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEn
     }
 
     @Override
+    public Function<Entity, String> getKeyProvider() {
+        return Entity::getUrn;
+    }
+
+    @Override
     public Class<DataFlow> objectClass() {
         return DataFlow.class;
     }
@@ -93,7 +100,8 @@ public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEn
     }
 
     @Override
-    public List<DataFetcherResult<DataFlow>> batchLoad(final List<String> urnStrs, final QueryContext context) throws Exception {
+    public List<DataFetcherResult<DataFlow>> batchLoad(final List<String> urnStrs, @Nonnull final QueryContext context)
+        throws Exception {
         final List<Urn> urns = urnStrs.stream()
             .map(UrnUtils::getUrn)
             .collect(Collectors.toList());
@@ -141,14 +149,6 @@ public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEn
         return AutoCompleteResultsMapper.map(result);
     }
 
-    private DataFlowUrn getDataFlowUrn(String urnStr) {
-        try {
-            return DataFlowUrn.createFromString(urnStr);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(String.format("Failed to retrieve dataflow with urn %s, invalid urn", urnStr));
-        }
-    }
-
     @Override
     public BrowseResults browse(@Nonnull List<String> path, @Nullable List<FacetFilterInput> filters, int start,
         int count, @Nonnull QueryContext context) throws Exception {
@@ -175,14 +175,11 @@ public class DataFlowType implements SearchableEntityType<DataFlow>, BrowsableEn
 
         if (isAuthorized(urn, input, context)) {
             final CorpuserUrn actor = CorpuserUrn.createFromString(context.getAuthentication().getActor().toUrnStr());
-            final DataFlowSnapshot dataFlowSnapshot = DataFlowUpdateInputSnapshotMapper.map(input, actor);
-            dataFlowSnapshot.setUrn(DataFlowUrn.createFromString(urn));
-            final Snapshot snapshot = Snapshot.create(dataFlowSnapshot);
+            final Collection<MetadataChangeProposal> proposals = DataFlowUpdateInputMapper.map(input, actor);
+            proposals.forEach(proposal -> proposal.setEntityUrn(UrnUtils.getUrn(urn)));
 
             try {
-                Entity entity = new Entity();
-                entity.setValue(snapshot);
-                _entityClient.update(entity, context.getAuthentication());
+                _entityClient.batchIngestProposals(proposals, context.getAuthentication(), false);
             } catch (RemoteInvocationException e) {
                 throw new RuntimeException(String.format("Failed to write entity with urn %s", urn), e);
             }

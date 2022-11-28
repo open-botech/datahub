@@ -1,6 +1,7 @@
 require('dotenv').config();
 const CracoAntDesignPlugin = require('craco-antd');
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const themeConfig = require(`./src/conf/theme/${process.env.REACT_APP_THEME_CONFIG}`);
 
@@ -13,6 +14,23 @@ function addLessPrefixToKeys(styles) {
 }
 
 module.exports = {
+    webpack: {
+        plugins: {
+            add: [
+                // Self host images by copying them to the build directory
+                new CopyWebpackPlugin({
+                    patterns: [{ from: 'src/images', to: 'platforms' }],
+                }),
+                // Copy monaco-editor files to the build directory
+                new CopyWebpackPlugin({
+                    patterns: [
+                        { from: "node_modules/monaco-editor/min/vs/", to: "monaco-editor/vs" },
+                        { from: "node_modules/monaco-editor/min-maps/vs/", to: "monaco-editor/min-maps/vs" },
+                    ],
+                }),
+            ],
+        },
+    },
     plugins: [
         {
             plugin: CracoAntDesignPlugin,

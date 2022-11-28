@@ -13,6 +13,7 @@ query getBrowseResults($input: BrowseInput!) {
                 name
                 origin
                 properties {
+                    name
                     description
                 }
                 editableProperties {
@@ -69,13 +70,17 @@ query getBrowseResults($input: BrowseInput!) {
                 domain {
                     ...entityDomain
                 }
+                subTypes {
+                    typeNames
+                }
             }
             ... on GlossaryTerm {
-                name
                 ownership {
                     ...ownershipFields
                 }
-                glossaryTermInfo {
+                properties {
+                    name
+                    description
                     definition
                     termSource
                     sourceRef
@@ -145,6 +150,33 @@ query getBrowseResults($input: BrowseInput!) {
                 }
                 platform {
                     ...platformFields
+                }
+                domain {
+                    ...entityDomain
+                }
+            }
+            ... on DataJob {
+                urn
+                type
+                dataFlow {
+                    ...nonRecursiveDataFlowFields
+                }
+                jobId
+                ownership {
+                    ...ownershipFields
+                }
+                properties {
+                    name
+                    description
+                }
+                globalTags {
+                    ...globalTagsFields
+                }
+                glossaryTerms {
+                    ...glossaryTerms
+                }
+                editableProperties {
+                    description
                 }
                 domain {
                     ...entityDomain

@@ -1,49 +1,23 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Group } from '@vx/group';
 import { LinkHorizontal } from '@vx/shape';
 import styled from 'styled-components';
 
 import { useEntityRegistry } from '../useEntityRegistry';
 import { IconStyleType } from '../entity/Entity';
-import { NodeData, Direction, VizNode, EntitySelectParams } from './types';
+import { Direction, VizNode, EntitySelectParams, EntityAndType } from './types';
 import { ANTD_GRAY } from '../entity/shared/constants';
 import { capitalizeFirstLetter } from '../shared/textUtil';
-import { nodeHeightFromTitleLength } from './utils/nodeHeightFromTitleLength';
+import { getShortenedTitle, nodeHeightFromTitleLength } from './utils/titleUtils';
 import { LineageExplorerContext } from './utils/LineageExplorerContext';
+import { useGetEntityLineageLazyQuery } from '../../graphql/lineage.generated';
+import { useIsSeparateSiblingsMode } from '../entity/shared/siblingUtils';
+import { centerX, centerY, iconHeight, iconWidth, iconX, iconY, textX, width } from './constants';
+import LineageEntityColumns from './LineageEntityColumns';
+import { convertInputFieldsToSchemaFields } from './utils/columnLineageUtils';
 
 const CLICK_DELAY_THRESHOLD = 1000;
 const DRAG_DISTANCE_THRESHOLD = 20;
-
-function truncate(input, length) {
-    if (!input) return '';
-    if (input.length > length) {
-        return `${input.substring(0, length)}...`;
-    }
-    return input;
-}
-
-function getLastTokenOfTitle(title?: string): string {
-    if (!title) return '';
-
-    const lastToken = title?.split('.').slice(-1)[0];
-
-    // if the last token does not contain any content, the string should not be tokenized on `.`
-    if (lastToken.replace(/\s/g, '').length === 0) {
-        return title;
-    }
-
-    return lastToken;
-}
-
-export const width = 212;
-export const height = 80;
-const iconWidth = 32;
-const iconHeight = 32;
-const iconX = -width / 2 + 22;
-const iconY = -iconHeight / 2;
-const centerX = -width / 2;
-const centerY = -height / 2;
-const textX = iconX + iconWidth + 8;
 
 const PointerGroup = styled(Group)`
     cursor: pointer;
@@ -69,11 +43,10 @@ export default function LineageEntityNode({
     onHover,
     onDrag,
     onExpandClick,
-    direction,
     isCenterNode,
     nodesToRenderByUrn,
 }: {
-    node: { x: number; y: number; data: Omit<NodeData, 'children'> };
+    node: VizNode;
     isSelected: boolean;
     isHovered: boolean;
     isCenterNode: boolean;
@@ -81,13 +54,26 @@ export default function LineageEntityNode({
     onEntityCenter: (EntitySelectParams) => void;
     onHover: (EntitySelectParams) => void;
     onDrag: (params: EntitySelectParams, event: React.MouseEvent) => void;
-    onExpandClick: (LineageExpandParams) => void;
-    direction: Direction;
+    onExpandClick: (data: EntityAndType) => void;
     nodesToRenderByUrn: Record<string, VizNode>;
 }) {
-    const { expandTitles } = useContext(LineageExplorerContext);
+    const { direction } = node;
+    const { expandTitles, collapsedColumnsNodes, showColumns } = useContext(LineageExplorerContext);
     const [isExpanding, setIsExpanding] = useState(false);
     const [expandHover, setExpandHover] = useState(false);
+    const [getAsyncEntityLineage, { data: asyncLineageData }] = useGetEntityLineageLazyQuery();
+    const isHideSiblingMode = useIsSeparateSiblingsMode();
+    const areColumnsCollapsed = !!collapsedColumnsNodes[node?.data?.urn || 'noop'];
+
+    useEffect(() => {
+        if (asyncLineageData && asyncLineageData.entity) {
+            const entityAndType = {
+                type: asyncLineageData.entity.type,
+                entity: { ...asyncLineageData.entity },
+            } as EntityAndType;
+            onExpandClick(entityAndType);
+        }
+    }, [asyncLineageData, onExpandClick]);
 
     const entityRegistry = useEntityRegistry();
     const unexploredHiddenChildren =
@@ -104,7 +90,21 @@ export default function LineageEntityNode({
         [],
     );
 
-    const nodeHeight = nodeHeightFromTitleLength(expandTitles ? node.data.name : undefined);
+    let platformDisplayText = capitalizeFirstLetter(
+        node.data.platform?.properties?.displayName || node.data.platform?.name,
+    );
+    if (node.data.siblingPlatforms && !isHideSiblingMode) {
+        platformDisplayText = node.data.siblingPlatforms
+            .map((platform) => platform.properties?.displayName || platform.name)
+            .join(' & ');
+    }
+
+    const nodeHeight = nodeHeightFromTitleLength(
+        expandTitles ? node.data.expandedName || node.data.name : undefined,
+        node.data.schemaMetadata?.fields || convertInputFieldsToSchemaFields(node.data.inputFields),
+        showColumns,
+        areColumnsCollapsed,
+    );
 
     return (
         <PointerGroup data-testid={`node-${node.data.urn}-${direction}`} top={node.x} left={node.y}>
@@ -139,7 +139,12 @@ export default function LineageEntityNode({
                     <Group
                         onClick={() => {
                             setIsExpanding(true);
-                            onExpandClick({ urn: node.data.urn, type: node.data.type, direction });
+                            if (node.data.urn && node.data.type) {
+                                // getAsyncEntity(node.data.urn, node.data.type);
+                                getAsyncEntityLineage({
+                                    variables: { urn: node.data.urn, separateSiblings: isHideSiblingMode, showColumns },
+                                });
+                            }
                         }}
                         onMouseOver={() => {
                             setExpandHover(true);
@@ -227,23 +232,42 @@ export default function LineageEntityNode({
                     // eslint-disable-next-line react/style-prop-object
                     style={{ filter: isSelected ? 'url(#shadow1-selected)' : 'url(#shadow1)' }}
                 />
-                {node.data.icon ? (
+                {node.data.siblingPlatforms && !isHideSiblingMode && (
+                    <svg x={iconX} y={iconY - 5}>
+                        <image
+                            // preserveAspectRatio="none"
+                            y={0}
+                            height={iconHeight * (3 / 4)}
+                            width={iconWidth * (3 / 4)}
+                            href={node.data.siblingPlatforms[0]?.properties?.logoUrl || ''}
+                            clipPath="url(#clipPolygonTop)"
+                        />
+                        <image
+                            // preserveAspectRatio="none"
+                            y={25}
+                            height={iconHeight * (3 / 4)}
+                            width={iconWidth * (3 / 4)}
+                            clipPath="url(#clipPolygon)"
+                            href={node.data.siblingPlatforms[1]?.properties?.logoUrl || ''}
+                        />
+                    </svg>
+                )}
+                {(!node.data.siblingPlatforms || isHideSiblingMode) && node.data.icon && (
                     <image href={node.data.icon} height={iconHeight} width={iconWidth} x={iconX} y={iconY} />
-                ) : (
-                    node.data.type && (
-                        <svg
-                            viewBox="64 64 896 896"
-                            focusable="false"
-                            x={iconX}
-                            y={iconY}
-                            height={iconHeight}
-                            width={iconWidth}
-                            fill="currentColor"
-                            aria-hidden="true"
-                        >
-                            {entityRegistry.getIcon(node.data.type, 16, IconStyleType.SVG)}
-                        </svg>
-                    )
+                )}
+                {!node.data.icon && (!node.data.siblingPlatforms || isHideSiblingMode) && node.data.type && (
+                    <svg
+                        viewBox="64 64 896 896"
+                        focusable="false"
+                        x={iconX}
+                        y={iconY}
+                        height={iconHeight}
+                        width={iconWidth}
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        {entityRegistry.getIcon(node.data.type, 16, IconStyleType.SVG)}
+                    </svg>
                 )}
                 <Group>
                     <UnselectableText
@@ -255,18 +279,20 @@ export default function LineageEntityNode({
                         textAnchor="start"
                         fill="#8C8C8C"
                     >
-                        <tspan>{truncate(capitalizeFirstLetter(node.data.platform), 16)}</tspan>
+                        <tspan>{getShortenedTitle(platformDisplayText || '', width)}</tspan>
                         <tspan dx=".25em" dy="2px" fill="#dadada" fontSize={12} fontWeight="normal">
                             {' '}
                             |{' '}
                         </tspan>
                         <tspan dx=".25em" dy="-2px">
-                            {capitalizeFirstLetter(node.data.subtype || node.data.type)}
+                            {capitalizeFirstLetter(
+                                node.data.subtype || (node.data.type && entityRegistry.getEntityName(node.data.type)),
+                            )}
                         </tspan>
                     </UnselectableText>
                     {expandTitles ? (
                         <foreignObject x={textX} width="125" height="200">
-                            <MultilineTitleText>{node.data.name}</MultilineTitleText>
+                            <MultilineTitleText>{node.data.expandedName || node.data.name}</MultilineTitleText>
                         </foreignObject>
                     ) : (
                         <UnselectableText
@@ -277,7 +303,7 @@ export default function LineageEntityNode({
                             textAnchor="start"
                             fill={isCenterNode ? '#1890FF' : 'black'}
                         >
-                            {truncate(getLastTokenOfTitle(node.data.name), 16)}
+                            {getShortenedTitle(node.data.name, width)}
                         </UnselectableText>
                     )}
                 </Group>
@@ -295,6 +321,9 @@ export default function LineageEntityNode({
                         {unexploredHiddenChildren > 1 ? 'dependencies' : 'dependency'}
                     </UnselectableText>
                 ) : null}
+                {showColumns && (node.data.schemaMetadata || node.data.inputFields) && (
+                    <LineageEntityColumns node={node} onHover={onHover} />
+                )}
             </Group>
         </PointerGroup>
     );

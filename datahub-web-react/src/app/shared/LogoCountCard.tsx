@@ -18,6 +18,7 @@ const Container = styled(Button)`
     &&:hover {
       border: 1px solid ${ANTD_GRAY[4]};
     }
+    white-space: unset;
 `;
 
 const PlatformLogo = styled(Image)`
@@ -36,7 +37,9 @@ const LogoContainer = styled.div``;
 
 const TitleContainer = styled.div``;
 
-const Title = styled(Typography.Title)``;
+const Title = styled(Typography.Title)`
+    word-break: break-word;
+`;
 
 type Props = {
     logoUrl?: string;
@@ -53,9 +56,16 @@ export const LogoCountCard = ({ logoUrl, logoComponent, name, count, onClick }: 
                 {(logoUrl && <PlatformLogo preview={false} src={logoUrl} alt={name} />) || logoComponent}
             </LogoContainer>
             <TitleContainer>
-                <Title level={5}>{name}</Title>
+                <Title
+                    ellipsis={{
+                        rows: 4,
+                    }}
+                    level={5}
+                >
+                    {name}
+                </Title>
             </TitleContainer>
-            {count && <CountText>{formatNumber(count)}</CountText>}
+            {count !== undefined && <CountText>{formatNumber(count)}</CountText>}
         </Container>
     );
 };

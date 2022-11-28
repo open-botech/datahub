@@ -2,6 +2,7 @@ query getUser($urn: String!, $groupsCount: Int!) {
     corpUser(urn: $urn) {
         urn
         username
+        isNativeUser
         info {
             active
             displayName
@@ -10,16 +11,30 @@ query getUser($urn: String!, $groupsCount: Int!) {
             lastName
             fullName
             email
+            departmentName
         }
-        editableInfo {
+        editableProperties {
+            slack
+            phone
             pictureLink
+            aboutMe
             teams
             skills
+            displayName
+            title
+            email
         }
         globalTags {
             ...globalTagsFields
         }
-        relationships(input: { types: ["IsMemberOfGroup"], direction: OUTGOING, start: 0, count: $groupsCount }) {
+        groups: relationships(
+            input: {
+                types: ["IsMemberOfGroup", "IsMemberOfNativeGroup"]
+                direction: OUTGOING
+                start: 0
+                count: $groupsCount
+            }
+        ) {
             start
             count
             total
@@ -34,7 +49,28 @@ query getUser($urn: String!, $groupsCount: Int!) {
                             description
                             email
                         }
-                        relationships(input: { types: ["IsMemberOfGroup"], direction: INCOMING }) {
+                        relationships(
+                            input: { types: ["IsMemberOfGroup", "IsMemberOfNativeGroup"], direction: INCOMING }
+                        ) {
+                            start
+                            count
+                            total
+                        }
+                    }
+                }
+            }
+        }
+        roles: relationships(input: { types: ["IsMemberOfRole"], direction: OUTGOING, start: 0, count: $groupsCount }) {
+            start
+            count
+            total
+            relationships {
+                entity {
+                    ... on DataHubRole {
+                        urn
+                        type
+                        name
+                        relationships(input: { types: ["IsMemberOfRole"], direction: INCOMING }) {
                             start
                             count
                             total
@@ -48,7 +84,14 @@ query getUser($urn: String!, $groupsCount: Int!) {
 
 query getUserGroups($urn: String!, $start: Int!, $count: Int!) {
     corpUser(urn: $urn) {
-        relationships(input: { types: ["IsMemberOfGroup"], direction: OUTGOING, start: $start, count: $count }) {
+        relationships(
+            input: {
+                types: ["IsMemberOfGroup", "IsMemberOfNativeGroup"]
+                direction: OUTGOING
+                start: $start
+                count: $count
+            }
+        ) {
             start
             count
             total
@@ -64,7 +107,7 @@ query getUserGroups($urn: String!, $start: Int!, $count: Int!) {
                             email
                         }
                     }
-                    relationships(input: { types: ["IsMemberOfGroup"], direction: INCOMING }) {
+                    relationships(input: { types: ["IsMemberOfGroup", "IsMemberOfNativeGroup"], direction: INCOMING }) {
                         start
                         count
                         total
@@ -83,6 +126,7 @@ query listUsers($input: ListUsersInput!) {
         users {
             urn
             username
+            isNativeUser
             info {
                 active
                 displayName
@@ -92,12 +136,33 @@ query listUsers($input: ListUsersInput!) {
                 fullName
                 email
             }
-            editableInfo {
+            editableProperties {
+                displayName
                 pictureLink
                 teams
+                title
                 skills
             }
             status
+            roles: relationships(input: { types: ["IsMemberOfRole"], direction: OUTGOING, start: 0 }) {
+                start
+                count
+                total
+                relationships {
+                    entity {
+                        ... on DataHubRole {
+                            urn
+                            type
+                            name
+                            relationships(input: { types: ["IsMemberOfRole"], direction: INCOMING }) {
+                                start
+                                count
+                                total
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -108,4 +173,16 @@ mutation removeUser($urn: String!) {
 
 mutation updateUserStatus($urn: String!, $status: CorpUserStatus!) {
     updateUserStatus(urn: $urn, status: $status)
+}
+
+mutation updateCorpUserProperties($urn: String!, $input: CorpUserUpdateInput!) {
+    updateCorpUserProperties(urn: $urn, input: $input) {
+        urn
+    }
+}
+
+mutation createNativeUserResetToken($input: CreateNativeUserResetTokenInput!) {
+    createNativeUserResetToken(input: $input) {
+        resetToken
+    }
 }

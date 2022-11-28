@@ -1,7 +1,9 @@
 apply plugin: 'java'
+apply from: "../../gradle/versioning/versioning.gradle"
 
 dependencies {
   compile project(':metadata-io')
+  compile project(':metadata-utils')
   compile project(':metadata-service:auth-impl')
   compile project(':datahub-graphql-core')
   compile project(':metadata-service:restli-servlet-impl')
@@ -22,8 +24,18 @@ dependencies {
   compile externalDependency.springCore
   compile externalDependency.springKafka
   compile externalDependency.springWeb
+  compile project(':metadata-service:auth-ranger-impl')
 
   annotationProcessor externalDependency.lombok
 
   compile spec.product.pegasus.restliSpringBridge
+
+  testImplementation externalDependency.springBootTest
+  testCompile externalDependency.mockito
+  testCompile externalDependency.testng
+
+}
+
+processResources.configure {
+  finalizedBy printVersionDetails // always print version details
 }

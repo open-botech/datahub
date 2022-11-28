@@ -1,32 +1,27 @@
 import { Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import GlossaryRelatedTermsResult from './GlossaryRelatedTermsResult';
-
-export type Props = {
-    glossaryTerm: any;
-};
-
-export enum RelatedTermTypes {
-    hasRelatedTerms = 'Contains',
-    isRelatedTerms = 'Inherits',
-}
+import styled from 'styled-components/macro';
+import { useEntityData } from '../../shared/EntityContext';
+import GlossaryRelatedTermsResult, { RelatedTermTypes } from './GlossaryRelatedTermsResult';
 
 const DetailWrapper = styled.div`
     display: inline-flex;
+    flex: 1;
     width: 100%;
 `;
 
 const MenuWrapper = styled.div`
-    border: 2px solid #f5f5f5;
+    border-right: 2px solid #f5f5f5;
 `;
 
 const Content = styled.div`
-    margin-left: 32px;
     flex-grow: 1;
+    max-width: 100%;
+    overflow: hidden;
 `;
 
-export default function GlossayRelatedTerms({ glossaryTerm }: Props) {
+export default function GlossayRelatedTerms() {
+    const { entityData } = useEntityData();
     const [selectedKey, setSelectedKey] = useState('');
     const menuOptionsArray = Object.keys(RelatedTermTypes);
 
@@ -60,10 +55,10 @@ export default function GlossayRelatedTerms({ glossaryTerm }: Props) {
                 </Menu>
             </MenuWrapper>
             <Content>
-                {selectedKey && (
+                {selectedKey && entityData && (
                     <GlossaryRelatedTermsResult
                         glossaryRelatedTermType={RelatedTermTypes[selectedKey]}
-                        glossaryRelatedTermResult={glossaryTerm[selectedKey]?.relationships || []}
+                        glossaryRelatedTermResult={entityData[selectedKey]?.relationships || []}
                     />
                 )}
             </Content>

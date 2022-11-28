@@ -1,23 +1,33 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Divider, Typography,Row, Col} from 'antd';
-import { RecommendationModule as RecommendationModuleType, ScenarioType } from '../../types.generated';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components/macro';
+import { Button, Divider, Empty, Typography } from 'antd';
+import { RocketOutlined } from '@ant-design/icons';
+import {
+    CorpUser,
+    EntityType,
+    RecommendationModule as RecommendationModuleType,
+    RecommendationRenderType,
+    ScenarioType,
+} from '../../types.generated';
 import { useListRecommendationsQuery } from '../../graphql/recommendations.generated';
 import { RecommendationModule } from '../recommendations/RecommendationModule';
 import { BrowseEntityCard } from '../search/BrowseEntityCard';
 import { useEntityRegistry } from '../useEntityRegistry';
 import { useGetEntityCountsQuery } from '../../graphql/app.generated';
+import { GettingStartedModal } from './GettingStartedModal';
+import { ANTD_GRAY } from '../entity/shared/constants';
+import { HomePagePosts } from './HomePagePosts';
 
 const RecommendationsContainer = styled.div`
     margin-top: 32px;
     padding-left: 12px;
     padding-right: 12px;
-    width: 100%;
 `;
 
 const RecommendationContainer = styled.div`
     margin-bottom: 32px;
-    width: 100%;
+    max-width: 1000px;
+    min-width: 750px;
 `;
 
 const RecommendationTitle = styled(Typography.Title)`
@@ -38,14 +48,49 @@ const BrowseCardContainer = styled.div`
     flex-wrap: wrap;
 `;
 
+const ConnectSourcesButton = styled(Button)`
+    margin: 16px;
+`;
+
+const NoMetadataEmpty = styled(Empty)`
+    font-size: 18px;
+    color: ${ANTD_GRAY[8]};
+`;
+
+const NoMetadataContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const DomainsRecomendationContainer = styled.div`
+    margin-top: -48px;
+    margin-bottom: 32px;
+    max-width: 1000px;
+    min-width: 750px;
+`;
+
 type Props = {
-    userUrn: string;
+    user: CorpUser;
 };
 
-export const HomePageRecommendations = ({ userUrn }: Props) => {
+const simpleViewEntityTypes = [
+    EntityType.Dataset,
+    EntityType.Chart,
+    EntityType.Dashboard,
+    EntityType.GlossaryNode,
+    EntityType.GlossaryTerm,
+];
+
+export const HomePageRecommendations = ({ user }: Props) => {
     // Entity Types
     const entityRegistry = useEntityRegistry();
     const browseEntityList = entityRegistry.getBrowseEntityTypes();
+    const [showGettingStartedModal, setShowGettingStartedModal] = useState(false);
+    const userUrn = user?.urn;
+
+    const showSimplifiedHomepage = user?.settings?.appearance?.showSimplifiedHomepage;
 
     const { data: entityCountData } = useGetEntityCountsQuery({
         variables: {
@@ -55,9 +100,11 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
         },
     });
 
-    const orderedEntityCounts = entityCountData?.getEntityCounts?.counts?.sort((a, b) => {
-        return browseEntityList.indexOf(a.entityType) - browseEntityList.indexOf(b.entityType);
-    });
+    const orderedEntityCounts = entityCountData?.getEntityCounts?.counts
+        ?.sort((a, b) => {
+            return browseEntityList.indexOf(a.entityType) - browseEntityList.indexOf(b.entityType);
+        })
+        .filter((entityCount) => !showSimplifiedHomepage || simpleViewEntityTypes.indexOf(entityCount.entityType) >= 0);
 
     // Recommendations
     const scenario = ScenarioType.Home;
@@ -68,28 +115,55 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                 requestContext: {
                     scenario,
                 },
-                limit: 5,
+                limit: 10,
             },
         },
         fetchPolicy: 'no-cache',
     });
     const recommendationModules = data?.listRecommendations?.modules;
-    console.log(recommendationModules)
+
+    // Determine whether metadata has been ingested yet.
+    const hasLoadedEntityCounts = orderedEntityCounts && orderedEntityCounts.length > 0;
+    const hasIngestedMetadata =
+        orderedEntityCounts && orderedEntityCounts.filter((entityCount) => entityCount.count > 0).length > 0;
+
+    useEffect(() => {
+        if (hasLoadedEntityCounts && !hasIngestedMetadata) {
+            setShowGettingStartedModal(true);
+        }
+    }, [hasLoadedEntityCounts, hasIngestedMetadata]);
+
+    // we want to render the domain module first if it exists
+    const domainRecommendationModule = recommendationModules?.find(
+        (module) => module.renderType === RecommendationRenderType.DomainSearchList,
+    );
+
     return (
         <RecommendationsContainer>
-           <Row gutter={32}>
+            <HomePagePosts />
             {orderedEntityCounts && orderedEntityCounts.length > 0 && (
-                <Col span={12}>
-                  <RecommendationContainer>
-                      <RecommendationTitle level={4}>元数据</RecommendationTitle>
-                      <ThinDivider />
-                      <BrowseCardContainer>
-
+                <RecommendationContainer>
+                    {domainRecommendationModule && (
+                        <>
+                            <DomainsRecomendationContainer>
+                                <RecommendationTitle level={4}>{domainRecommendationModule.title}</RecommendationTitle>
+                                <ThinDivider />
+                                <RecommendationModule
+                                    module={domainRecommendationModule as RecommendationModuleType}
+                                    scenarioType={scenario}
+                                    showTitle={false}
+                                />
+                            </DomainsRecomendationContainer>
+                        </>
+                    )}
+                    <RecommendationTitle level={4}>Explore your data</RecommendationTitle>
+                    <ThinDivider />
+                    {hasIngestedMetadata ? (
+                        <BrowseCardContainer>
                             {orderedEntityCounts.map(
                                 (entityCount) =>
                                     entityCount &&
                                     entityCount.count !== 0 && (
-                                      
                                         <BrowseEntityCard
                                             key={entityCount.entityType}
                                             entityType={entityCount.entityType}
@@ -97,64 +171,36 @@ export const HomePageRecommendations = ({ userUrn }: Props) => {
                                         />
                                     ),
                             )}
-                      </BrowseCardContainer>
-                  </RecommendationContainer>
-                </Col>
+                            {!orderedEntityCounts.some(
+                                (entityCount) => entityCount.entityType === EntityType.GlossaryTerm,
+                            ) && <BrowseEntityCard entityType={EntityType.GlossaryTerm} count={0} />}
+                        </BrowseCardContainer>
+                    ) : (
+                        <NoMetadataContainer>
+                            <NoMetadataEmpty description="No Metadata Found 😢" />
+                            <ConnectSourcesButton onClick={() => setShowGettingStartedModal(true)}>
+                                <RocketOutlined /> Connect your data sources
+                            </ConnectSourcesButton>
+                        </NoMetadataContainer>
+                    )}
+                </RecommendationContainer>
             )}
             {recommendationModules &&
-                [recommendationModules[0]].map((module) => (
-                  <Col span={12}>
-                    <RecommendationContainer>
-                        <RecommendationTitle level={4}>平台</RecommendationTitle>
-                        <ThinDivider />
-                        {
-                          module && (<RecommendationModule
-                            key={module?.moduleId}
-                            module={module as RecommendationModuleType}
-                            scenarioType={scenario}
-                            showTitle={false}
-                        />)
-                        }
-                    </RecommendationContainer>
-                  </Col>
-                ))}
-            
-            {recommendationModules &&
-                [recommendationModules[1]].map((module) => (
-                  <Col span={12}>
-                    <RecommendationContainer>
-                        <RecommendationTitle level={4}>最近浏览</RecommendationTitle>
-                        <ThinDivider />
-                        {
-                          module && (<RecommendationModule
-                              key={module?.moduleId}
-                              module={module as RecommendationModuleType}
-                              scenarioType={scenario}
-                              showTitle={false}
-                          />)
-                        }
-                    </RecommendationContainer>
-                  </Col>
-                ))}
-              {recommendationModules &&
-                [recommendationModules[2]].map((module) => (
-                  <Col span={12}>
-                    <RecommendationContainer>
-                        <RecommendationTitle level={4}>最受欢迎</RecommendationTitle>
-                        <ThinDivider />
-                        {
-                          module && (<RecommendationModule
-                            key={module?.moduleId}
-                            module={module as RecommendationModuleType}
-                            scenarioType={scenario}
-                            showTitle={false}
-                        />)
-                        }
-                        
-                    </RecommendationContainer>
-                  </Col>
-                ))}
-          </Row>
+                recommendationModules
+                    .filter((module) => module.renderType !== RecommendationRenderType.DomainSearchList)
+                    .map((module) => (
+                        <RecommendationContainer>
+                            <RecommendationTitle level={4}>{module.title}</RecommendationTitle>
+                            <ThinDivider />
+                            <RecommendationModule
+                                key={module.moduleId}
+                                module={module as RecommendationModuleType}
+                                scenarioType={scenario}
+                                showTitle={false}
+                            />
+                        </RecommendationContainer>
+                    ))}
+            <GettingStartedModal onClose={() => setShowGettingStartedModal(false)} visible={showGettingStartedModal} />
         </RecommendationsContainer>
     );
 };

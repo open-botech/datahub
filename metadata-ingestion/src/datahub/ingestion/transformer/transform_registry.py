@@ -1,5 +1,6 @@
 from datahub.ingestion.api.registry import PluginRegistry
 from datahub.ingestion.api.transform import Transformer
+from datahub.ingestion.transformer import dataset_domain
 from datahub.ingestion.transformer.add_dataset_browse_path import (
     AddDatasetBrowsePathTransformer,
 )
@@ -11,6 +12,12 @@ from datahub.ingestion.transformer.add_dataset_ownership import (
 from datahub.ingestion.transformer.add_dataset_properties import (
     AddDatasetProperties,
     SimpleAddDatasetProperties,
+)
+from datahub.ingestion.transformer.add_dataset_schema_tags import (
+    PatternAddDatasetSchemaTags,
+)
+from datahub.ingestion.transformer.add_dataset_schema_terms import (
+    PatternAddDatasetSchemaTerms,
 )
 from datahub.ingestion.transformer.add_dataset_tags import (
     AddDatasetTags,
@@ -39,6 +46,15 @@ transform_registry.register("add_dataset_ownership", AddDatasetOwnership)
 transform_registry.register("simple_add_dataset_ownership", SimpleAddDatasetOwnership)
 transform_registry.register("pattern_add_dataset_ownership", PatternAddDatasetOwnership)
 
+transform_registry.register("add_dataset_domain", dataset_domain.AddDatasetDomain)
+transform_registry.register(
+    "simple_add_dataset_domain", dataset_domain.SimpleAddDatasetDomain
+)
+transform_registry.register(
+    "pattern_add_dataset_domain", dataset_domain.PatternAddDatasetDomain
+)
+
+
 transform_registry.register("add_dataset_tags", AddDatasetTags)
 transform_registry.register("simple_add_dataset_tags", SimpleAddDatasetTags)
 transform_registry.register("pattern_add_dataset_tags", PatternAddDatasetTags)
@@ -49,3 +65,10 @@ transform_registry.register("pattern_add_dataset_terms", PatternAddDatasetTerms)
 
 transform_registry.register("add_dataset_properties", AddDatasetProperties)
 transform_registry.register("simple_add_dataset_properties", SimpleAddDatasetProperties)
+
+transform_registry.register(
+    "pattern_add_dataset_schema_terms", PatternAddDatasetSchemaTerms
+)
+transform_registry.register(
+    "pattern_add_dataset_schema_tags", PatternAddDatasetSchemaTags
+)

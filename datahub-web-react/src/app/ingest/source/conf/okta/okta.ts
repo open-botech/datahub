@@ -1,8 +1,6 @@
 import { SourceConfig } from '../types';
 import oktaLogo from '../../../../../images/oktalogo.png';
 
-const baseUrl = window.location.origin;
-
 const placeholderRecipe = `\
 source:
     type: okta
@@ -11,7 +9,8 @@ source:
         okta_domain: # Your Okta Domain, e.g. "dev-35531955.okta.com"
 
         # Credentials
-        okta_api_token: # Your Okta API Token, e.g. "11be4R_M2MzDqXawbTHfKGpKee0kuEOfX1RCQSRx99"
+        # Add secret in Secrets Tab with relevant names for each variable
+        okta_api_token: "\${OKTA_API_TOKEN}" # Your Okta API Token, e.g. "11be4R_M2MzDqXawbTHfKGpKee0kuEOfX1RCQSRx99"
 
         # Optional flags to ingest users, groups, or both
         ingest_users: True
@@ -30,16 +29,13 @@ source:
         # Optional: Include deprovisioned or suspended Okta users in the ingestion.
         # include_deprovisioned_users = False
         # include_suspended_users = False
-sink: 
-    type: datahub-rest 
-    config: 
-        server: "${baseUrl}/api/gms"`;
+`;
 
 const oktaConfig: SourceConfig = {
     type: 'okta',
     placeholderRecipe,
     displayName: 'Okta',
-    docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/okta',
+    docsUrl: 'https://datahubproject.io/docs/generated/ingestion/sources/okta',
     logoUrl: oktaLogo,
 };
 

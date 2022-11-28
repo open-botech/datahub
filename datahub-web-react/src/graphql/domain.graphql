@@ -23,9 +23,6 @@ query getDomain($urn: String!) {
                 }
             }
         }
-        entities(input: {}) {
-            ...searchResults
-        }
     }
 }
 
@@ -36,7 +33,6 @@ query listDomains($input: ListDomainsInput!) {
         total
         domains {
             urn
-            id
             properties {
                 name
                 description
@@ -53,4 +49,8 @@ query listDomains($input: ListDomainsInput!) {
 
 mutation createDomain($input: CreateDomainInput!) {
     createDomain(input: $input)
+}
+
+mutation deleteDomain($urn: String!) {
+    deleteDomain(urn: $urn)
 }

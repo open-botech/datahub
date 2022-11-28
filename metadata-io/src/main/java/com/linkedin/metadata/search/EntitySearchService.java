@@ -27,6 +27,7 @@ public interface EntitySearchService {
    */
   long docCount(@Nonnull String entityName);
 
+
   /**
    * Updates or inserts the given search document.
    *
@@ -43,6 +44,15 @@ public interface EntitySearchService {
    * @param docId the ID of the document to delete
    */
   void deleteDocument(@Nonnull String entityName, @Nonnull String docId);
+
+  /**
+   * Appends a run id to the list for a certain document
+   *
+   * @param entityName name of the entity
+   * @param urn the urn of the user
+   * @param runId the ID of the run
+   */
+  void appendRunId(@Nonnull String entityName, @Nonnull Urn urn, @Nullable String runId);
 
   /**
    * Gets a list of documents that match given search request. The results are aggregated and filters are applied to the
@@ -126,4 +136,9 @@ public interface EntitySearchService {
    */
   @Nonnull
   List<String> getBrowsePaths(@Nonnull String entityName, @Nonnull Urn urn);
+
+  /**
+   * Max result size returned by the underlying search backend
+   */
+  int maxResultSize();
 }

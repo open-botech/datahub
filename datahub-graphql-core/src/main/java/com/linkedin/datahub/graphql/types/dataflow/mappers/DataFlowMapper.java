@@ -1,28 +1,36 @@
 package com.linkedin.datahub.graphql.types.dataflow.mappers;
 
+import com.linkedin.common.DataPlatformInstance;
+import com.linkedin.common.Deprecation;
 import com.linkedin.common.GlobalTags;
 import com.linkedin.common.GlossaryTerms;
 import com.linkedin.common.InstitutionalMemory;
 import com.linkedin.common.Ownership;
 import com.linkedin.common.Status;
+import com.linkedin.common.urn.Urn;
 import com.linkedin.data.DataMap;
 import com.linkedin.datahub.graphql.generated.DataFlow;
 import com.linkedin.datahub.graphql.generated.DataFlowEditableProperties;
 import com.linkedin.datahub.graphql.generated.DataFlowInfo;
 import com.linkedin.datahub.graphql.generated.DataFlowProperties;
 import com.linkedin.datahub.graphql.generated.DataPlatform;
-import com.linkedin.datahub.graphql.generated.Domain;
 import com.linkedin.datahub.graphql.generated.EntityType;
+import com.linkedin.datahub.graphql.types.common.mappers.DataPlatformInstanceAspectMapper;
+import com.linkedin.datahub.graphql.types.common.mappers.DeprecationMapper;
 import com.linkedin.datahub.graphql.types.common.mappers.InstitutionalMemoryMapper;
 import com.linkedin.datahub.graphql.types.common.mappers.OwnershipMapper;
 import com.linkedin.datahub.graphql.types.common.mappers.StatusMapper;
-import com.linkedin.datahub.graphql.types.common.mappers.StringMapMapper;
+import com.linkedin.datahub.graphql.types.common.mappers.CustomPropertiesMapper;
+import com.linkedin.datahub.graphql.types.common.mappers.util.MappingHelper;
+import com.linkedin.datahub.graphql.types.common.mappers.util.SystemMetadataUtils;
+import com.linkedin.datahub.graphql.types.domain.DomainAssociationMapper;
 import com.linkedin.datahub.graphql.types.glossary.mappers.GlossaryTermsMapper;
 import com.linkedin.datahub.graphql.types.mappers.ModelMapper;
 import com.linkedin.datahub.graphql.types.tag.mappers.GlobalTagsMapper;
 import com.linkedin.datajob.EditableDataFlowProperties;
 import com.linkedin.domain.Domains;
 import com.linkedin.entity.EntityResponse;
+import com.linkedin.entity.EnvelopedAspectMap;
 import com.linkedin.metadata.key.DataFlowKey;
 import com.linkedin.metadata.key.DataPlatformKey;
 import com.linkedin.metadata.utils.EntityKeyUtils;
@@ -44,58 +52,56 @@ public class DataFlowMapper implements ModelMapper<EntityResponse, DataFlow> {
         final DataFlow result = new DataFlow();
         result.setUrn(entityResponse.getUrn().toString());
         result.setType(EntityType.DATA_FLOW);
+        Urn entityUrn = entityResponse.getUrn();
 
-        entityResponse.getAspects().forEach((name, aspect) -> {
-            DataMap data = aspect.getValue().data();
-            if (DATA_FLOW_KEY_ASPECT_NAME.equals(name)) {
-                final DataFlowKey gmsKey = new DataFlowKey(data);
-                result.setOrchestrator(gmsKey.getOrchestrator());
-                result.setFlowId(gmsKey.getFlowId());
-                result.setCluster(gmsKey.getCluster());
-                result.setPlatform(DataPlatform.builder()
-                    .setType(EntityType.DATA_PLATFORM)
-                    .setUrn(EntityKeyUtils
-                        .convertEntityKeyToUrn(new DataPlatformKey()
-                            .setPlatformName(gmsKey.getOrchestrator()), DATA_PLATFORM_ENTITY_NAME).toString()).build());
-            } else if (DATA_FLOW_INFO_ASPECT_NAME.equals(name)) {
-                final com.linkedin.datajob.DataFlowInfo gmsDataFlowInfo = new com.linkedin.datajob.DataFlowInfo(data);
-                result.setInfo(mapDataFlowInfo(gmsDataFlowInfo));
-                result.setProperties(mapDataFlowInfoToProperties(gmsDataFlowInfo));
-            } else if (EDITABLE_DATA_FLOW_PROPERTIES_ASPECT_NAME.equals(name)) {
-                final EditableDataFlowProperties editableDataFlowProperties = new EditableDataFlowProperties(data);
-                final DataFlowEditableProperties dataFlowEditableProperties = new DataFlowEditableProperties();
-                dataFlowEditableProperties.setDescription(editableDataFlowProperties.getDescription());
-                result.setEditableProperties(dataFlowEditableProperties);
-            } else if (OWNERSHIP_ASPECT_NAME.equals(name)) {
-                result.setOwnership(OwnershipMapper.map(new Ownership(data)));
-            } else if (STATUS_ASPECT_NAME.equals(name)) {
-                result.setStatus(StatusMapper.map(new Status(data)));
-            } else if (GLOBAL_TAGS_ASPECT_NAME.equals(name)) {
-                com.linkedin.datahub.graphql.generated.GlobalTags globalTags = GlobalTagsMapper.map(new GlobalTags(data));
-                result.setGlobalTags(globalTags);
-                result.setTags(globalTags);
-            } else if (INSTITUTIONAL_MEMORY_ASPECT_NAME.equals(name)) {
-                result.setInstitutionalMemory(InstitutionalMemoryMapper.map(new InstitutionalMemory(data)));
-            } else if (GLOSSARY_TERMS_ASPECT_NAME.equals(name)) {
-                result.setGlossaryTerms(GlossaryTermsMapper.map(new GlossaryTerms(data)));
-            } else if (DOMAINS_ASPECT_NAME.equals(name)) {
-                final Domains domains = new Domains(data);
-                // Currently we only take the first domain if it exists.
-                if (domains.getDomains().size() > 0) {
-                    result.setDomain(Domain.builder()
-                        .setType(EntityType.DOMAIN)
-                        .setUrn(domains.getDomains().get(0).toString()).build());
-                }
-            }
-        });
+        EnvelopedAspectMap aspectMap = entityResponse.getAspects();
+        Long lastIngested = SystemMetadataUtils.getLastIngested(aspectMap);
+        result.setLastIngested(lastIngested);
 
-        return result;
+        MappingHelper<DataFlow> mappingHelper = new MappingHelper<>(aspectMap, result);
+        mappingHelper.mapToResult(DATA_FLOW_KEY_ASPECT_NAME, this::mapKey);
+        mappingHelper.mapToResult(DATA_FLOW_INFO_ASPECT_NAME, (entity, dataMap) -> this.mapInfo(entity, dataMap, entityUrn));
+        mappingHelper.mapToResult(EDITABLE_DATA_FLOW_PROPERTIES_ASPECT_NAME, this::mapEditableProperties);
+        mappingHelper.mapToResult(OWNERSHIP_ASPECT_NAME, (dataFlow, dataMap) ->
+            dataFlow.setOwnership(OwnershipMapper.map(new Ownership(dataMap), entityUrn)));
+        mappingHelper.mapToResult(STATUS_ASPECT_NAME, (dataFlow, dataMap) ->
+            dataFlow.setStatus(StatusMapper.map(new Status(dataMap))));
+        mappingHelper.mapToResult(GLOBAL_TAGS_ASPECT_NAME, (dataFlow, dataMap) -> this.mapGlobalTags(dataFlow, dataMap, entityUrn));
+        mappingHelper.mapToResult(INSTITUTIONAL_MEMORY_ASPECT_NAME, (dataFlow, dataMap) ->
+            dataFlow.setInstitutionalMemory(InstitutionalMemoryMapper.map(new InstitutionalMemory(dataMap))));
+        mappingHelper.mapToResult(GLOSSARY_TERMS_ASPECT_NAME, (dataFlow, dataMap) ->
+            dataFlow.setGlossaryTerms(GlossaryTermsMapper.map(new GlossaryTerms(dataMap), entityUrn)));
+        mappingHelper.mapToResult(DOMAINS_ASPECT_NAME, this::mapDomains);
+        mappingHelper.mapToResult(DEPRECATION_ASPECT_NAME, (dataFlow, dataMap) ->
+            dataFlow.setDeprecation(DeprecationMapper.map(new Deprecation(dataMap))));
+        mappingHelper.mapToResult(DATA_PLATFORM_INSTANCE_ASPECT_NAME, (dataset, dataMap) ->
+            dataset.setDataPlatformInstance(DataPlatformInstanceAspectMapper.map(new DataPlatformInstance(dataMap))));
+
+        return mappingHelper.getResult();
+    }
+
+    private void mapKey(@Nonnull DataFlow dataFlow, @Nonnull DataMap dataMap) {
+        final DataFlowKey gmsKey = new DataFlowKey(dataMap);
+        dataFlow.setOrchestrator(gmsKey.getOrchestrator());
+        dataFlow.setFlowId(gmsKey.getFlowId());
+        dataFlow.setCluster(gmsKey.getCluster());
+        dataFlow.setPlatform(DataPlatform.builder()
+            .setType(EntityType.DATA_PLATFORM)
+            .setUrn(EntityKeyUtils
+                .convertEntityKeyToUrn(new DataPlatformKey()
+                    .setPlatformName(gmsKey.getOrchestrator()), DATA_PLATFORM_ENTITY_NAME).toString()).build());
+    }
+
+    private void mapInfo(@Nonnull DataFlow dataFlow, @Nonnull DataMap dataMap, Urn entityUrn) {
+        final com.linkedin.datajob.DataFlowInfo gmsDataFlowInfo = new com.linkedin.datajob.DataFlowInfo(dataMap);
+        dataFlow.setInfo(mapDataFlowInfo(gmsDataFlowInfo, entityUrn));
+        dataFlow.setProperties(mapDataFlowInfoToProperties(gmsDataFlowInfo, entityUrn));
     }
 
     /**
      * Maps GMS {@link com.linkedin.datajob.DataFlowInfo} to deprecated GraphQL {@link DataFlowInfo}
      */
-    private DataFlowInfo mapDataFlowInfo(final com.linkedin.datajob.DataFlowInfo info) {
+    private DataFlowInfo mapDataFlowInfo(final com.linkedin.datajob.DataFlowInfo info, Urn entityUrn) {
         final DataFlowInfo result = new DataFlowInfo();
         result.setName(info.getName());
         result.setDescription(info.getDescription());
@@ -104,7 +110,7 @@ public class DataFlowMapper implements ModelMapper<EntityResponse, DataFlow> {
             result.setExternalUrl(info.getExternalUrl().toString());
         }
         if (info.hasCustomProperties()) {
-            result.setCustomProperties(StringMapMapper.map(info.getCustomProperties()));
+            result.setCustomProperties(CustomPropertiesMapper.map(info.getCustomProperties(), entityUrn));
         }
         return result;
     }
@@ -112,7 +118,7 @@ public class DataFlowMapper implements ModelMapper<EntityResponse, DataFlow> {
     /**
      * Maps GMS {@link com.linkedin.datajob.DataFlowInfo} to new GraphQL {@link DataFlowProperties}
      */
-    private DataFlowProperties mapDataFlowInfoToProperties(final com.linkedin.datajob.DataFlowInfo info) {
+    private DataFlowProperties mapDataFlowInfoToProperties(final com.linkedin.datajob.DataFlowInfo info, Urn entityUrn) {
         final DataFlowProperties result = new DataFlowProperties();
         result.setName(info.getName());
         result.setDescription(info.getDescription());
@@ -121,8 +127,27 @@ public class DataFlowMapper implements ModelMapper<EntityResponse, DataFlow> {
             result.setExternalUrl(info.getExternalUrl().toString());
         }
         if (info.hasCustomProperties()) {
-            result.setCustomProperties(StringMapMapper.map(info.getCustomProperties()));
+            result.setCustomProperties(CustomPropertiesMapper.map(info.getCustomProperties(), entityUrn));
         }
         return result;
+    }
+
+    private void mapEditableProperties(@Nonnull DataFlow dataFlow, @Nonnull DataMap dataMap) {
+        final EditableDataFlowProperties editableDataFlowProperties = new EditableDataFlowProperties(dataMap);
+        final DataFlowEditableProperties dataFlowEditableProperties = new DataFlowEditableProperties();
+        dataFlowEditableProperties.setDescription(editableDataFlowProperties.getDescription());
+        dataFlow.setEditableProperties(dataFlowEditableProperties);
+    }
+
+    private void mapGlobalTags(@Nonnull DataFlow dataFlow, @Nonnull DataMap dataMap, @Nonnull Urn entityUrn) {
+        com.linkedin.datahub.graphql.generated.GlobalTags globalTags = GlobalTagsMapper.map(new GlobalTags(dataMap), entityUrn);
+        dataFlow.setGlobalTags(globalTags);
+        dataFlow.setTags(globalTags);
+    }
+
+    private void mapDomains(@Nonnull DataFlow dataFlow, @Nonnull DataMap dataMap) {
+        final Domains domains = new Domains(dataMap);
+        // Currently we only take the first domain if it exists.
+        dataFlow.setDomain(DomainAssociationMapper.map(domains, dataFlow.getUrn()));
     }
 }

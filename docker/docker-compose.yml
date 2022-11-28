@@ -12,9 +12,9 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     ports:
-      - "2181:2181"
+      - ${DATAHUB_MAPPED_ZK_PORT:-2181}:2181
     volumes:
-      - zkdata:/var/opt/zookeeper
+      - zkdata:/var/lib/zookeeper
 
   broker:
     image: confluentinc/cp-kafka:5.4.0
@@ -24,14 +24,15 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "29092:29092"
-      - "9092:9092"
+      - ${DATAHUB_MAPPED_KAFKA_BROKER_PORT:-9092}:9092
+    volumes:
+      - broker:/var/lib/kafka/data/
 
   # This "container" is a workaround to pre-create topics
   kafka-setup:
     build:
       context: kafka-setup
-    image: linkedin/datahub-kafka-setup:${DATAHUB_VERSION:-head}
+    image: ${DATAHUB_KAFKA_SETUP_IMAGE:-linkedin/datahub-kafka-setup}:${DATAHUB_VERSION:-head}
     env_file: kafka-setup/env/docker.env
     hostname: kafka-setup
     container_name: kafka-setup
@@ -48,7 +49,7 @@ services:
       - zookeeper
       - broker
     ports:
-      - "8081:8081"
+      - ${DATAHUB_MAPPED_SCHEMA_REGISTRY_PORT:-8081}:8081
 
   elasticsearch:
     image: elasticsearch:7.9.3
@@ -56,7 +57,10 @@ services:
     container_name: elasticsearch
     hostname: elasticsearch
     ports:
-      - "9200:9200"
+      - ${DATAHUB_MAPPED_ELASTIC_PORT:-9200}:9200
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     volumes:
       - esdata:/usr/share/elasticsearch/data
     healthcheck:
@@ -65,13 +69,13 @@ services:
         retries: 4
 
   neo4j:
-    image: neo4j:4.0.6
+    image: neo4j:4.4.9-community
     env_file: neo4j/env/docker.env
     hostname: neo4j
     container_name: neo4j
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - ${DATAHUB_MAPPED_NEO4J_HTTP_PORT:-7474}:7474
+      - ${DATAHUB_MAPPED_NEO4J_BOLT_PORT:-7687}:7687
     volumes:
       - neo4jdata:/data
 
@@ -80,7 +84,7 @@ services:
     build:
       context: ../
       dockerfile: docker/elasticsearch-setup/Dockerfile
-    image: linkedin/datahub-elasticsearch-setup:${DATAHUB_VERSION:-head}
+    image: ${DATAHUB_ELASTIC_SETUP_IMAGE:-linkedin/datahub-elasticsearch-setup}:${DATAHUB_VERSION:-head}
     env_file: elasticsearch-setup/env/docker.env
     hostname: elasticsearch-setup
     container_name: elasticsearch-setup
@@ -91,11 +95,11 @@ services:
     build:
         context: ../
         dockerfile: docker/datahub-gms/Dockerfile
-    image: linkedin/datahub-gms:${DATAHUB_VERSION:-head}
+    image: ${DATAHUB_GMS_IMAGE:-linkedin/datahub-gms}:${DATAHUB_VERSION:-head}
     hostname: datahub-gms
     container_name: datahub-gms
     ports:
-      - "8080:8080"
+      - ${DATAHUB_MAPPED_GMS_PORT:-8080}:8080
     depends_on:
       - elasticsearch-setup
       - kafka-setup
@@ -106,19 +110,22 @@ services:
     build:
       context: ../
       dockerfile: docker/datahub-frontend/Dockerfile
-    image: linkedin/datahub-frontend-react:${DATAHUB_VERSION:-head}
+    image: ${DATAHUB_FRONTEND_IMAGE:-linkedin/datahub-frontend-react}:${DATAHUB_VERSION:-head}
     env_file: datahub-frontend/env/docker.env
     hostname: datahub-frontend-react
     container_name: datahub-frontend-react
     ports:
-      - "9002:9002"
+      - ${DATAHUB_MAPPED_FRONTEND_PORT:-9002}:9002
     depends_on:
       - datahub-gms
+    volumes:
+      - ${HOME}/.datahub/plugins:/etc/datahub/plugins
 
   datahub-actions:
-    image: public.ecr.aws/datahub/acryl-datahub-actions:${ACTIONS_VERSION:-head}
+    image: acryldata/datahub-actions:${ACTIONS_VERSION:-head}
     hostname: actions
     env_file: datahub-actions/env/docker.env
+    restart: on-failure:5
     depends_on:
       - datahub-gms
 
@@ -130,3 +137,4 @@ volumes:
   esdata:
   neo4jdata:
   zkdata:
+  broker:

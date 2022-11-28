@@ -7,19 +7,20 @@ import com.linkedin.data.template.RecordTemplate;
 import com.linkedin.metadata.models.AspectSpec;
 import com.linkedin.mxe.MetadataChangeLog;
 import com.linkedin.mxe.MetadataChangeProposal;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Slf4j
 public class EntityKeyUtils {
+
+  private static final Logger logger = LoggerFactory.getLogger(EntityKeyUtils.class);
 
   private EntityKeyUtils() {
   }
@@ -31,14 +32,14 @@ public class EntityKeyUtils {
       Urn urn = metadataChangeProposal.getEntityUrn();
       // Validate Urn
       try {
-        EntityKeyUtils.convertUrnToEntityKey(urn, keyAspectSpec.getPegasusSchema());
+        EntityKeyUtils.convertUrnToEntityKey(urn, keyAspectSpec);
       } catch (RuntimeException re) {
         throw new RuntimeException(String.format("Failed to validate entity URN %s", urn), re);
       }
       return urn;
     }
     if (metadataChangeProposal.hasEntityKeyAspect()) {
-      RecordTemplate keyAspectRecord = GenericAspectUtils.deserializeAspect(
+      RecordTemplate keyAspectRecord = GenericRecordUtils.deserializeAspect(
               metadataChangeProposal.getEntityKeyAspect().getValue(),
               metadataChangeProposal.getEntityKeyAspect().getContentType(),
               keyAspectSpec);
@@ -53,20 +54,64 @@ public class EntityKeyUtils {
       Urn urn = metadataChangeLog.getEntityUrn();
       // Validate Urn
       try {
-        EntityKeyUtils.convertUrnToEntityKey(urn, keyAspectSpec.getPegasusSchema());
+        EntityKeyUtils.convertUrnToEntityKey(urn, keyAspectSpec);
       } catch (RuntimeException re) {
         throw new RuntimeException(String.format("Failed to validate entity URN %s", urn), re);
       }
       return urn;
     }
     if (metadataChangeLog.hasEntityKeyAspect()) {
-      RecordTemplate keyAspectRecord = GenericAspectUtils.deserializeAspect(
+      RecordTemplate keyAspectRecord = GenericRecordUtils.deserializeAspect(
           metadataChangeLog.getEntityKeyAspect().getValue(),
           metadataChangeLog.getEntityKeyAspect().getContentType(),
           keyAspectSpec);
       return EntityKeyUtils.convertEntityKeyToUrn(keyAspectRecord, metadataChangeLog.getEntityType());
     }
     throw new IllegalArgumentException("One of urn and keyAspect must be set");
+  }
+
+  /**
+   * Implicitly converts a normal {@link Urn} into a {@link RecordTemplate} Entity Key given
+   * the urn & the {@link AspectSpec} of the key.
+   *
+   * Parts of the urn are bound into fields in the keySchema based on field <b>index</b>. If the
+   * number of urn key parts does not match the number of fields in the key schema, an {@link IllegalArgumentException} will be thrown.
+   *
+   * @param urn raw entity urn
+   * @param keyAspectSpec key aspect spec
+   * @return a {@link RecordTemplate} created by mapping the fields of the urn to fields of
+   * the provided key schema in order.
+   * @throws {@link IllegalArgumentException} if the urn cannot be converted into the key schema (field number or type mismatch)
+   */
+  @Nonnull
+  public static RecordTemplate convertUrnToEntityKey(@Nonnull final Urn urn, @Nonnull final AspectSpec keyAspectSpec) {
+    RecordDataSchema keySchema = keyAspectSpec.getPegasusSchema();
+
+    // #1. Ensure we have a class to bind into.
+    Class<? extends RecordTemplate> clazz = keyAspectSpec.getDataTemplateClass().asSubclass(RecordTemplate.class);
+
+    // #2. Bind fields into a DataMap
+    if (urn.getEntityKey().getParts().size() != keySchema.getFields().size()) {
+      throw new IllegalArgumentException(
+          "Failed to convert urn to entity key: urns parts and key fields do not have same length");
+    }
+    final DataMap dataMap = new DataMap();
+    for (int i = 0; i < urn.getEntityKey().getParts().size(); i++) {
+      final String urnPart = urn.getEntityKey().get(i);
+      final RecordDataSchema.Field field = keySchema.getFields().get(i);
+      dataMap.put(field.getName(), urnPart);
+    }
+
+    // #3. Finally, instantiate the record template with the newly created DataMap.
+    Constructor<? extends RecordTemplate> constructor;
+    try {
+      constructor = clazz.getConstructor(DataMap.class);
+      return constructor.newInstance(dataMap);
+    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+      throw new IllegalArgumentException(
+          String.format("Failed to instantiate RecordTemplate with name %s. Missing constructor taking DataMap as arg.",
+              clazz.getName()));
+    }
   }
 
   /**
@@ -83,7 +128,7 @@ public class EntityKeyUtils {
    * @throws {@link IllegalArgumentException} if the urn cannot be converted into the key schema (field number or type mismatch)
    */
   @Nonnull
-  public static RecordTemplate convertUrnToEntityKey(@Nonnull final Urn urn, @Nonnull final RecordDataSchema keySchema) {
+  public static RecordTemplate convertUrnToEntityKeyInternal(@Nonnull final Urn urn, @Nonnull final RecordDataSchema keySchema) {
 
     // #1. Ensure we have a class to bind into.
     Class<? extends RecordTemplate> clazz;
@@ -103,14 +148,8 @@ public class EntityKeyUtils {
     final DataMap dataMap = new DataMap();
     for (int i = 0; i < urn.getEntityKey().getParts().size(); i++) {
       final String urnPart = urn.getEntityKey().get(i);
-      try {
-        final String decodedUrnPart = URLDecoder.decode(urnPart, StandardCharsets.UTF_8.toString());
-        final RecordDataSchema.Field field = keySchema.getFields().get(i);
-        dataMap.put(field.getName(), decodedUrnPart);
-      } catch (UnsupportedEncodingException e) {
-        throw new RuntimeException(
-            String.format("Failed to convert URN to Entity Key. Unable to URL decoded urn part %s", urnPart), e);
-      }
+      final RecordDataSchema.Field field = keySchema.getFields().get(i);
+      dataMap.put(field.getName(), urnPart);
     }
 
     // #3. Finally, instantiate the record template with the newly created DataMap.

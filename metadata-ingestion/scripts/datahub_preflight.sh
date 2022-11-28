@@ -1,16 +1,30 @@
 #!/bin/bash -e
 
+#From https://stackoverflow.com/questions/4023830/how-to-compare-two-strings-in-dot-separated-version-format-in-bash
+verlte() {
+  [  "$1" == "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
+}
+
 brew_install() {
-    printf '\n🔎 Checking if %s installed\n' "${1}"
-    if brew list "$1" &>/dev/null; then
-        printf '✅ %s is already installed\n' "${1}"
+    package=${1}
+    required_version=${2}
+    printf '\n🔎 Checking if %s installed\n' "${package}"
+    version=$(brew list --version|grep "$1"|awk '{ print $2 }')
+
+    if [ -n "${version}" ]; then
+      if [ -n "$2" ] && ! verlte "${required_version}" "${version}"; then
+        printf '🔽 %s is installed but its version %s is lower than the required %s\n' "${package}" "${version}" "${required_version}. Updating version..."
+        brew update && brew upgrade "$1" && printf '✅ %s is installed\n' "${package}"
+      else
+        printf '✅ %s is already installed\n' "${package} with version ${version}"
+      fi
     else
-        brew install "$1" && printf '✅ %s is installed\n' "${1}"
+        brew install "$1" && printf '✅ %s is installed\n' "${package}"
     fi
 }
 
 arm64_darwin_preflight() {
-  printf "✨ Creating/activating Virtual Environment"
+  printf "✨ Creating/activating Virtual Environment\n"
   python3 -m venv venv
   source venv/bin/activate
 
@@ -26,15 +40,27 @@ arm64_darwin_preflight() {
   	##preinstall numpy and pythran from source
   	pip3 uninstall -y numpy pythran
   	pip3 install cython pybind11
-  	pip3 install --no-binary :all: --no-use-pep517 numpy
+  	pip3 install --no-use-pep517 numpy
   	pip3 install pythran
-  	pip3 install --no-binary :all: --no-use-pep517 scipy
+  	pip3 install --no-use-pep517 scipy
   fi
 
   printf "✨ Setting up librdkafka prerequisities\n"
-  brew_install "librdkafka"
+  brew_install "librdkafka" "1.9.1"
   brew_install "openssl@1.1"
-  brew install "postgresql"
+  brew install "postgresql@14"
+
+  # postgresql installs libs in a strange way
+  # we first symlink /opt/postgresql@14 to /opt/postgresql
+  if [ ! -z $(brew --prefix)/opt/postgresql ]; then
+    printf "✨ Symlinking postgresql@14 to postgresql\n"
+    ln -sf $(brew --prefix postgresql@14) $(brew --prefix)/opt/postgresql
+  fi
+  # we then symlink all libs under /opt/postgresql@14/lib/postgresql@14 to /opt/postgresql@14/lib
+  if [ ! -z $(brew --prefix postgresql@14)/lib/postgresql@14 ]; then
+    printf "✨ Patching up libs in $(brew --prefix postgresql@14)/lib/postgresql@14)\n"
+    ln -sf $(brew --prefix postgresql@14)/lib/postgresql@14/* $(brew --prefix postgresql@14)/lib/
+  fi
 
   printf "\e[38;2;0;255;0m✅ Done\e[38;2;255;255;255m\n"
 
@@ -58,7 +84,7 @@ cat << EOF
   export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
   export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
   export CPPFLAGS="-I$(brew --prefix openssl@1.1)/include -I$(brew --prefix librdkafka)/include"
-  export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib -L$(brew --prefix librdkafka)/lib"
+  export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib -L$(brew --prefix librdkafka)/lib -L$(brew --prefix postgresql@14)/lib/postgresql@14"
   export CPATH="$(brew --prefix librdkafka)/include"
   export C_INCLUDE_PATH="$(brew --prefix librdkafka)/include"
   export LIBRARY_PATH="$(brew --prefix librdkafka)/lib"

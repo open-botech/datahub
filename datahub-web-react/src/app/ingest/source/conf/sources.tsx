@@ -26,6 +26,7 @@ import s3Config from './s3/s3';
 import fileConfig from './file/file';
 import mssqlConfig from './mssql/mssql';
 
+
 const baseUrl = window.location.origin;
 
 const DEFAULT_PLACEHOLDER_RECIPE = `\
@@ -46,6 +47,7 @@ export const SOURCE_TEMPLATE_CONFIGS: Array<SourceConfig> = [
     snowflakeConfig,
     kafkaConfig,
     lookerConfig,
+    tableauConfig,
     mysqlConfig,
     postgresConfig,
     mongoConfig,
@@ -59,7 +61,6 @@ export const SOURCE_TEMPLATE_CONFIGS: Array<SourceConfig> = [
     dbtConfig,
     metabaseConfig,
     supersetConfig,
-    tableauConfig,
     redashConfig,
     s3Config,
     fileConfig,

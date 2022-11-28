@@ -2,13 +2,17 @@ import React from 'react';
 import { Pagination, Typography } from 'antd';
 import styled from 'styled-components';
 import { FacetFilterInput, FacetMetadata, SearchResults as SearchResultType } from '../../../../../../types.generated';
-import { SearchFilters } from '../../../../../search/SearchFilters';
 import { SearchCfg } from '../../../../../../conf';
 import { EntityNameList } from '../../../../../recommendations/renderer/component/EntityNameList';
+import { ReactComponent as LoadingSvg } from '../../../../../../images/datahub-logo-color-loading_pendulum.svg';
+import { EntityAndType } from '../../../types';
+import { UnionType } from '../../../../../search/utils/constants';
+import { SearchFiltersSection } from '../../../../../search/SearchFiltersSection';
 
 const SearchBody = styled.div`
+    height: 100%;
+    overflow-y: auto;
     display: flex;
-    flex-direction: row;
 `;
 
 const PaginationInfo = styled(Typography.Text)`
@@ -16,7 +20,9 @@ const PaginationInfo = styled(Typography.Text)`
 `;
 
 const FiltersContainer = styled.div`
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     max-width: 260px;
     min-width: 260px;
     border-right: 1px solid;
@@ -24,33 +30,19 @@ const FiltersContainer = styled.div`
 `;
 
 const ResultContainer = styled.div`
+    height: auto;
+    overflow: auto;
     flex: 1;
-    margin-bottom: 20px;
 `;
 
-const PaginationInfoContainer = styled.div`
+const PaginationInfoContainer = styled.span`
     padding: 8px;
     padding-left: 16px;
-    border-bottom: 1px solid;
+    border-top: 1px solid;
     border-color: ${(props) => props.theme.styles['border-color-base']};
     display: flex;
     justify-content: space-between;
     align-items: center;
-`;
-
-const FiltersHeader = styled.div`
-    font-size: 14px;
-    font-weight: 600;
-
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 8px;
-
-    width: 100%;
-    height: 46px;
-    line-height: 46px;
-    border-bottom: 1px solid;
-    border-color: ${(props) => props.theme.styles['border-color-base']};
 `;
 
 const StyledPagination = styled(Pagination)`
@@ -58,8 +50,12 @@ const StyledPagination = styled(Pagination)`
     padding: 0px;
 `;
 
-const SearchFilterContainer = styled.div`
-    padding-top: 10px;
+const LoadingContainer = styled.div`
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 100%;
+    text-align: center;
+    flex: 1;
 `;
 
 interface Props {
@@ -69,8 +65,15 @@ interface Props {
     selectedFilters: Array<FacetFilterInput>;
     loading: boolean;
     showFilters?: boolean;
+    unionType: UnionType;
     onChangeFilters: (filters: Array<FacetFilterInput>) => void;
     onChangePage: (page: number) => void;
+    onChangeUnionType: (unionType: UnionType) => void;
+    isSelectMode: boolean;
+    selectedEntities: EntityAndType[];
+    setSelectedEntities: (entities: EntityAndType[]) => any;
+    numResultsPerPage: number;
+    setNumResultsPerPage: (numResults: number) => void;
 }
 
 export const EmbeddedListSearchResults = ({
@@ -80,70 +83,81 @@ export const EmbeddedListSearchResults = ({
     selectedFilters,
     loading,
     showFilters,
+    unionType,
+    onChangeUnionType,
     onChangeFilters,
     onChangePage,
+    isSelectMode,
+    selectedEntities,
+    setSelectedEntities,
+    numResultsPerPage,
+    setNumResultsPerPage,
 }: Props) => {
     const pageStart = searchResponse?.start || 0;
     const pageSize = searchResponse?.count || 0;
     const totalResults = searchResponse?.total || 0;
     const lastResultIndex = pageStart + pageSize > totalResults ? totalResults : pageStart + pageSize;
 
-    const onFilterSelect = (newFilters) => {
-        onChangeFilters(newFilters);
-    };
-
     return (
         <>
             <SearchBody>
                 {!!showFilters && (
                     <FiltersContainer>
-                        <FiltersHeader>Filter</FiltersHeader>
-                        <SearchFilterContainer>
-                            <SearchFilters
-                                loading={loading}
-                                facets={filters || []}
-                                selectedFilters={selectedFilters}
-                                onFilterSelect={onFilterSelect}
-                            />
-                        </SearchFilterContainer>
+                        <SearchFiltersSection
+                            filters={filters}
+                            selectedFilters={selectedFilters}
+                            unionType={unionType}
+                            loading={loading}
+                            onChangeFilters={onChangeFilters}
+                            onChangeUnionType={onChangeUnionType}
+                        />
                     </FiltersContainer>
                 )}
                 <ResultContainer>
-                    {!loading && (
-                        <>
-                            <EntityNameList
-                                entities={
-                                    searchResponse?.searchResults?.map((searchResult) => searchResult.entity) || []
-                                }
-                                additionalPropertiesList={
-                                    searchResponse?.searchResults?.map((searchResult) => ({
-                                        // when we add impact analysis, we will want to pipe the path to each element to the result this
-                                        // eslint-disable-next-line @typescript-eslint/dot-notation
-                                        path: searchResult['path'],
-                                    })) || []
-                                }
-                            />
-                        </>
+                    {loading && (
+                        <LoadingContainer>
+                            <LoadingSvg height={80} width={80} />
+                        </LoadingContainer>
                     )}
-                    <PaginationInfoContainer>
-                        <PaginationInfo>
-                            <b>
-                                {lastResultIndex > 0 ? (page - 1) * pageSize + 1 : 0} - {lastResultIndex}
-                            </b>{' '}
-                            of <b>{totalResults}</b>
-                        </PaginationInfo>
-                        <StyledPagination
-                            current={page}
-                            pageSize={SearchCfg.RESULTS_PER_PAGE}
-                            total={totalResults}
-                            showLessItems
-                            onChange={onChangePage}
-                            showSizeChanger={false}
+                    {!loading && (
+                        <EntityNameList
+                            entities={searchResponse?.searchResults?.map((searchResult) => searchResult.entity) || []}
+                            additionalPropertiesList={
+                                searchResponse?.searchResults?.map((searchResult) => ({
+                                    // when we add impact analysis, we will want to pipe the path to each element to the result this
+                                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                                    degree: searchResult['degree'],
+                                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                                    paths: searchResult['paths'],
+                                })) || []
+                            }
+                            isSelectMode={isSelectMode}
+                            selectedEntities={selectedEntities}
+                            setSelectedEntities={setSelectedEntities}
+                            bordered={false}
                         />
-                        <span />
-                    </PaginationInfoContainer>
+                    )}
                 </ResultContainer>
             </SearchBody>
+            <PaginationInfoContainer>
+                <PaginationInfo>
+                    <b>
+                        {lastResultIndex > 0 ? (page - 1) * pageSize + 1 : 0} - {lastResultIndex}
+                    </b>{' '}
+                    of <b>{totalResults}</b>
+                </PaginationInfo>
+                <StyledPagination
+                    current={page}
+                    pageSize={numResultsPerPage}
+                    total={totalResults}
+                    showLessItems
+                    onChange={onChangePage}
+                    showSizeChanger={totalResults > SearchCfg.RESULTS_PER_PAGE}
+                    onShowSizeChange={(_currNum, newNum) => setNumResultsPerPage(newNum)}
+                    pageSizeOptions={['10', '20', '50', '100']}
+                />
+                <span />
+            </PaginationInfoContainer>
         </>
     );
 };

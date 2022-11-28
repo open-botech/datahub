@@ -7,6 +7,7 @@ import com.linkedin.metadata.TestEntityUtil;
 import com.linkedin.metadata.models.AspectSpec;
 import com.linkedin.metadata.models.EntitySpec;
 import com.linkedin.metadata.models.SearchableFieldSpec;
+import com.linkedin.metadata.models.extractor.FieldExtractor;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -44,5 +45,6 @@ public class FieldExtractorTest {
     assertEquals(result.get(nameToSpec.get("nestedArrayStringField")), ImmutableList.of("nestedArray1", "nestedArray2"));
     assertEquals(result.get(nameToSpec.get("nestedArrayArrayField")), ImmutableList.of("testNestedArray1", "testNestedArray2"));
     assertEquals(result.get(nameToSpec.get("customProperties")), ImmutableList.of("key1=value1", "key2=value2"));
+    assertEquals(result.get(nameToSpec.get("esObjectField")), ImmutableList.of("key1=value1", "key2=value2"));
   }
 }

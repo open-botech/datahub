@@ -1,16 +1,25 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import lru_cache
 from typing import Dict, Iterable, Optional
 
 import dateutil.parser as dp
+import pydantic
 import requests
-from pydantic import validator
+from pydantic import Field, validator
 from requests.models import HTTPError
 from sqllineage.runner import LineageRunner
 
 import datahub.emitter.mce_builder as builder
 from datahub.configuration.source_common import DatasetLineageProviderConfigBase
 from datahub.ingestion.api.common import PipelineContext
+from datahub.ingestion.api.decorators import (
+    SourceCapability,
+    SupportStatus,
+    capability,
+    config_class,
+    platform_name,
+    support_status,
+)
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.com.linkedin.pegasus2avro.common import (
@@ -38,19 +47,70 @@ from datahub.utilities import config_clean
 class MetabaseConfig(DatasetLineageProviderConfigBase):
     # See the Metabase /api/session endpoint for details
     # https://www.metabase.com/docs/latest/api-documentation.html#post-apisession
-    connect_uri: str = "localhost:3000"
-    username: Optional[str] = None
-    password: Optional[str] = None
-    database_alias_map: Optional[dict] = None
-    engine_platform_map: Optional[Dict[str, str]] = None
-    default_schema: str = "public"
+    connect_uri: str = Field(default="localhost:3000", description="Metabase host URL.")
+    username: Optional[str] = Field(default=None, description="Metabase username.")
+    password: Optional[pydantic.SecretStr] = Field(
+        default=None, description="Metabase password."
+    )
+    database_alias_map: Optional[dict] = Field(
+        default=None,
+        description="Database name map to use when constructing dataset URN.",
+    )
+    engine_platform_map: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="Custom mappings between metabase database engines and DataHub platforms",
+    )
+    default_schema: str = Field(
+        default="public",
+        description="Default schema name to use when schema is not provided in an SQL query",
+    )
 
     @validator("connect_uri")
     def remove_trailing_slash(cls, v):
         return config_clean.remove_trailing_slashes(v)
 
 
+@platform_name("Metabase")
+@config_class(MetabaseConfig)
+@support_status(SupportStatus.CERTIFIED)
+@capability(SourceCapability.PLATFORM_INSTANCE, "Enabled by default")
 class MetabaseSource(Source):
+    """
+    This plugin extracts Charts, dashboards, and associated metadata. This plugin is in beta and has only been tested
+    on PostgreSQL and H2 database.
+    ### Dashboard
+
+    [/api/dashboard](https://www.metabase.com/docs/latest/api-documentation.html#dashboard) endpoint is used to
+    retrieve the following dashboard information.
+
+    - Title and description
+    - Last edited by
+    - Owner
+    - Link to the dashboard in Metabase
+    - Associated charts
+
+    ### Chart
+
+    [/api/card](https://www.metabase.com/docs/latest/api-documentation.html#card) endpoint is used to
+    retrieve the following information.
+
+    - Title and description
+    - Last edited by
+    - Owner
+    - Link to the chart in Metabase
+    - Datasource and lineage
+
+    The following properties for a chart are ingested in DataHub.
+
+    | Name          | Description                                     |
+    | ------------- | ----------------------------------------------- |
+    | `Dimensions`  | Column names                                    |
+    | `Filters`     | Any filters applied to the chart                |
+    | `Metrics`     | All columns that are being used for aggregation |
+
+
+    """
+
     config: MetabaseConfig
     report: SourceReport
     platform = "metabase"
@@ -68,7 +128,9 @@ class MetabaseSource(Source):
             None,
             {
                 "username": self.config.username,
-                "password": self.config.password,
+                "password": self.config.password.get_secret_value()
+                if self.config.password
+                else None,
             },
         )
 
@@ -107,6 +169,7 @@ class MetabaseSource(Source):
                 key="metabase-session",
                 reason=f"Unable to logout for user {self.config.username}",
             )
+        super().close()
 
     def emit_dashboard_mces(self) -> Iterable[MetadataWorkUnit]:
         try:
@@ -141,7 +204,7 @@ class MetabaseSource(Source):
         try:
             return int(dp.parse(ts_str).timestamp() * 1000)
         except (dp.ParserError, OverflowError):
-            return int(datetime.utcnow().timestamp() * 1000)
+            return int(datetime.now(timezone.utc).timestamp() * 1000)
 
     def construct_dashboard_from_api_data(
         self, dashboard_info: dict
@@ -391,7 +454,7 @@ class MetabaseSource(Source):
                 schema_name, table_name = self.get_source_table_from_id(source_table_id)
                 if table_name:
                     source_paths.add(
-                        f"{schema_name + '.' if schema_name else ''}{table_name}"
+                        f"{f'{schema_name}.' if schema_name else ''}{table_name}"
                     )
         else:
             try:
@@ -420,7 +483,7 @@ class MetabaseSource(Source):
 
         # Create dataset URNs
         dataset_urn = []
-        dbname = f"{database_name + '.' if database_name else ''}"
+        dbname = f"{f'{database_name}.' if database_name else ''}"
         source_tables = list(map(lambda tbl: f"{dbname}{tbl}", source_paths))
         dataset_urn = [
             builder.make_dataset_urn_with_platform_instance(
@@ -471,7 +534,7 @@ class MetabaseSource(Source):
             return None, None
 
         # Map engine names to what datahub expects in
-        # https://github.com/linkedin/datahub/blob/master/metadata-service/war/src/main/resources/boot/data_platforms.json
+        # https://github.com/datahub-project/datahub/blob/master/metadata-service/war/src/main/resources/boot/data_platforms.json
         engine = dataset_json.get("engine", "")
         platform = engine
 
@@ -537,8 +600,8 @@ class MetabaseSource(Source):
         return cls(ctx, config)
 
     def get_workunits(self) -> Iterable[MetadataWorkUnit]:
-        yield from self.emit_dashboard_mces()
         yield from self.emit_card_mces()
+        yield from self.emit_dashboard_mces()
 
     def get_report(self) -> SourceReport:
         return self.report

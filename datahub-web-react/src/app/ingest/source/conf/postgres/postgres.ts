@@ -1,8 +1,6 @@
 import { SourceConfig } from '../types';
 import postgresLogo from '../../../../../images/postgreslogo.png';
 
-const baseUrl = window.location.origin;
-
 const placeholderRecipe = `\
 source: 
     type: postgres
@@ -12,8 +10,9 @@ source:
         database: # Your Postgres Database, e.g. sample_db
 
         # Credentials
-        username: # Your Postgres username, e.g. admin
-        password: # Your Postgres password, e.g. password_01
+        # Add secret in Secrets Tab with relevant names for each variable
+        username: "\${POSTGRES_USERNAME}" # Your Postgres username, e.g. admin
+        password: "\${POSTGRES_PASSWORD}" # Your Postgres password, e.g. password_01
 
         # Options
         include_tables: True
@@ -22,16 +21,17 @@ source:
         # Profiling
         profiling:
             enabled: false
-sink: 
-    type: datahub-rest 
-    config: 
-        server: "${baseUrl}/api/gms"`;
+        stateful_ingestion:
+            enabled: true    
+`;
+
+export const POSTGRES = 'postgres';
 
 const postgresConfig: SourceConfig = {
-    type: 'postgres',
+    type: POSTGRES,
     placeholderRecipe,
     displayName: 'Postgres',
-    docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/postgres/',
+    docsUrl: 'https://datahubproject.io/docs/generated/ingestion/sources/postgres/',
     logoUrl: postgresLogo,
 };
 

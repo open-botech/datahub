@@ -12,13 +12,17 @@ node {
   }
 
   // Version of node to use.
-  version = '16.8.0'
+  version = '16.16.0'
 
   // Version of Yarn to use.
   yarnVersion = '1.22.0'
 
-  // Base URL for fetching node distributions (change if you have a mirror).
-  distBaseUrl = 'https://nodejs.org/dist'
+  // Base URL for fetching node distributions (set nodeDistBaseUrl if you have a mirror).
+  if (project.hasProperty('nodeDistBaseUrl')) {
+    distBaseUrl = project.getProperty('nodeDistBaseUrl')
+  } else {
+    distBaseUrl = 'https://nodejs.org/dist'
+  }
 
   // Set the work directory for unpacking node
   workDir = file("${project.projectDir}/.gradle/nodejs")
@@ -47,6 +51,11 @@ task generateGraphQLSchema(type: Exec) {
   commandLine './generateGraphQLSchema.sh'
 }
 
+task generateJsonSchema(type: Exec, dependsOn: [':metadata-ingestion:docGen']) {
+  workingDir "$projectDir/genJsonSchema"
+  commandLine './generateJsonSchema.sh'
+}
+
 /*
   Wrappers around Yarn Tasks.
  */
@@ -59,17 +68,13 @@ task yarnInstall(type: YarnTask) {
   }
 }
 
-task generateGraphQLDocumentation(type: YarnTask, dependsOn: [yarnInstall, generateGraphQLSchema] ) {
-  args = ['docusaurus', 'docs:generate:graphql']
-}
-
-task yarnGenerate(type: YarnTask, dependsOn: [yarnInstall, generateGraphQLDocumentation] ) {
+task yarnGenerate(type: YarnTask, dependsOn: [yarnInstall, generateGraphQLSchema, generateJsonSchema, ':metadata-ingestion:modelDocGen', ':metadata-ingestion:docGen'] ) {
   inputs.files(projectMdFiles)
   outputs.cacheIf { true }
   args = ['run', 'generate']
 }
 
-task yarnServe(type: YarnTask, dependsOn: [yarnInstall, yarnGenerate]) {
+task yarnStart(type: YarnTask, dependsOn: [yarnInstall, yarnGenerate]) {
   args = ['run', 'start']
 }
 
@@ -80,6 +85,19 @@ task yarnLint(type: YarnTask, dependsOn: [yarnInstall]) {
   // tell gradle to apply the build cache
   outputs.cacheIf { true }
 }
+
+task yarnLintFix(type: YarnTask, dependsOn: [yarnInstall]) {
+  inputs.files(projectMdFiles)
+  args = ['run', 'lint-fix']
+  outputs.dir("dist")
+  // tell gradle to apply the build cache
+  outputs.cacheIf { true }
+}
+
+task serve(type: YarnTask, dependsOn: [yarnInstall] ) {
+  args = ['run', 'serve']
+}
+
 
 task yarnBuild(type: YarnTask, dependsOn: [yarnLint, yarnGenerate]) {
   inputs.files(projectMdFiles)
@@ -102,6 +120,9 @@ clean {
   delete 'tmp'
   delete 'build'
   delete 'just'
+  delete fileTree(dir: 'genDocs', exclude: '.gitignore')
+  delete fileTree(dir: 'docs', exclude: '.gitignore')
+  delete 'graphql/combined.graphql'
   yarnClear
 }
 

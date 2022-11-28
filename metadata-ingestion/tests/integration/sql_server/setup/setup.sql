@@ -1,3 +1,20 @@
+CREATE DATABASE NewData;
+GO
+USE NewData;
+GO
+CREATE TABLE ProductsNew (ID int, ProductName nvarchar(max));
+GO
+CREATE SCHEMA FooNew;
+GO
+CREATE TABLE FooNew.ItemsNew (ID int, ItemName nvarchar(max));
+GO
+CREATE TABLE FooNew.PersonsNew (
+    ID int NOT NULL PRIMARY KEY,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int
+);
+
 CREATE DATABASE DemoData;
 GO
 USE DemoData;
@@ -27,3 +44,20 @@ CREATE TABLE Foo.SalesReason
    )
 ;
 GO
+
+GO  
+EXEC sys.sp_addextendedproperty   
+@name = N'MS_Description',   
+@value = N'Description for table Items of schema Foo.',   
+@level0type = N'SCHEMA', @level0name = 'Foo',  
+@level1type = N'TABLE',  @level1name = 'Items';  
+GO
+
+GO  
+EXEC sys.sp_addextendedproperty   
+@name = N'MS_Description',   
+@value = N'Description for column LastName of table Persons of schema Foo.',  
+@level0type = N'SCHEMA', @level0name = 'Foo',  
+@level1type = N'TABLE', @level1name = 'Persons',   
+@level2type = N'COLUMN',@level2name = 'LastName';  
+GO  

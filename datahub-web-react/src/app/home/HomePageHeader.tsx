@@ -1,20 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Typography, Button, Tag } from 'antd';
 // import {  Row } from 'antd';
 import styled, { useTheme } from 'styled-components';
-
 // import { ManageAccount } from '../shared/ManageAccount';
 // import { useGetAuthenticatedUser } from '../useGetAuthenticatedUser';
+import { RightOutlined } from '@ant-design/icons';
 import { useEntityRegistry } from '../useEntityRegistry';
 import { navigateToSearchUrl } from '../search/utils/navigateToSearchUrl';
 import { SearchBar } from '../search/SearchBar';
-import { GetSearchResultsQuery, useGetAutoCompleteMultipleResultsLazyQuery } from '../../graphql/search.generated';
-import { useGetAllEntitySearchResults } from '../../utils/customGraphQL/useGetAllEntitySearchResults';
+import {
+    GetAutoCompleteMultipleResultsQuery,
+    useGetAutoCompleteMultipleResultsLazyQuery,
+    useGetSearchResultsForMultipleQuery,
+} from '../../graphql/search.generated';
 import { EntityType } from '../../types.generated';
 import analytics, { EventType } from '../analytics';
-// import { AdminHeaderLinks } from '../shared/admin/AdminHeaderLinks';
 import { ANTD_GRAY } from '../entity/shared/constants';
+// import { useAppConfig } from '../useAppConfig';
+// import { DEFAULT_APP_CONFIG } from '../../appConfigContext';
 
 const Background = styled.div`
     width: 100%;
@@ -35,12 +39,17 @@ const styles = {
     navBar: { padding: '24px' },
     searchContainer: { width: '100%', marginTop: '40px' },
     logoImage: { width: 140 },
-    searchBox: { width: '40vw', minWidth: 400, margin: '40px 0px', marginBottom: '12px' },
+    searchBox: { width: '47vw', minWidth: 400, margin: '40px 0px', marginBottom: '12px', maxWidth: '650px' },
     subtitle: { marginTop: '28px', color: '#FFFFFF', fontSize: 12 },
 };
 
 const HeaderContainer = styled.div`
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
 `;
 
 // const NavGroup = styled.div`
@@ -50,12 +59,19 @@ const HeaderContainer = styled.div`
 // `;
 
 const SuggestionsContainer = styled.div`
-    padding: 0px 30px;
-    max-width: 540px;
-    display: none;
+    margin: 0px 30px;
+    max-width: 650px;
+    width: 47vw;
+    display: flex;
     flex-direction: column;
     justify-content: left;
     align-items: start;
+`;
+
+const SuggestionsHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 `;
 
 const SuggestionTagContainer = styled.div`
@@ -91,27 +107,21 @@ const SuggestedQueriesText = styled(Typography.Text)`
 const SearchBarContainer = styled.div`
 `;
 
-function getSuggestionFieldsFromResult(result: GetSearchResultsQuery | undefined): string[] {
-    return (
-        (result?.search?.searchResults
-            ?.map((searchResult) => searchResult.entity)
-            ?.map((entity) => {
-                switch (entity.__typename) {
-                    case 'Dataset':
-                        return entity.name.split('.').slice(-1)[0];
-                    case 'CorpUser':
-                        return entity.username;
-                    case 'Chart':
-                        return entity.properties?.name;
-                    case 'Dashboard':
-                        return entity.properties?.name;
-                    default:
-                        return undefined;
-                }
-            })
-            .filter(Boolean) as string[]) || []
-    );
-}
+const ExploreAllButton = styled(Button)`
+    && {
+        padding: 0px;
+        margin: 0px;
+        height: 16px;
+    }
+`;
+
+const StyledRightOutlined = styled(RightOutlined)`
+    &&& {
+        font-size: 7px;
+        margin-left: 4px;
+        padding: 0px;
+    }
+`;
 
 function truncate(input, length) {
     if (input.length > length) {
@@ -130,16 +140,23 @@ export const HomePageHeader = () => {
     const [getAutoCompleteResultsForMultiple, { data: suggestionsData }] = useGetAutoCompleteMultipleResultsLazyQuery();
     // const user = useGetAuthenticatedUser()?.corpUser;
     const themeConfig = useTheme();
+    // const appConfig = useAppConfig();
+    const [newSuggestionData, setNewSuggestionData] = useState<GetAutoCompleteMultipleResultsQuery | undefined>();
+
+    useEffect(() => {
+        if (suggestionsData !== undefined) {
+            setNewSuggestionData(suggestionsData);
+        }
+    }, [suggestionsData]);
 
     const onSearch = (query: string, type?: EntityType) => {
         if (!query || query.trim().length === 0) {
             return;
         }
         analytics.event({
-            type: EventType.SearchEvent,
+            type: EventType.HomePageSearchEvent,
             query,
             pageNumber: 1,
-            originPath: window.location.pathname,
         });
         navigateToSearchUrl({
             type,
@@ -154,84 +171,103 @@ export const HomePageHeader = () => {
                 variables: {
                     input: {
                         query,
-                        limit: 30,
+                        limit: 10,
                     },
                 },
             });
         }
     };
 
-    // fetch some results from each entity to display search suggestions
-    const allSearchResultsByType = useGetAllEntitySearchResults({
-        query: '*',
-        start: 0,
-        count: 20,
-        filters: [],
+    const onClickExploreAll = () => {
+        analytics.event({
+            type: EventType.HomePageExploreAllClickEvent,
+        });
+        navigateToSearchUrl({
+            query: '*',
+            history,
+        });
+    };
+
+    // Fetch results
+    const { data: searchResultsData } = useGetSearchResultsForMultipleQuery({
+        variables: {
+            input: {
+                types: [],
+                query: '*',
+                start: 0,
+                count: 6,
+                filters: [],
+                orFilters: [],
+            },
+        },
     });
 
-    const suggestionsLoading = Object.keys(allSearchResultsByType).some((type) => {
-        return allSearchResultsByType[type].loading;
-    });
+    const searchResultsToShow = useMemo(() => {
+        let result: string[] | undefined = [];
+        if (searchResultsData) {
+            const entities = searchResultsData?.searchAcrossEntities?.searchResults.map((searchResult) => {
+                return searchResult?.entity;
+            });
 
-    const suggestionsToShow = useMemo(() => {
-        let result: string[] = [];
-        if (!suggestionsLoading) {
-            // TODO: Make this more dynamic.
-            // Add a ticket.
-            // Colored Tags: Feature Request...
-            // ...
-            [EntityType.Dashboard, EntityType.Chart, EntityType.Dataset].forEach((type) => {
-                const suggestionsToShowForEntity = getSuggestionFieldsFromResult(
-                    allSearchResultsByType[type]?.data,
-                ).sort(sortRandom);
-                const suggestionToAddToFront = suggestionsToShowForEntity?.pop();
-                result = [...result, ...suggestionsToShowForEntity];
-                if (suggestionToAddToFront) {
-                    result.splice(0, 0, suggestionToAddToFront);
-                }
+            result = entities?.map((entity) => {
+                return entityRegistry.getDisplayName(entity.type, entity);
             });
         }
-        return result;
-    }, [suggestionsLoading, allSearchResultsByType]);
+        return result?.sort(sortRandom);
+    }, [searchResultsData, entityRegistry]);
 
     return (
         <Background>
             {/* <Row justify="space-between" style={styles.navBar}>
+            <Row justify="space-between" style={styles.navBar}>
+                <WelcomeText>
+                    {!!user && (
+                        <>
+                            Welcome back, <b>{entityRegistry.getDisplayName(EntityType.CorpUser, user)}</b>.
+                        </>
+                    )}
+                </WelcomeText>
                 <NavGroup>
-                    <AdminHeaderLinks />
+                    <HeaderLinks />
                     <ManageAccount
                         urn={user?.urn || ''}
-                        pictureLink={user?.editableInfo?.pictureLink || ''}
-                        name={user?.info?.firstName || user?.username || undefined}
+                        pictureLink={user?.editableProperties?.pictureLink || ''}
+                        name={(user && entityRegistry.getDisplayName(EntityType.CorpUser, user)) || undefined}
                     />
                 </NavGroup>
             </Row> */}
             <HeaderContainer>
                 {/* <Image src={themeConfig.assets.logoUrl} preview={false} style={styles.logoImage} /> */}
+
                 {!!themeConfig.content.subtitle && (
                     <Typography.Text style={styles.subtitle}>{themeConfig.content.subtitle}</Typography.Text>
                 )}
                 <SearchBarContainer>
                     <SearchBar
                         placeholderText={themeConfig.content.search.searchbarMessage}
-                        suggestions={suggestionsData?.autoCompleteForMultiple?.suggestions || []}
+                        suggestions={newSuggestionData?.autoCompleteForMultiple?.suggestions || []}
                         onSearch={onSearch}
                         onQueryChange={onAutoComplete}
                         autoCompleteStyle={styles.searchBox}
                         entityRegistry={entityRegistry}
                     />
-                    {suggestionsToShow && suggestionsToShow.length > 0 && (
+                    {searchResultsToShow && searchResultsToShow.length > 0 && (
                         <SuggestionsContainer>
-                            <SuggestedQueriesText strong>Try searching for</SuggestedQueriesText>
+                            <SuggestionsHeader>
+                                <SuggestedQueriesText strong>Try searching for</SuggestedQueriesText>
+                                <ExploreAllButton type="link" onClick={onClickExploreAll}>
+                                    Explore all <StyledRightOutlined />
+                                </ExploreAllButton>
+                            </SuggestionsHeader>
                             <SuggestionTagContainer>
-                                {suggestionsToShow.slice(0, 3).map((suggestion) => (
+                                {searchResultsToShow.slice(0, 3).map((suggestion) => (
                                     <SuggestionButton
                                         key={suggestion}
                                         type="link"
                                         onClick={() =>
                                             navigateToSearchUrl({
                                                 type: undefined,
-                                                query: suggestion,
+                                                query: `"${suggestion}"`,
                                                 history,
                                             })
                                         }

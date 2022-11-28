@@ -7,82 +7,76 @@ apply plugin: 'jacoco'
 apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'maven-publish'
+apply plugin: 'org.hidetake.swagger.generator'
+apply from: "../versioning.gradle"
 import org.apache.tools.ant.filters.ReplaceTokens
 
 jar.enabled = false // Since we only want to build shadow jars, disabling the regular jar creation
 
+tasks.withType(JavaCompile).configureEach {
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+tasks.withType(Test).configureEach {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 dependencies {
-   
+
     implementation project(':metadata-models')
-    shadow externalDependency.httpAsyncClient // we want our clients to provide this
-    implementation externalDependency.jacksonDataBind 
+    compile externalDependency.avro_1_7
+    constraints {
+      implementation('commons-collections:commons-collections:3.2.2') {
+        because 'Vulnerability Issue'
+      }
+    }
+    compileOnly externalDependency.httpAsyncClient
+    implementation externalDependency.jacksonDataBind
+    implementation externalDependency.javaxValidation
+    runtimeOnly externalDependency.jna
+    implementation externalDependency.springContext
+    implementation externalDependency.swaggerAnnotations
+    implementation(externalDependency.kafkaAvroSerializer) {
+      exclude group: "org.apache.avro"
+    }
+    
     compileOnly externalDependency.lombok
     annotationProcessor externalDependency.lombok
-    testCompile externalDependency.httpAsyncClient // needed as shadow excludes it
     testCompile externalDependency.mockito
     testCompile externalDependency.mockServer
     testCompile externalDependency.mockServerClient
+    testCompile externalDependency.testContainers
+    testCompile externalDependency.httpAsyncClient
+
+    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.33'
 }
+
+task copyAvroSchemas {
+  dependsOn(':metadata-events:mxe-schemas:renameNamespace')
+  copy {
+    from file('../../../metadata-events/mxe-schemas/src/renamed/avro/com/linkedin/mxe/MetadataChangeProposal.avsc')
+    into file('./src/main/resources')
+  }
+}
+
+compileJava.dependsOn copyAvroSchemas
+
 
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
 }
 
-
-def detailedVersionString = "0.0.0-unknown-SNAPSHOT"
-def snapshotVersion = false
-if (project.hasProperty("releaseVersion")) {
-  version = releaseVersion
-  detailedVersionString = releaseVersion
-} else {
-  try {
-      // apply this plugin in a try-catch block so that we can handle cases without .git directory
-      apply plugin: "com.palantir.git-version"
-      println("In else section")
-      def details = versionDetails()
-      detailedVersionString = gitVersion()
-      version = details.lastTag
-      version = version.startsWith("v")? version.substring(1): version
-      def suffix = details.isCleanTag? "": "-SNAPSHOT"
-      snapshotVersion = ! details.isCleanTag
-    }
-    catch (Exception e) {
-          e.printStackTrace()
-          // last fall back
-          version = detailedVersionString
-      }
-  }
-    // trim version if it is of size 4 to size 3
-    def versionParts = version.tokenize(".")
-    if (versionParts.size() > 3) {
-      // at-least 4 part version
-      // we check if the 4th part is a .0 in which case we want to create a release
-      if (versionParts[3] != '0') {
-        snapshotVersion = true
-      }
-      versionParts = versionParts[0..2]
-      version = versionParts[0..2].join('.')
-    }
-
-    if (snapshotVersion) {
-        if (versionParts[versionParts.size()-1].isInteger()) {
-          version = versionParts[0..versionParts.size()-2].join('.') + '.' + (versionParts[versionParts.size()-1].toInteger()+1).toString() + "-SNAPSHOT"
-        } else {
-          // we are unable to part the last token as an integer, so we just append SNAPSHOT to this version
-          version = versionParts[0..versionParts.size()-1].join('.') + '-SNAPSHOT'
-      }
-    }
- 
-    processResources {
-      filter(ReplaceTokens, tokens:[fullVersion: detailedVersionString])
-    }
-
 test {
+  // to avoid simultaneous executions of tests when complete build is run
+  mustRunAfter(":metadata-io:test")
   useJUnit()
   finalizedBy jacocoTestReport
 }
 
-task checkShadowJar(type: Exec) { 
+task checkShadowJar(type: Exec) {
    commandLine 'sh', '-c', 'scripts/check_jar.sh'
 }
 
@@ -90,12 +84,14 @@ task checkShadowJar(type: Exec) {
 shadowJar {
   zip64=true
   archiveClassifier = ''
-  dependencies {
-    exclude(dependency('org.apache.httpcomponents:httpasyncclient'))
-  }
+  // preventing java multi-release JAR leakage
+  // https://github.com/johnrengelman/shadow/issues/729
+  exclude('module-info.class', 'META-INF/versions/**',
+          '**/LICENSE', '**/LICENSE.txt', '**/NOTICE', '**/NOTICE.txt')
   mergeServiceFiles()
   // we relocate namespaces manually, because we want to know exactly which libs we are exposing and why
   // we can move to automatic relocation using ConfigureShadowRelocation after we get to a good place on these first
+  relocate 'org.springframework', 'datahub.shaded.org.springframework'
   relocate 'com.fasterxml.jackson', 'datahub.shaded.jackson'
   relocate 'net.jcip.annotations', 'datahub.shaded.annotations'
   relocate 'javassist', 'datahub.shaded.javassist'
@@ -110,6 +106,25 @@ shadowJar {
   relocate 'org.abego.treelayout', 'datahub.shaded.treelayout'
   relocate 'org.slf4j', 'datahub.shaded.slf4j'
   relocate 'javax.annotation', 'datahub.shaded.javax.annotation'
+  relocate 'com.github.benmanes.caffeine', 'datahub.shaded.com.github.benmanes.caffeine'
+  relocate 'org.checkerframework', 'datahub.shaded.org.checkerframework'
+  relocate 'com.google.errorprone', 'datahub.shaded.com.google.errorprone'
+  relocate 'com.sun.jna', 'datahub.shaded.com.sun.jna'
+  // Below jars added for kafka emitter only
+  relocate 'org.apache.avro', 'datahub.shaded.org.apache.avro'
+  relocate 'org.codehaus.jackson', 'datahub.shaded.org.codehaus.jackson'
+  relocate 'com.thoughtworks.paranamer', 'datahub.shaded.com.thoughtworks.paranamer'
+  relocate 'org.xerial.snappy', 'datahub.shaded.org.xerial.snappy'
+  relocate 'org.apache.kafka', 'datahub.shaded.org.apache.kafka'
+  relocate 'io.confluent', 'datahub.shaded.io.confluent'
+  relocate 'org.apache.zookeeper', 'datahub.shaded.org.apache.zookeeper'
+  relocate 'org.apache.yetus', 'datahub.shaded.org.apache.yetus'
+  relocate 'jline', 'datahub.shaded.jline'
+  relocate 'org.apache.jute', 'datahub.shaded.org.apache.jute'
+  relocate 'org.I0Itec.zkclient', 'datahub.shaded.org.I0Itec.zkclient'
+  relocate 'net.jpountz', 'datahub.shaded.net.jpountz'
+  relocate 'com.github.luben', 'datahub.shaded.com.github.luben'
+ 
   finalizedBy checkShadowJar
 }
 
@@ -127,7 +142,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar) {
-    archiveClassifier = 'javadoc'  
+    archiveClassifier = 'javadoc'
     from javadoc
 }
 
@@ -145,9 +160,9 @@ publishing {
         artifacts = [ shadowJar, javadocJar, sourcesJar ]
 
         scm {
-          connection = 'scm:git:git://github.com/linkedin/datahub.git'
-          developerConnection = 'scm:git:ssh://github.com:linkedin/datahub.git'
-          url = 'https://github.com/linkedin/datahub.git'
+          connection = 'scm:git:git://github.com/datahub-project/datahub.git'
+          developerConnection = 'scm:git:ssh://github.com:datahub-project/datahub.git'
+          url = 'https://github.com/datahub-project/datahub.git'
         }
 
         licenses {
@@ -183,7 +198,6 @@ publishing {
   }
 }
 
-
 signing {
     def signingKey = findProperty("signingKey")
     def signingPassword = System.getenv("SIGNING_PASSWORD")
@@ -196,3 +210,29 @@ nexusStaging {
     username = System.getenv("NEXUS_USERNAME")
     password = System.getenv("NEXUS_PASSWORD")
 }
+
+tasks.register('generateOpenApiPojos', GenerateSwaggerCode) {
+  it.setInputFile(
+      file(
+          "${project(':metadata-models').projectDir}/src/generatedJsonSchema/combined/open-api.yaml"
+      )
+  )
+  it.setOutputDir(file("$projectDir/generated"))
+  it.setLanguage("spring")
+  it.setComponents(['models'])
+  it.setTemplateDir(file("$projectDir/src/main/resources/JavaSpring"))
+  it.setAdditionalProperties([
+      "group-id" : "io.datahubproject",
+      "dateLibrary" : "java8",
+      "java8" : "true",
+      "modelPropertyNaming" : "original",
+      "modelPackage" : "io.datahubproject.openapi.generated"] as Map<String, String>)
+
+  dependsOn ':metadata-models:generateJsonSchema'
+}
+
+compileJava.dependsOn generateOpenApiPojos
+sourceSets.main.java.srcDir "${generateOpenApiPojos.outputDir}/src/main/java"
+sourceSets.main.resources.srcDir "${generateOpenApiPojos.outputDir}/src/main/resources"
+
+checkstyleMain.exclude '**/generated/**'

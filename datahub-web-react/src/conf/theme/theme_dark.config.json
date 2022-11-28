@@ -45,7 +45,7 @@
                 },
                 {
                     "label": "DataHub GitHub",
-                    "path": "https://github.com/linkedin/datahub",
+                    "path": "https://github.com/datahub-project/datahub",
                     "shouldOpenInNewTab": true
                 }
             ]

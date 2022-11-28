@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
 
 import pydantic
+from pydantic.fields import Field
 
 from datahub.configuration.common import ConfigModel
 from datahub.metadata.schema_classes import CalendarIntervalClass
@@ -31,28 +32,27 @@ def get_bucket_duration_delta(bucketing: BucketDuration) -> timedelta:
 
 
 class BaseTimeWindowConfig(ConfigModel):
-    bucket_duration: BucketDuration = BucketDuration.DAY
+    bucket_duration: BucketDuration = Field(
+        default=BucketDuration.DAY,
+        description="Size of the time window to aggregate usage stats.",
+    )
 
     # `start_time` and `end_time` will be populated by the pre-validators.
     # However, we must specify a "default" value here or pydantic will complain
     # if those fields are not set by the user.
-    end_time: datetime = None  # type: ignore
-    start_time: datetime = None  # type: ignore
-
-    @pydantic.validator("end_time", pre=True, always=True)
-    def default_end_time(
-        cls, v: Any, *, values: Dict[str, Any], **kwargs: Any
-    ) -> datetime:
-        return v or get_time_bucket(
-            datetime.now(tz=timezone.utc), values["bucket_duration"]
-        )
+    end_time: datetime = Field(
+        default_factory=lambda: datetime.now(tz=timezone.utc),
+        description="Latest date of usage to consider. Default: Current time in UTC",
+    )
+    start_time: datetime = Field(default=None, description="Earliest date of usage to consider. Default: Last full day in UTC (or hour, depending on `bucket_duration`)")  # type: ignore
 
     @pydantic.validator("start_time", pre=True, always=True)
     def default_start_time(
         cls, v: Any, *, values: Dict[str, Any], **kwargs: Any
     ) -> datetime:
-        return v or (
-            values["end_time"] - get_bucket_duration_delta(values["bucket_duration"])
+        return v or get_time_bucket(
+            values["end_time"] - get_bucket_duration_delta(values["bucket_duration"]),
+            values["bucket_duration"],
         )
 
     @pydantic.validator("start_time", "end_time")

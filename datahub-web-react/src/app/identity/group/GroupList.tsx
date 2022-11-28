@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Button, Empty, List, message, Pagination } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Empty, List, Pagination } from 'antd';
 import styled from 'styled-components';
+import { useLocation } from 'react-router';
+import * as QueryString from 'query-string';
 import { UsergroupAddOutlined } from '@ant-design/icons';
 import { CorpGroup } from '../../../types.generated';
 import { Message } from '../../shared/Message';
@@ -8,6 +10,9 @@ import { useListGroupsQuery } from '../../../graphql/group.generated';
 import GroupListItem from './GroupListItem';
 import TabToolbar from '../../entity/shared/components/styled/TabToolbar';
 import CreateGroupModal from './CreateGroupModal';
+import { SearchBar } from '../../search/SearchBar';
+import { useEntityRegistry } from '../../useEntityRegistry';
+import { scrollToTop } from '../../shared/searchUtils';
 
 const GroupContainer = styled.div``;
 
@@ -26,6 +31,13 @@ const GroupPaginationContainer = styled.div`
 const DEFAULT_PAGE_SIZE = 25;
 
 export const GroupList = () => {
+    const entityRegistry = useEntityRegistry();
+    const location = useLocation();
+    const params = QueryString.parse(location.search, { arrayFormat: 'comma' });
+    const paramsQuery = (params?.query as string) || undefined;
+    const [query, setQuery] = useState<undefined | string>(undefined);
+    useEffect(() => setQuery(paramsQuery), [paramsQuery]);
+
     const [page, setPage] = useState(1);
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
     const [removedUrns, setRemovedUrns] = useState<string[]>([]);
@@ -39,6 +51,7 @@ export const GroupList = () => {
             input: {
                 start,
                 count: pageSize,
+                query,
             },
         },
         fetchPolicy: 'no-cache',
@@ -49,6 +62,7 @@ export const GroupList = () => {
     const filteredGroups = groups.filter((group) => !removedUrns.includes(group.urn));
 
     const onChangePage = (newPage: number) => {
+        scrollToTop();
         setPage(newPage);
     };
 
@@ -64,7 +78,7 @@ export const GroupList = () => {
     return (
         <>
             {!data && loading && <Message type="loading" content="Loading groups..." />}
-            {error && message.error('Failed to load groups :(')}
+            {error && <Message type="error" content="Failed to load groups! An unexpected error occurred." />}
             <GroupContainer>
                 <TabToolbar>
                     <div>
@@ -72,6 +86,23 @@ export const GroupList = () => {
                             <UsergroupAddOutlined /> Create group
                         </Button>
                     </div>
+                    <SearchBar
+                        initialQuery={query || ''}
+                        placeholderText="Search groups..."
+                        suggestions={[]}
+                        style={{
+                            maxWidth: 220,
+                            padding: 0,
+                        }}
+                        inputStyle={{
+                            height: 32,
+                            fontSize: 12,
+                        }}
+                        onSearch={() => null}
+                        onQueryChange={(q) => setQuery(q)}
+                        entityRegistry={entityRegistry}
+                        hideRecommendations
+                    />
                 </TabToolbar>
                 <GroupStyledList
                     bordered
@@ -94,16 +125,17 @@ export const GroupList = () => {
                         showSizeChanger={false}
                     />
                 </GroupPaginationContainer>
-                <CreateGroupModal
-                    visible={isCreatingGroup}
-                    onClose={() => setIsCreatingGroup(false)}
-                    onCreate={() => {
-                        // Hack to deal with eventual consistency.
-                        setTimeout(function () {
-                            refetch?.();
-                        }, 2000);
-                    }}
-                />
+                {isCreatingGroup && (
+                    <CreateGroupModal
+                        onClose={() => setIsCreatingGroup(false)}
+                        onCreate={() => {
+                            // Hack to deal with eventual consistency.
+                            setTimeout(function () {
+                                refetch?.();
+                            }, 2000);
+                        }}
+                    />
+                )}
             </GroupContainer>
         </>
     );

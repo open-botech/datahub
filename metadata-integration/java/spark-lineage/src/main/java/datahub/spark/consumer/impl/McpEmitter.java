@@ -1,38 +1,55 @@
 package datahub.spark.consumer.impl;
 
-import datahub.spark.model.LineageConsumer;
-import datahub.spark.model.LineageEvent;
-import datahub.client.Emitter;
-import datahub.client.rest.RestEmitter;
-import datahub.event.MetadataChangeProposalWrapper;
-import java.io.Closeable;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import com.typesafe.config.Config;
+
+import datahub.client.Emitter;
+import datahub.client.rest.RestEmitter;
+import datahub.client.rest.RestEmitterConfig;
+import datahub.event.MetadataChangeProposalWrapper;
+import datahub.spark.model.LineageConsumer;
+import datahub.spark.model.LineageEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.spark.SparkConf;
-import org.apache.spark.SparkEnv;
 
 
 @Slf4j
-public class McpEmitter implements LineageConsumer, Closeable {
+public class McpEmitter implements LineageConsumer {
 
-  private final Optional<Emitter> emitter;
-  private static final String CONF_PREFIX = "spark.datahub.";
+  private String emitterType;
+  private Optional<RestEmitterConfig> restEmitterConfig;
   private static final String TRANSPORT_KEY = "transport";
   private static final String GMS_URL_KEY = "rest.server";
   private static final String GMS_AUTH_TOKEN = "rest.token";
+  private static final String DISABLE_SSL_VERIFICATION_KEY = "rest.disable_ssl_verification";
+  private Optional<Emitter> getEmitter() {
+    Optional<Emitter> emitter = Optional.empty();
+    switch (emitterType) {
+    case "rest":
+      if (restEmitterConfig.isPresent()) {
+        emitter = Optional.of(new RestEmitter(restEmitterConfig.get()));
+      }
+      break;
+      
+    default:
+      log.error("DataHub Transport {} not recognized. DataHub Lineage emission will not work", emitterType);
+      break;
+      
+    }
+    return emitter;
+  }
 
-  private void emit(List<MetadataChangeProposalWrapper> mcpws) {
+  protected void emit(List<MetadataChangeProposalWrapper> mcpws) {
+    Optional<Emitter> emitter = getEmitter();
     if (emitter.isPresent()) {
       mcpws.stream().map(mcpw -> {
         try {
+          log.debug("emitting mcpw: " + mcpw);
           return emitter.get().emit(mcpw);
         } catch (IOException ioException) {
           log.error("Failed to emit metadata to DataHub", ioException);
@@ -40,35 +57,46 @@ public class McpEmitter implements LineageConsumer, Closeable {
         }
       }).filter(Objects::nonNull).collect(Collectors.toList()).forEach(future -> {
         try {
-          future.get();
+          log.info(future.get().toString());
         } catch (InterruptedException | ExecutionException e) {
           // log error, but don't impact thread
           log.error("Failed to emit metadata to DataHub", e);
         }
       });
+      try {
+        emitter.get().close();
+      } catch (IOException e) {
+        log.error("Issue while closing emitter" + e);
+      }
     }
   }
 
-  // TODO ideally the impl here should not be tied to Spark; the LineageConsumer
-  // API needs tweaking to include configs
-  public McpEmitter() {
-    SparkConf sparkConf = SparkEnv.get().conf();
-    Map<String, String> conf =
-        Arrays.stream(sparkConf.getAllWithPrefix("spark.datahub.")).collect(Collectors.toMap(x -> x._1, x -> x._2));
-
-    String emitterType = conf.getOrDefault(TRANSPORT_KEY, "rest");
-    if (emitterType.toLowerCase(Locale.ROOT).equals("rest")) {
-      String gmsUrl = conf.getOrDefault(GMS_URL_KEY, "http://localhost:8080");
-      String token = conf.getOrDefault(GMS_AUTH_TOKEN, null);
-      log.info("REST Emitter Configuration: GMS url {}{}", gmsUrl, (conf.containsKey(GMS_URL_KEY) ? "" : "(default)"));
-      if (token != null) {
-        log.info("REST Emitter Configuration: Token {}", (token != null) ? "XXXXX" : "(empty)");
+  public McpEmitter(Config datahubConf) {
+      emitterType = datahubConf.hasPath(TRANSPORT_KEY) ? datahubConf.getString(TRANSPORT_KEY) : "rest";
+      switch (emitterType) {
+      case "rest":
+          String gmsUrl = datahubConf.hasPath(GMS_URL_KEY) ? datahubConf.getString(GMS_URL_KEY)
+                  : "http://localhost:8080";
+          String token = datahubConf.hasPath(GMS_AUTH_TOKEN) ? datahubConf.getString(GMS_AUTH_TOKEN) : null;
+          boolean disableSslVerification = datahubConf.hasPath(DISABLE_SSL_VERIFICATION_KEY) ? datahubConf.getBoolean(
+              DISABLE_SSL_VERIFICATION_KEY) : false;
+          log.info("REST Emitter Configuration: GMS url {}{}", gmsUrl,
+                  (datahubConf.hasPath(GMS_URL_KEY) ? "" : "(default)"));
+          if (token != null) {
+              log.info("REST Emitter Configuration: Token {}", (token != null) ? "XXXXX" : "(empty)");
+          }
+          if (disableSslVerification) {
+            log.warn("REST Emitter Configuration: ssl verification will be disabled.");
+          }
+          restEmitterConfig = Optional.of(RestEmitterConfig.builder()
+              .server(gmsUrl).token(token)
+              .disableSslVerification(disableSslVerification).build());
+          
+          break;
+      default:
+          log.error("DataHub Transport {} not recognized. DataHub Lineage emission will not work", emitterType);
+          break;
       }
-      emitter = Optional.of(RestEmitter.create($ -> $.server(gmsUrl).token(token)));
-    } else {
-      emitter = Optional.empty();
-      log.error("DataHub Transport {} not recognized. DataHub Lineage emission will not work", emitterType);
-    }
   }
 
   @Override
@@ -78,8 +106,9 @@ public class McpEmitter implements LineageConsumer, Closeable {
 
   @Override
   public void close() throws IOException {
-    if (emitter.isPresent()) {
-      emitter.get().close();
-    }
+    // Nothing to close at this point
+    
   }
+
+ 
 }

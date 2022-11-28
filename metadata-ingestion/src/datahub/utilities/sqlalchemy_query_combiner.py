@@ -7,7 +7,7 @@ import random
 import string
 import threading
 import unittest.mock
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple, cast
 
 import greenlet
 import sqlalchemy
@@ -15,13 +15,10 @@ import sqlalchemy.engine
 import sqlalchemy.sql
 from sqlalchemy.engine import Connection
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
-from typing_extensions import ParamSpec
 
 from datahub.ingestion.api.report import Report
 
 logger: logging.Logger = logging.getLogger(__name__)
-
-P = ParamSpec("P")
 
 MAX_QUERIES_TO_COMBINE_AT_ONCE = 40
 
@@ -42,7 +39,8 @@ class _RowProxyFake(collections.OrderedDict):
 
 
 class _ResultProxyFake:
-    # This imitates the interface provided by sqlalchemy.engine.result.ResultProxy.
+    # This imitates the interface provided by sqlalchemy.engine.result.ResultProxy (sqlalchemy 1.3.x)
+    # or sqlalchemy.engine.Result (1.4.x).
     # Adapted from https://github.com/rajivsarvepalli/mock-alchemy/blob/2eba95588e7693aab973a6d60441d2bc3c4ea35d/src/mock_alchemy/mocking.py#L213
 
     def __init__(self, result: List[_RowProxyFake]) -> None:
@@ -111,8 +109,7 @@ def get_query_columns(query: Any) -> List[Any]:
     try:
         # inner_columns will be more accurate if the column names are unnamed,
         # since .columns will remove the "duplicates".
-        inner_columns = list(query.inner_columns)
-        return inner_columns
+        return list(query.inner_columns)
     except AttributeError:
         return list(query.columns)
 
@@ -216,7 +213,13 @@ class SQLAlchemyQueryCombiner:
 
         # Figure out how many columns this query returns.
         # This also implicitly ensures that the typing is generally correct.
-        assert len(get_query_columns(query)) > 0
+        try:
+            assert len(get_query_columns(query)) > 0
+        except AttributeError as e:
+            logger.debug(
+                f"Query of type: '{type(query)}' does not contain attributes required by 'get_query_columns()'. AttributeError: {e}"
+            )
+            return False, None
 
         # Add query to the queue.
         queue = self._get_queue(main_greenlet)
@@ -361,7 +364,11 @@ class SQLAlchemyQueryCombiner:
                     *query_future.multiparams,
                     **query_future.params,
                 )
-                query_future.res = res
+
+                # The actual execute method returns a CursorResult on SQLAlchemy 1.4.x
+                # and a ResultProxy on SQLAlchemy 1.3.x. Both interfaces are shimmed
+                # by _ResultProxyFake.
+                query_future.res = cast(_ResultProxyFake, res)
             except Exception as e:
                 query_future.exc = e
             finally:

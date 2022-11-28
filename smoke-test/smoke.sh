@@ -8,6 +8,9 @@ set -euxo pipefail
 #   - The gradle build has already been run.
 #   - Python 3.6+ is installed and in the PATH.
 
+# Log the locally loaded images
+# docker images | grep "datahub-"
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
@@ -16,13 +19,17 @@ source venv/bin/activate
 pip install --upgrade pip wheel setuptools
 pip install -r requirements.txt
 
-datahub docker quickstart \
-	--build-locally \
-	--quickstart-compose-file ../docker/docker-compose.yml \
-	--quickstart-compose-file ../docker/docker-compose.override.yml \
-	--quickstart-compose-file ../docker/docker-compose.dev.yml \
-	--dump-logs-on-failure
+mkdir -p ~/.datahub/plugins/frontend/auth/
+echo "test_user:test_pass" >> ~/.datahub/plugins/frontend/auth/user.props
 
-(cd tests/cypress ; yarn install)
+echo "DATAHUB_VERSION = $DATAHUB_VERSION"
+DATAHUB_TELEMETRY_ENABLED=false  \
+DOCKER_COMPOSE_BASE="file://$( dirname "$DIR" )" \
+datahub docker quickstart --standalone_consumers --dump-logs-on-failure
 
-pytest -vv --continue-on-collection-errors --junit-xml=junit.smoke.xml
+(cd ..; ./gradlew :smoke-test:yarnInstall)
+
+export CYPRESS_ADMIN_USERNAME=${ADMIN_USERNAME:-datahub}
+export CYPRESS_ADMIN_PASSWORD=${ADMIN_PASSWORD:-datahub}
+
+pytest -rP --durations=20 -vv --continue-on-collection-errors --junit-xml=junit.smoke.xml

@@ -7,4 +7,10 @@ export interface ExtendedSchemaFields extends SchemaField {
     pastGlobalTags?: GlobalTags | null;
     isNewRow?: boolean;
     isDeletedRow?: boolean;
+    parent?: ExtendedSchemaFields;
+}
+
+export enum SchemaViewType {
+    NORMAL,
+    BLAME,
 }

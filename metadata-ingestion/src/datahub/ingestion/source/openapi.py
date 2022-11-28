@@ -2,11 +2,21 @@ import logging
 import time
 import warnings
 from abc import ABC
-from typing import Dict, Generator, Iterable, Tuple
+from typing import Dict, Generator, Iterable, Optional, Tuple
+
+from pydantic.fields import Field
 
 from datahub.configuration.common import ConfigModel
 from datahub.emitter.mce_builder import make_tag_urn
 from datahub.ingestion.api.common import PipelineContext
+from datahub.ingestion.api.decorators import (
+    SourceCapability,
+    SupportStatus,
+    capability,
+    config_class,
+    platform_name,
+    support_status,
+)
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.source.openapi_parser import (
@@ -36,27 +46,53 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 class OpenApiConfig(ConfigModel):
-    name: str
-    url: str
-    swagger_file: str
-    ignore_endpoints: list = []
-    username: str = ""
-    password: str = ""
-    forced_examples: dict = {}
-    token: str = ""
-    get_token: bool = False
+    name: str = Field(description="")
+    url: str = Field(description="")
+    swagger_file: str = Field(description="")
+    ignore_endpoints: list = Field(default=[], description="")
+    username: str = Field(default="", description="")
+    password: str = Field(default="", description="")
+    forced_examples: dict = Field(default={}, description="")
+    token: Optional[str] = Field(default=None, description="")
+    get_token: dict = Field(default={}, description="")
 
     def get_swagger(self) -> Dict:
-        if self.get_token:  # token based authentication, to be tested
-            if self.token == "":
+        if self.get_token or self.token is not None:
+            if self.token is not None:
+                ...
+            else:
+                assert (
+                    "url_complement" in self.get_token.keys()
+                ), "When 'request_type' is set to 'get', an url_complement is needed for the request."
+                if self.get_token["request_type"] == "get":
+                    assert (
+                        "{username}" in self.get_token["url_complement"]
+                    ), "we expect the keyword {username} to be present in the url"
+                    assert (
+                        "{password}" in self.get_token["url_complement"]
+                    ), "we expect the keyword {password} to be present in the url"
+                    url4req = self.get_token["url_complement"].replace(
+                        "{username}", self.username
+                    )
+                    url4req = url4req.replace("{password}", self.password)
+                elif self.get_token["request_type"] == "post":
+                    url4req = self.get_token["url_complement"]
+                else:
+                    raise KeyError(
+                        "This tool accepts only 'get' and 'post' as method for getting tokens"
+                    )
                 self.token = get_tok(
-                    url=self.url, username=self.username, password=self.password
+                    url=self.url,
+                    username=self.username,
+                    password=self.password,
+                    tok_url=url4req,
+                    method=self.get_token["request_type"],
                 )
-
             sw_dict = get_swag_json(
                 self.url, token=self.token, swagger_file=self.swagger_file
             )  # load the swagger file
-        else:
+
+        else:  # using basic auth for accessing endpoints
             sw_dict = get_swag_json(
                 self.url,
                 username=self.username,
@@ -75,7 +111,32 @@ class ApiWorkUnit(MetadataWorkUnit):
     pass
 
 
+@platform_name("OpenAPI", id="openapi")
+@config_class(OpenApiConfig)
+@support_status(SupportStatus.CERTIFIED)
+@capability(SourceCapability.PLATFORM_INSTANCE, supported=False, description="")
 class APISource(Source, ABC):
+    """
+
+    This plugin is meant to gather dataset-like information about OpenApi Endpoints.
+
+    As example, if by calling GET at the endpoint at `https://test_endpoint.com/api/users/` you obtain as result:
+    ```JSON
+    [{"user": "albert_physics",
+      "name": "Albert Einstein",
+      "job": "nature declutterer",
+      "is_active": true},
+      {"user": "phytagoras",
+      "name": "Phytagoras of Kroton",
+      "job": "Phylosopher on steroids",
+      "is_active": true}
+    ]
+    ```
+
+    in Datahub you will see a dataset called `test_endpoint/users` which contains as fields `user`, `name` and `job`.
+
+    """
+
     def __init__(self, config: OpenApiConfig, ctx: PipelineContext, platform: str):
         super().__init__(ctx)
         self.config = config
@@ -102,7 +163,9 @@ class APISource(Source, ABC):
         elif status_code == 504:
             self.report.report_warning(key=key, reason="Timeout for reaching endpoint")
         else:
-            raise Exception(f"Unable to retrieve endpoint, response code {status_code}")
+            raise Exception(
+                f"Unable to retrieve endpoint, response code {status_code}, key {key}"
+            )
 
     def init_dataset(
         self, endpoint_k: str, endpoint_dets: dict
@@ -262,9 +325,6 @@ class APISource(Source, ABC):
 
     def get_report(self):
         return self.report
-
-    def close(self):
-        pass
 
 
 class OpenApiSource(APISource):

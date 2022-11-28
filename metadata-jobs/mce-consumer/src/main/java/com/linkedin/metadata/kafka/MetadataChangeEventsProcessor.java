@@ -8,7 +8,7 @@ import com.linkedin.entity.client.RestliEntityClient;
 import com.linkedin.gms.factory.auth.SystemAuthenticationFactory;
 import com.linkedin.gms.factory.entity.RestliEntityClientFactory;
 import com.linkedin.gms.factory.kafka.KafkaEventConsumerFactory;
-import com.linkedin.gms.factory.kafka.KafkaEventProducerFactory;
+import com.linkedin.gms.factory.kafka.DataHubKafkaProducerFactory;
 import com.linkedin.metadata.EventUtils;
 import com.linkedin.metadata.kafka.config.MetadataChangeProposalProcessorCondition;
 import com.linkedin.metadata.snapshot.Snapshot;
@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Conditional(MetadataChangeProposalProcessorCondition.class)
 @Import({RestliEntityClientFactory.class, SystemAuthenticationFactory.class, KafkaEventConsumerFactory.class,
-    KafkaEventProducerFactory.class})
+    DataHubKafkaProducerFactory.class})
 @EnableKafka
 @RequiredArgsConstructor
 public class MetadataChangeEventsProcessor {
@@ -50,11 +50,11 @@ public class MetadataChangeEventsProcessor {
 
   private final Histogram kafkaLagStats = MetricUtils.get().histogram(MetricRegistry.name(this.getClass(), "kafkaLag"));
 
-  @Value("${KAFKA_FMCE_TOPIC_NAME:" + Topics.FAILED_METADATA_CHANGE_EVENT + "}")
+  @Value("${FAILED_METADATA_CHANGE_EVENT_NAME:${KAFKA_FMCE_TOPIC_NAME:" + Topics.FAILED_METADATA_CHANGE_EVENT + "}}")
   private String fmceTopicName;
 
   @KafkaListener(id = "${METADATA_CHANGE_EVENT_KAFKA_CONSUMER_GROUP_ID:mce-consumer-job-client}", topics =
-      "${KAFKA_MCE_TOPIC_NAME:" + Topics.METADATA_CHANGE_EVENT + "}", containerFactory = "kafkaEventConsumer")
+      "${METADATA_CHANGE_EVENT_NAME:${KAFKA_MCE_TOPIC_NAME:" + Topics.METADATA_CHANGE_EVENT + "}}", containerFactory = "kafkaEventConsumer")
   public void consume(final ConsumerRecord<String, GenericRecord> consumerRecord) {
     kafkaLagStats.update(System.currentTimeMillis() - consumerRecord.timestamp());
     final GenericRecord record = consumerRecord.value();

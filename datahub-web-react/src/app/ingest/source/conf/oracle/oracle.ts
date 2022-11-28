@@ -1,8 +1,6 @@
 import { SourceConfig } from '../types';
 import oracleLogo from '../../../../../images/oraclelogo.png';
 
-const baseUrl = window.location.origin;
-
 const placeholderRecipe = `\
 source: 
     type: oracle
@@ -12,21 +10,19 @@ source:
         database: # Your Oracle database name, e.g. sample_db
 
         # Credentials
-        username: # Your Oracle username, e.g. admin
-        password: # Your Oracle password, e.g. password_01
+        # Add secret in Secrets Tab with relevant names for each variable
+        username: "\${ORACLE_USERNAME}" # Your Oracle username, e.g. admin
+        password: "\${ORACLE_PASSWORD}" # Your Oracle password, e.g. password_01
 
         # Optional service name
         # service_name: # Your service name, e.g. svc # omit database if using this option
-sink: 
-    type: datahub-rest
-    config: 
-        server: "${baseUrl}/api/gms"`;
+`;
 
 const oracleConfig: SourceConfig = {
     type: 'oracle',
     placeholderRecipe,
     displayName: 'Oracle',
-    docsUrl: 'https://datahubproject.io/docs/metadata-ingestion/source_docs/oracle/',
+    docsUrl: 'https://datahubproject.io/docs/generated/ingestion/sources/oracle/',
     logoUrl: oracleLogo,
 };
 

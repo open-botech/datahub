@@ -9,13 +9,16 @@ dependencies {
   compile externalDependency.jacksonDataBind
   compile externalDependency.jacksonDataFormatYaml
   compile externalDependency.reflections
+  compile externalDependency.jsonPatch
   dataModel project(':li-utils')
   annotationProcessor externalDependency.lombok
 
   compile externalDependency.mavenArtifact
 
-  testCompile externalDependency.testng
   testCompile project(':test-models')
+  testCompile externalDependency.testng
+  testCompile externalDependency.mockito
+  testCompile externalDependency.mockitoInline
 
 }
 compileTestJava.dependsOn tasks.getByPath(':entity-registry:custom-test-model:modelDeploy')

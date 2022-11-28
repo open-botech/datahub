@@ -13,6 +13,7 @@ fragment entityPreview on Entity {
         }
         platformNativeType
         properties {
+            name
             description
             customProperties {
                 key
@@ -34,6 +35,9 @@ fragment entityPreview on Entity {
         domain {
             ...entityDomain
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on CorpUser {
         username
@@ -45,7 +49,9 @@ fragment entityPreview on Entity {
             lastName
             fullName
         }
-        editableInfo {
+        editableProperties {
+            displayName
+            title
             pictureLink
         }
     }
@@ -55,28 +61,10 @@ fragment entityPreview on Entity {
             displayName
             description
         }
-        relationships(input: { types: ["IsMemberOfGroup"], direction: INCOMING }) {
-            relationships {
-                type
-                direction
-                entity {
-                    urn
-                    type
-                    ... on CorpUser {
-                        username
-                        info {
-                            active
-                            displayName
-                            title
-                            firstName
-                            lastName
-                        }
-                        editableInfo {
-                            pictureLink
-                        }
-                    }
-                }
-            }
+        memberCount: relationships(
+            input: { types: ["IsMemberOfGroup", "IsMemberOfNativeGroup"], direction: INCOMING, start: 0, count: 1 }
+        ) {
+            total
         }
     }
     ... on Dashboard {
@@ -110,6 +98,12 @@ fragment entityPreview on Entity {
         }
         domain {
             ...entityDomain
+        }
+        deprecation {
+            ...deprecationFields
+        }
+        subTypes {
+            typeNames
         }
     }
     ... on Chart {
@@ -145,6 +139,9 @@ fragment entityPreview on Entity {
         domain {
             ...entityDomain
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on DataFlow {
         urn
@@ -175,6 +172,9 @@ fragment entityPreview on Entity {
         domain {
             ...entityDomain
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on DataJob {
         urn
@@ -202,18 +202,33 @@ fragment entityPreview on Entity {
         domain {
             ...entityDomain
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on GlossaryTerm {
         name
-        glossaryTermInfo {
-            definition
+        hierarchicalName
+        properties {
+            name
+            description
             termSource
             sourceRef
             sourceUrl
+            rawSchema
             customProperties {
                 key
                 value
             }
+        }
+        deprecation {
+            ...deprecationFields
+        }
+    }
+    ... on GlossaryNode {
+        properties {
+            name
+            description
         }
     }
     ... on MLFeatureTable {
@@ -236,6 +251,9 @@ fragment entityPreview on Entity {
         platform {
             ...platformFields
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on MLModel {
         name
@@ -246,6 +264,9 @@ fragment entityPreview on Entity {
         }
         platform {
             ...platformFields
+        }
+        deprecation {
+            ...deprecationFields
         }
     }
     ... on MLModelGroup {
@@ -258,10 +279,18 @@ fragment entityPreview on Entity {
         platform {
             ...platformFields
         }
+        deprecation {
+            ...deprecationFields
+        }
     }
     ... on Tag {
         name
         description
+        properties {
+            name
+            description
+            colorHex
+        }
     }
     ... on DataPlatform {
         ...nonConflictingPlatformFields
@@ -271,5 +300,8 @@ fragment entityPreview on Entity {
         properties {
             name
         }
+    }
+    ... on Container {
+        ...entityContainer
     }
 }

@@ -1,22 +1,31 @@
 import logging
-from collections import Counter
 from dataclasses import dataclass, field
-from typing import Any
-from typing import Counter as CounterType
 from typing import Dict, Iterable, List, Optional, Tuple, Type, Union, ValuesView
 
 import bson
 import pymongo
-from mypy_extensions import TypedDict
 from packaging import version
 from pydantic import PositiveInt, validator
+from pydantic.fields import Field
 from pymongo.mongo_client import MongoClient
 
-from datahub.configuration.common import AllowDenyPattern, ConfigModel
-from datahub.emitter.mce_builder import DEFAULT_ENV
+from datahub.configuration.common import AllowDenyPattern
+from datahub.configuration.source_common import EnvBasedSourceConfigBase
 from datahub.ingestion.api.common import PipelineContext
+from datahub.ingestion.api.decorators import (
+    SourceCapability,
+    SupportStatus,
+    capability,
+    config_class,
+    platform_name,
+    support_status,
+)
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
+from datahub.ingestion.source.schema_inference.object import (
+    SchemaDescription,
+    construct_schema,
+)
 from datahub.metadata.com.linkedin.pegasus2avro.metadata.snapshot import DatasetSnapshot
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 from datahub.metadata.com.linkedin.pegasus2avro.schema import (
@@ -45,25 +54,46 @@ logger = logging.getLogger(__name__)
 DENY_DATABASE_LIST = set(["admin", "config", "local"])
 
 
-class MongoDBConfig(ConfigModel):
+class MongoDBConfig(EnvBasedSourceConfigBase):
     # See the MongoDB authentication docs for details and examples.
     # https://pymongo.readthedocs.io/en/stable/examples/authentication.html
-    connect_uri: str = "mongodb://localhost"
-    username: Optional[str] = None
-    password: Optional[str] = None
-    authMechanism: Optional[str] = None
-    options: dict = {}
-    enableSchemaInference: bool = True
-    schemaSamplingSize: Optional[PositiveInt] = 1000
-    useRandomSampling: bool = True
-    maxSchemaSize: Optional[PositiveInt] = 300
+    connect_uri: str = Field(
+        default="mongodb://localhost", description="MongoDB connection URI."
+    )
+    username: Optional[str] = Field(default=None, description="MongoDB username.")
+    password: Optional[str] = Field(default=None, description="MongoDB password.")
+    authMechanism: Optional[str] = Field(
+        default=None, description="MongoDB authentication mechanism."
+    )
+    options: dict = Field(
+        default={}, description="Additional options to pass to `pymongo.MongoClient()`."
+    )
+    enableSchemaInference: bool = Field(
+        default=True, description="Whether to infer schemas. "
+    )
+    schemaSamplingSize: Optional[PositiveInt] = Field(
+        default=1000,
+        description="Number of documents to use when inferring schema size. If set to `0`, all documents will be scanned.",
+    )
+    useRandomSampling: bool = Field(
+        default=True,
+        description="If documents for schema inference should be randomly selected. If `False`, documents will be selected from start.",
+    )
+    maxSchemaSize: Optional[PositiveInt] = Field(
+        default=300, description="Maximum number of fields to include in the schema."
+    )
     # mongodb only supports 16MB as max size for documents. However, if we try to retrieve a larger document it
     # errors out with "16793600" as the maximum size supported.
-    maxDocumentSize: Optional[PositiveInt] = 16793600
-    env: str = DEFAULT_ENV
+    maxDocumentSize: Optional[PositiveInt] = Field(default=16793600, description="")
 
-    database_pattern: AllowDenyPattern = AllowDenyPattern.allow_all()
-    collection_pattern: AllowDenyPattern = AllowDenyPattern.allow_all()
+    database_pattern: AllowDenyPattern = Field(
+        default=AllowDenyPattern.allow_all(),
+        description="regex patterns for databases to filter in ingestion.",
+    )
+    collection_pattern: AllowDenyPattern = Field(
+        default=AllowDenyPattern.allow_all(),
+        description="regex patterns for collections to filter in ingestion.",
+    )
 
     @validator("maxDocumentSize")
     def check_max_doc_size_filter_is_valid(cls, doc_size_filter_value):
@@ -97,7 +127,6 @@ PYMONGO_TYPE_TO_MONGO_TYPE = {
     "mixed": "mixed",
 }
 
-
 # map PyMongo types to DataHub classes
 _field_type_mapping: Dict[Union[Type, str], Type] = {
     list: ArrayTypeClass,
@@ -114,181 +143,6 @@ _field_type_mapping: Dict[Union[Type, str], Type] = {
     dict: RecordTypeClass,
     "mixed": UnionTypeClass,
 }
-
-
-def is_nullable_doc(doc: Dict[str, Any], field_path: Tuple) -> bool:
-    """
-    Check if a nested field is nullable in a document from a collection.
-
-    Parameters
-    ----------
-        doc:
-            document to check nullability for
-        field_path:
-            path to nested field to check, ex. ('first_field', 'nested_child', '2nd_nested_child')
-    """
-
-    field = field_path[0]
-
-    # if field is inside
-    if field in doc:
-
-        value = doc[field]
-
-        if value is None:
-            return True
-
-        # if no fields left, must be non-nullable
-        if len(field_path) == 1:
-            return False
-
-        # otherwise, keep checking the nested fields
-        remaining_fields = field_path[1:]
-
-        # if dictionary, check additional level of nesting
-        if isinstance(value, dict):
-            return is_nullable_doc(doc[field], remaining_fields)
-
-        # if list, check if any member is missing field
-        if isinstance(value, list):
-
-            # count empty lists of nested objects as nullable
-            if len(value) == 0:
-                return True
-
-            return any(is_nullable_doc(x, remaining_fields) for x in doc[field])
-
-        # any other types to check?
-        # raise ValueError("Nested type not 'list' or 'dict' encountered")
-        return True
-
-    return True
-
-
-def is_nullable_collection(
-    collection: Iterable[Dict[str, Any]], field_path: Tuple
-) -> bool:
-    """
-    Check if a nested field is nullable in a collection.
-
-    Parameters
-    ----------
-        collection:
-            collection to check nullability for
-        field_path:
-            path to nested field to check, ex. ('first_field', 'nested_child', '2nd_nested_child')
-    """
-
-    return any(is_nullable_doc(doc, field_path) for doc in collection)
-
-
-class BasicSchemaDescription(TypedDict):
-    types: CounterType[type]  # field types and times seen
-    count: int  # times the field was seen
-
-
-class SchemaDescription(BasicSchemaDescription):
-    delimited_name: str  # collapsed field name
-    # we use 'mixed' to denote mixed types, so we need a str here
-    type: Union[type, str]  # collapsed type
-    nullable: bool  # if field is ever missing
-
-
-def construct_schema(
-    collection: Iterable[Dict[str, Any]], delimiter: str
-) -> Dict[Tuple[str, ...], SchemaDescription]:
-    """
-    Construct (infer) a schema from a collection of documents.
-
-    For each field (represented as a tuple to handle nested items), reports the following:
-        - `types`: Python types of field values
-        - `count`: Number of times the field was encountered
-        - `type`: type of the field if `types` is just a single value, otherwise `mixed`
-        - `nullable`: if field is ever null/missing
-        - `delimited_name`: name of the field, joined by a given delimiter
-
-    Parameters
-    ----------
-        collection:
-            collection to construct schema over.
-        delimiter:
-            string to concatenate field names by
-    """
-
-    schema: Dict[Tuple[str, ...], BasicSchemaDescription] = {}
-
-    def append_to_schema(doc: Dict[str, Any], parent_prefix: Tuple[str, ...]) -> None:
-        """
-        Recursively update the schema with a document, which may/may not contain nested fields.
-
-        Parameters
-        ----------
-            doc:
-                document to scan
-            parent_prefix:
-                prefix of fields that the document is under, pass an empty tuple when initializing
-        """
-
-        for key, value in doc.items():
-
-            new_parent_prefix = parent_prefix + (key,)
-
-            # if nested value, look at the types within
-            if isinstance(value, dict):
-
-                append_to_schema(value, new_parent_prefix)
-
-            # if array of values, check what types are within
-            if isinstance(value, list):
-
-                for item in value:
-
-                    # if dictionary, add it as a nested object
-                    if isinstance(item, dict):
-                        append_to_schema(item, new_parent_prefix)
-
-            # don't record None values (counted towards nullable)
-            if value is not None:
-
-                if new_parent_prefix not in schema:
-
-                    schema[new_parent_prefix] = {
-                        "types": Counter([type(value)]),
-                        "count": 1,
-                    }
-
-                else:
-
-                    # update the type count
-                    schema[new_parent_prefix]["types"].update({type(value): 1})
-                    schema[new_parent_prefix]["count"] += 1
-
-    for document in collection:
-        append_to_schema(document, ())
-
-    extended_schema: Dict[Tuple[str, ...], SchemaDescription] = {}
-
-    for field_path in schema.keys():
-
-        field_types = schema[field_path]["types"]
-
-        field_type: Union[str, type] = "mixed"
-
-        # if single type detected, mark that as the type to go with
-        if len(field_types.keys()) == 1:
-            field_type = next(iter(field_types))
-
-        field_extended: SchemaDescription = {
-            "types": schema[field_path]["types"],
-            "count": schema[field_path]["count"],
-            "nullable": is_nullable_collection(collection, field_path),
-            "delimited_name": delimiter.join(field_path),
-            "type": field_type,
-        }
-
-        extended_schema[field_path] = field_extended
-
-    return extended_schema
 
 
 def construct_schema_pymongo(
@@ -318,9 +172,9 @@ def construct_schema_pymongo(
             maximum size of the document that will be considered for generating the schema.
     """
 
-    doc_size_field = "temporary_doc_size_field"
     aggregations: List[Dict] = []
     if is_version_gte_4_4:
+        doc_size_field = "temporary_doc_size_field"
         # create a temporary field to store the size of the document. filter on it and then remove it.
         aggregations = [
             {"$addFields": {doc_size_field: {"$bsonSize": "$$ROOT"}}},
@@ -341,8 +195,27 @@ def construct_schema_pymongo(
     return construct_schema(list(documents), delimiter)
 
 
+@platform_name("MongoDB")
+@config_class(MongoDBConfig)
+@support_status(SupportStatus.CERTIFIED)
+@capability(SourceCapability.LINEAGE_COARSE, "Enabled by default")
 @dataclass
 class MongoDBSource(Source):
+    """
+    This plugin extracts the following:
+
+    - Databases and associated metadata
+    - Collections in each database and schemas for each collection (via schema inference)
+
+    By default, schema inference samples 1,000 documents from each collection. Setting `schemaSamplingSize: null` will scan the entire collection.
+    Moreover, setting `useRandomSampling: False` will sample the first documents found without random selection, which may be faster for large collections.
+
+    Note that `schemaSamplingSize` has no effect if `enableSchemaInference: False` is set.
+
+    Really large schemas will be further truncated to a maximum of 300 schema fields. This is configurable using the `maxSchemaSize` parameter.
+
+    """
+
     config: MongoDBConfig
     report: MongoDBSourceReport
     mongo_client: MongoClient
@@ -364,11 +237,11 @@ class MongoDBSource(Source):
             **self.config.options,
         }
 
-        self.mongo_client = pymongo.MongoClient(self.config.connect_uri, **options)
+        self.mongo_client = pymongo.MongoClient(self.config.connect_uri, **options)  # type: ignore
 
         # This cheaply tests the connection. For details, see
         # https://pymongo.readthedocs.io/en/stable/api/pymongo/mongo_client.html#pymongo.mongo_client.MongoClient
-        self.mongo_client.admin.command("ismaster")
+        self.mongo_client.admin.command("ping")
 
     @classmethod
     def create(cls, config_dict: dict, ctx: PipelineContext) -> "MongoDBSource":
@@ -560,3 +433,4 @@ class MongoDBSource(Source):
 
     def close(self):
         self.mongo_client.close()
+        super().close()

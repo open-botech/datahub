@@ -12,10 +12,17 @@ query getMe {
                 fullName
                 email
             }
-            editableInfo {
+            editableProperties {
+                displayName
+                title
                 pictureLink
                 teams
                 skills
+            }
+            settings {
+                appearance {
+                    showSimplifiedHomepage
+                }
             }
         }
         platformPrivileges {
@@ -26,6 +33,16 @@ query getMe {
             manageIngestion
             manageSecrets
             manageDomains
+            manageTests
+            manageGlossaries
+            manageUserCredentials
+            manageTags
+            createDomains
+            createTags
         }
     }
+}
+
+mutation updateUserSetting($input: UpdateUserSettingInput!) {
+    updateUserSetting(input: $input)
 }

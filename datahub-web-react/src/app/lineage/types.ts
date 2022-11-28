@@ -1,3 +1,4 @@
+import { FullLineageResultsFragment } from '../../graphql/lineage.generated';
 import {
     Chart,
     Dashboard,
@@ -9,6 +10,12 @@ import {
     MlFeature,
     MlModel,
     MlModelGroup,
+    Maybe,
+    Status,
+    DataPlatform,
+    FineGrainedLineage,
+    SchemaMetadata,
+    InputFields,
 } from '../../types.generated';
 
 export type EntitySelectParams = {
@@ -25,19 +32,30 @@ export type LineageExpandParams = {
 export type FetchedEntity = {
     urn: string;
     name: string;
+    // name to be shown on expansion if available
+    expandedName?: string;
     type: EntityType;
     subtype?: string;
     icon?: string;
     // children?: Array<string>;
     upstreamChildren?: Array<EntityAndType>;
+    numUpstreamChildren?: number;
     downstreamChildren?: Array<EntityAndType>;
+    numDownstreamChildren?: number;
     fullyFetched?: boolean;
-    platform?: string;
+    platform?: DataPlatform;
+    status?: Maybe<Status>;
+    siblingPlatforms?: Maybe<DataPlatform[]>;
+    fineGrainedLineages?: [FineGrainedLineage];
+    schemaMetadata?: SchemaMetadata;
+    inputFields?: InputFields;
 };
 
 export type NodeData = {
     urn?: string;
     name: string;
+    // name to be shown on expansion if available
+    expandedName?: string;
     type?: EntityType;
     subtype?: string;
     children?: Array<NodeData>;
@@ -46,19 +64,33 @@ export type NodeData = {
     // Hidden children are unexplored but in the opposite direction of the flow of the graph.
     // Currently our visualization does not support expanding in two directions
     countercurrentChildrenUrns?: string[];
-    platform?: string;
+    platform?: DataPlatform;
+    status?: Maybe<Status>;
+    siblingPlatforms?: Maybe<DataPlatform[]>;
+    schemaMetadata?: SchemaMetadata;
+    inputFields?: InputFields;
 };
 
 export type VizNode = {
     x: number;
     y: number;
     data: NodeData;
+    direction: Direction;
 };
 
 export type VizEdge = {
     source: VizNode;
     target: VizNode;
+    sourceField?: string;
+    targetField?: string;
     curve: { x: number; y: number }[];
+};
+
+export type ColumnEdge = {
+    sourceUrn: string;
+    sourceField: string;
+    targetUrn: string;
+    targetField: string;
 };
 
 export type FetchedEntities = { [x: string]: FetchedEntity };
@@ -79,9 +111,10 @@ export type TreeProps = {
     fetchedEntities: { [x: string]: FetchedEntity };
     onEntityClick: (EntitySelectParams) => void;
     onEntityCenter: (EntitySelectParams) => void;
-    onLineageExpand: (LineageExpandParams) => void;
+    onLineageExpand: (data: EntityAndType) => void;
     selectedEntity?: EntitySelectParams;
     hoveredEntity?: EntitySelectParams;
+    fineGrainedMap?: any;
 };
 
 export type EntityAndType =
@@ -121,3 +154,9 @@ export type EntityAndType =
           type: EntityType.MlprimaryKey;
           entity: MlPrimaryKey;
       };
+
+export interface LineageResult {
+    urn: string;
+    upstream?: Maybe<{ __typename?: 'EntityLineageResult' } & FullLineageResultsFragment>;
+    downstream?: Maybe<{ __typename?: 'EntityLineageResult' } & FullLineageResultsFragment>;
+}

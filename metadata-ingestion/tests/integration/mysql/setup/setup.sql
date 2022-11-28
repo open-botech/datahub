@@ -24,7 +24,7 @@ insert into metadata_aspect (urn, aspect, version, metadata, createdon, createdb
   'urn:li:corpuser:datahub',
   'com.linkedin.identity.CorpUserEditableInfo',
   0,
-  '{"skills":[],"teams":[],"pictureLink":"https://raw.githubusercontent.com/linkedin/datahub/master/datahub-web-react/src/images/default_avatar.png"}',
+  '{"skills":[],"teams":[],"pictureLink":"https://raw.githubusercontent.com/datahub-project/datahub/master/datahub-web-react/src/images/default_avatar.png"}',
   now(),
   'urn:li:corpuser:__datahub_system'
 );
@@ -271,7 +271,7 @@ CREATE TABLE IF NOT EXISTS `test_cases`.`test_empty` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
+CREATE TABLE IF NOT EXISTS `test_cases`.`myset` (col SET('a', 'b', 'c', 'd'));
 
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

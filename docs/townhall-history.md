@@ -2,10 +2,122 @@
 
 A list of previous Town Halls, their planned schedule, and the recording of the meeting.
 
+## 10/27/2022
+[Full YouTube video](https://youtu.be/B74WHxX5EMk)
+
+### Agenda
+
+- Conquer Data Governance with Acryl Data’s Metadata Tests - Learn how to tackle Data Governance with incremental, automation-driven governance using Metadata Tests provided in Acryl Data’s managed DataHub offering
+- Community Case Study - The Grab Team shares how they are using DataHub for data discoverability, automated classification and governance workflows, data quality observability, and beyond!
+- Upcoming Ingestion Sources - We’ll tell you the ins and outs of our upcoming dbt Cloud and Unity Catalog connectors
+- Sneak Peek! Saved Views - Learn how you can soon use Saved Views to help end-users navigate entities in DataHub with more precision and focus
+- Performance Improvements - Hear about the latest upgrades to DataHub performance
+
+## 9/29/2022
+[Full YouTube video](https://youtu.be/FjkNySWkghY)
+
+### Agenda
+
+- Column Level Lineage is here! - Demo of column-level lineage and impact analysis in the DataHub UI
+- Community Case Study - The Stripe Team shares how they leverage DataHub to power observability within their Airflow-based ecosystem
+- Sneak Peek! Automated PII Classification - Preview upcoming functionality to automatically identify data fields that likely contain sensitive data
+- Ingestion Improvements Galore - Improved performance and functionality for dbt, Looker, Tableau, and Presto ingestion sources
+
+## 8/25/2022
+[Full YouTube video](https://youtu.be/EJCKxKBvCwo)
+
+### Agenda
+
+- Community Case Study - The Etsy Team shares their journey of adopting DataHub
+- Looker & DataHub Improvements - surface the most relevant Looks and Dashboards
+- Home Page Improvements to tailor the Browse experience
+- Unified Ingestion Summaries - View live logs for UI-based ingestion and see historical ingestion reports across CLI and UI-based ingestion
+- Patch Support - Native support for PATCH in the metadata protocol to support efficient updates to add & remove owners, lineage, tags and more
+- Sneak Peek! Advanced Search
+
+## 7/28/2022
+[Full YouTube video](https://youtu.be/Zrkf3Mzcvc4)
+
+### Agenda
+
+- Community Updates
+- Project Updates
+- Improvements to UI-Based Ingestion
+- Sneak Preview - Bulk Edits via the UI
+- Streamlined Metadata Ingestion
+- DataHub 201: Metadata Enrichment
+
+## 6/30/2022
+[Full YouTube video](https://youtu.be/fAD53fEJ6m0)
+
+### Agenda
+
+- Community Updates
+- Project Updates
+- dbt Integration Updates
+- CSV Ingestion Support
+- DataHub 201 - Glossary Term Deep Dive
+
+## 5/26/2022
+[Full YouTube video](https://youtu.be/taKb_zyowEE)
+
+### Agenda
+
+- Community Case Study: Hear how the G-Research team is using Cassandra as DataHub’s Backend
+- Creating & Editing Glossary Terms from the DataHub UI
+- DataHub User Onboarding via the UI
+- DataHub 201: Impact Analysis
+- Sneak Peek: Data Reliability with DataHub
+- Metadata Day Hackathon Winners
+
+## 4/28/2022
+[Full YouTube video](https://www.youtube.com/watch?v=7iwNxHgqxtg)
+
+### Agenda
+- Community Case Study: Hear from Included Health about how they are embedding external tools into the DataHub UI
+- New! Actions Framework: run custom code when changes happen within DataHub
+- UI Refresh for ML Entities
+- Improved deletion support for time-series aspects, tags, terms, & more
+- OpenAPI Improvements
+
+## 3/31/2022
+[Full YouTube video](https://www.youtube.com/watch?v=IVazVgcNRdw)
+
+### Agenda
+- Community Case Study: Hear from Zendesk about how they are applying “shift left” principles by authoring metadata in their Protobuf schemas
+- RBAC Functionality: View-Based Policies
+- Schema Version History - surfacing the history of schema changes in DataHub's UI
+- Improvements to Airflow Ingestion, including Run History
+- Container/Domain-Level  Property Inheritance
+- Delete API
+
+
+## 2/25/2022
+[Full YouTube video](https://www.youtube.com/watch?v=enBqB2Dbuv4)
+
+### Agenda
+
+- Lineage Impact Analysis - using DataHub to understand the impact of changes on downstream dependencies
+- Displaying Data Quality Checks in the UI
+- Roadmap update: Schema Version History & Column-Level Lineage
+- Community Case Study: Managing Lineage via YAML
+
+## 1/28/2022
+[Full YouTube video](https://youtu.be/ShlSR3dMUnE)
+
+### Agenda
+
+- Community & Roadmap Updates by Maggie Hays (Acryl Data)
+- Project Updates by Shirshanka Das  (Acryl Data)
+- Community Case Study: Adding Dataset Transformers by Eric Cooklin (Stash)
+- Demo: Data Domains & Containers by John Joyce (Acryl Data)
+- DataHub Basics — Data Profiling & Usage Stats 101 by Maggie Hays & Tamás Németh (Acryl Data)
+- Demo: Spark Lineage by Mugdha Hardikar (GS Lab) & Shirshanka Das
+
 ## 12/17/2021
 [Full YouTube video](https://youtu.be/rYInKCwxu7o)
 
-## Agenda
+### Agenda
 - Community & Roadmap Updates by Maggie Hays (Acryl Data)
 - Project Updates by Shirshanka Das (Acryl Data)
 - 2021 DataHub Community in Review by Maggie Hays
@@ -18,7 +130,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 ## 11/19/2021
 [Full YouTube video](https://youtu.be/to80sEDZz7k)
 
-## Agenda
+### Agenda
 - Community & Roadmap Updates by Maggie Hays (Acryl Data)
 - Project Updates by Shirshanka Das (Acryl Data)
 - DataHub Basics -- Lineage 101 by John Joyce & Surya Lanka (Acryl Data)
@@ -29,7 +141,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 ## 10/29/2021
 [Full YouTube video](https://youtu.be/GrS_uZhYNm0)
 
-## Agenda
+### Agenda
 - DataHub Community & Roadmap Update - Maggie Hays (Acryl Data)
 - October Project Updates - Shirshanka Das (Acryl Data)
 - Introducing Recommendations - John Joyce & Dexter Lee (Acryl Data)
@@ -40,7 +152,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 ## 9/24/2021
 [Full YouTube video](https://youtu.be/nQDiKPKnLLQ)
 
-## Agenda
+### Agenda
 - Project Updates and Callouts by Shirshanka
    - GraphQL Public API Annoucement
 - Demo: Faceted Search by Gabe Lyons (Acryl Data)
@@ -53,7 +165,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 ## 8/27/2021
 [Full YouTube video](https://youtu.be/3joZINi3ti4)
 
-## Agenda
+### Agenda
 - Project Updates and Callouts by Shirshanka
    - Business Glossary Demo
    - 0.8.12 Upcoming Release Highlights 
@@ -70,7 +182,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 
 [Medium Post](https://medium.com/datahub-project/datahub-project-updates-f4299cd3602e?source=friends_link&sk=27af7637f7ae44786ede694c3af512a5)
 
-## Agenda
+### Agenda
 
 - Project Updates by Shirshanka
    - Release highlights
@@ -84,7 +196,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 
 [Medium Post](https://medium.com/datahub-project/datahub-project-updates-ed3155476408?source=friends_link&sk=02816a16ff2acd688e6db8eb55808d31)
 
-### Agenda
+#### Agenda
 
 - Project Updates by Shirshanka
     - Release notes
@@ -100,7 +212,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 
 [Medium Post](https://medium.com/datahub-project/linkedin-datahub-project-updates-ed98cdf913c1?source=friends_link&sk=9930ec5579299b155ea87c747683d1ad)
 
-### Agenda
+#### Agenda
 
 - Project Updates by Shirshanka - 10 mins
    - 0.8.0 Release
@@ -115,7 +227,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
 
 [Medium Digest](https://medium.com/datahub-project/linkedin-datahub-project-updates-2b0d26066b8f?source=friends_link&sk=686c47219ed294e0838ae3e2fe29084d)
 
-### Agenda
+#### Agenda
 
 - Welcome - 5 mins
 - Project Updates by Shirshanka - 10 mins
@@ -133,7 +245,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
  
  [Medium Digest](https://medium.com/datahub-project/linkedin-datahub-project-updates-697f0faddd10?source=friends_link&sk=9888633c5c7219b875125e87a703ec4d)
 
-### Agenda
+#### Agenda
 
 * Welcome - 5 mins
 * Project Updates ([slides](https://drive.google.com/file/d/1c3BTP3oDAzJr07l6pY6CkDZi5nT0cLRs/view?usp=sharing)) by [Shirshanka](https://www.linkedin.com/in/shirshankadas/) - 10 mins
@@ -150,7 +262,7 @@ A list of previous Town Halls, their planned schedule, and the recording of the 
  [YouTube video](https://www.youtube.com/watch?v=Z9ImbcsAVl0) 
  
  [Medium Digest](https://medium.com/datahub-project/linkedin-datahub-project-updates-february-2021-edition-338d2c6021f0)
-### Agenda
+#### Agenda
 
 * Welcome - 5 mins
 * Latest React App Demo! ([video](https://www.youtube.com/watch?v=RQBEJhcen5E)) by John Joyce and Gabe Lyons - 5 mins

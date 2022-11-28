@@ -6,10 +6,10 @@ node {
   // If true, it will download node using above parameters.
   // If false, it will try to use globally installed node.
 
-  if (project.hasProperty('useSystemNode') && project.getProperty('useSystemNode').toBoolean()) {
-    download = false
+  if (project.hasProperty('useSystemNode')) {
+    download = ! project.getProperty('useSystemNode').toBoolean()
   } else {
-    download = true
+    download = false
   }
 
   // Version of node to use.
@@ -18,8 +18,12 @@ node {
   // Version of Yarn to use.
   yarnVersion = '1.22.0'
 
-  // Base URL for fetching node distributions (change if you have a mirror).
-  distBaseUrl = 'https://nodejs.org/dist'
+  // Base URL for fetching node distributions (set nodeDistBaseUrl if you have a mirror).
+  if (project.hasProperty('nodeDistBaseUrl')) {
+    distBaseUrl = project.getProperty('nodeDistBaseUrl')
+  } else {
+    distBaseUrl = 'https://nodejs.org/dist'
+  }
 
   // Set the work directory for unpacking node
   workDir = file("${project.projectDir}/.gradle/nodejs")
@@ -55,6 +59,10 @@ task yarnLint(type: YarnTask, dependsOn: [yarnInstall, yarnGenerate]) {
   args = ['run', 'lint']
 }
 
+task yarnLintFix(type: YarnTask, dependsOn: [yarnInstall, yarnGenerate]) {
+  args = ['run', 'lint-fix']
+}
+
 task yarnBuild(type: YarnTask, dependsOn: [yarnInstall, yarnTest, yarnLint]) {
   args = ['run', 'build']
 }
@@ -65,6 +73,8 @@ clean {
   delete 'tmp'
   delete 'build'
   delete 'just'
+  delete 'src/types.generated.ts'
+  delete fileTree(dir: 'src/graphql', include: '*.generated.ts')
 }
 
 configurations {
@@ -75,6 +85,14 @@ distZip {
   dependsOn yarnBuild
   baseName 'datahub-web-react'
   from 'dist'
+}
+
+task copyAssets {
+  dependsOn distZip
+  copy {
+    from 'dist'
+    into '../datahub-frontend/public/'
+  }
 }
 
 if (!gradle.startParameter.taskNames.any { it in ["idea"] }) {

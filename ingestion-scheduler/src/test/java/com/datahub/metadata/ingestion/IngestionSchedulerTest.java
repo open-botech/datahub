@@ -9,7 +9,7 @@ import com.linkedin.entity.Aspect;
 import com.linkedin.entity.EntityResponse;
 import com.linkedin.entity.EnvelopedAspect;
 import com.linkedin.entity.EnvelopedAspectMap;
-import com.linkedin.entity.client.JavaEntityClient;
+import com.linkedin.metadata.client.JavaEntityClient;
 import com.linkedin.metadata.config.IngestionConfiguration;
 import com.linkedin.ingestion.DataHubIngestionSourceConfig;
 import com.linkedin.ingestion.DataHubIngestionSourceInfo;
@@ -106,6 +106,7 @@ public class IngestionSchedulerTest {
         Mockito.mock(IngestionConfiguration.class),
         1,
         1200);
+    _ingestionScheduler.init();
     Thread.sleep(2000); // Sleep so the runnable can execute. (not ideal)
   }
 
@@ -230,5 +231,36 @@ public class IngestionSchedulerTest {
 
     ScheduledFuture<?> future = _ingestionScheduler._nextIngestionSourceExecutionCache.get(urn);
     Assert.assertTrue(future.getDelay(TimeUnit.SECONDS) < 60); // Next execution must always be less than a minute away.
+  }
+
+  @Test
+  public void testUnscheduleAll() throws Exception {
+    assertEquals(_ingestionScheduler._nextIngestionSourceExecutionCache.size(), 1);
+
+    final Urn urn = Urn.createFromString("urn:li:dataHubIngestionSourceUrn:3");
+    final DataHubIngestionSourceInfo newInfo = new DataHubIngestionSourceInfo();
+    newInfo.setSchedule(new DataHubIngestionSourceSchedule().setInterval("* * * * *").setTimezone("UTC")); // Run every monday
+    newInfo.setType("redshift");
+    newInfo.setName("My Redshift Source 2");
+    newInfo.setConfig(new DataHubIngestionSourceConfig()
+        .setExecutorId("default")
+        .setRecipe("{ type }")
+        .setVersion("0.8.18")
+    );
+    _ingestionScheduler.scheduleNextIngestionSourceExecution(urn, newInfo);
+
+    assertEquals(_ingestionScheduler._nextIngestionSourceExecutionCache.size(), 2);
+
+    // Get reference to schedules futures
+    ScheduledFuture<?> future = _ingestionScheduler._nextIngestionSourceExecutionCache.get(urn);
+
+    // Unschedule all
+    _ingestionScheduler.unscheduleAll();
+
+    // Ensure that the cache is empty
+    Assert.assertTrue(_ingestionScheduler._nextIngestionSourceExecutionCache.isEmpty());
+
+    // And that the future is cancelled
+    Assert.assertTrue(future.isCancelled());
   }
 }

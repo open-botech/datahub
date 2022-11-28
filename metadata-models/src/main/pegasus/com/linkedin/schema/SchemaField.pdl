@@ -3,6 +3,7 @@ namespace com.linkedin.schema
 import com.linkedin.dataset.SchemaFieldPath
 import com.linkedin.common.GlobalTags
 import com.linkedin.common.GlossaryTerms
+import com.linkedin.common.AuditStamp
 
 /**
  * SchemaField to describe metadata related to dataset schema.
@@ -40,6 +41,28 @@ record SchemaField {
   description: optional string
 
   /**
+   * Label of the field. Provides a more human-readable name for the field than field path. Some sources will
+   * provide this metadata but not all sources have the concept of a label. If just one string is associated with
+   * a field in a source, that is most likely a description.
+   */
+  @Searchable = {
+    "fieldName": "fieldLabels",
+    "fieldType": "TEXT",
+    "boostScore": 0.2
+  }
+  label: optional string
+
+  /**
+   * An AuditStamp corresponding to the creation of this schema field.
+   */
+  created: optional AuditStamp
+
+  /**
+   * An AuditStamp corresponding to the last modification of this schema field.
+   */
+  lastModified: optional AuditStamp
+
+  /**
    * Platform independent field type of the field.
    */
   type: SchemaFieldDataType
@@ -57,6 +80,12 @@ record SchemaField {
   /**
    * Tags associated with the field
    */
+  @Relationship = {
+    "/tags/*/tag": {
+      "name": "SchemaFieldTaggedWith",
+      "entityTypes": [ "tag" ]
+    }
+  }
   @Searchable = {
     "/tags/*/tag": {
       "fieldName": "fieldTags",
@@ -69,6 +98,12 @@ record SchemaField {
   /**
    * Glossary terms associated with the field
    */
+   @Relationship = {
+      "/terms/*/urn": {
+        "name": "SchemaFieldWithGlossaryTerm",
+        "entityTypes": [ "glossaryTerm" ]
+      }
+   }
    @Searchable = {
     "/terms/*/urn": {
       "fieldName": "fieldGlossaryTerms",
@@ -83,6 +118,11 @@ record SchemaField {
    * We do this to easily distinguish between value and key fields
    */
   isPartOfKey: boolean = false
+
+  /**
+   * For Datasets which are partitioned, this determines the partitioning key.
+   */
+  isPartitioningKey: optional boolean
 
   /**
    * For schema fields that have other properties that are not modeled explicitly,

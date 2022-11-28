@@ -1,15 +1,16 @@
 package com.linkedin.metadata.systemmetadata;
 
 import com.google.common.collect.ImmutableList;
+import com.linkedin.metadata.search.elasticsearch.update.ESBulkProcessor;
 import com.linkedin.metadata.utils.elasticsearch.IndexConvention;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -22,7 +23,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.PipelineAggregatorBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
@@ -39,7 +39,8 @@ import static com.linkedin.metadata.systemmetadata.ElasticSearchSystemMetadataSe
 public class ESSystemMetadataDAO {
   private final RestHighLevelClient client;
   private final IndexConvention indexConvention;
-  private final BulkProcessor bulkProcessor;
+  private final ESBulkProcessor bulkProcessor;
+  private final int numRetries;
 
   /**
    * Updates or inserts the given search document.
@@ -52,8 +53,9 @@ public class ESSystemMetadataDAO {
         new IndexRequest(indexConvention.getIndexName(INDEX_NAME)).id(docId).source(document, XContentType.JSON);
     final UpdateRequest updateRequest =
         new UpdateRequest(indexConvention.getIndexName(INDEX_NAME), docId).doc(document, XContentType.JSON)
-            .detectNoop(false)
-            .upsert(indexRequest);
+                .detectNoop(false)
+                .retryOnConflict(numRetries)
+                .upsert(indexRequest);
     bulkProcessor.add(updateRequest);
   }
 
@@ -74,58 +76,42 @@ public class ESSystemMetadataDAO {
     BoolQueryBuilder finalQuery = QueryBuilders.boolQuery();
     finalQuery.must(QueryBuilders.termQuery("urn", urn));
 
-    DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest();
+    final Optional<BulkByScrollResponse> deleteResponse = bulkProcessor.deleteByQuery(finalQuery,
+            indexConvention.getIndexName(INDEX_NAME));
 
-    deleteByQueryRequest.setQuery(finalQuery);
-
-    deleteByQueryRequest.indices(indexConvention.getIndexName(INDEX_NAME));
-
-    try {
-      final BulkByScrollResponse deleteResponse = client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
-      return deleteResponse;
-    } catch (IOException e) {
-      log.error("ERROR: Failed to delete by query. See stacktrace for a more detailed error:");
-      e.printStackTrace();
-    }
-    return null;
+    return deleteResponse.orElse(null);
   }
 
-  public BulkByScrollResponse deleteByUrnAspect(
-      @Nonnull final String urn,
-      @Nonnull final String aspect
-  ) {
+  public BulkByScrollResponse deleteByUrnAspect(@Nonnull final String urn, @Nonnull final String aspect) {
     BoolQueryBuilder finalQuery = QueryBuilders.boolQuery();
     finalQuery.must(QueryBuilders.termQuery("urn", urn));
     finalQuery.must(QueryBuilders.termQuery("aspect", aspect));
 
-    DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest();
+    final Optional<BulkByScrollResponse> deleteResponse = bulkProcessor.deleteByQuery(finalQuery,
+            indexConvention.getIndexName(INDEX_NAME));
 
-    deleteByQueryRequest.setQuery(finalQuery);
-
-    deleteByQueryRequest.indices(indexConvention.getIndexName(INDEX_NAME));
-
-    try {
-      final BulkByScrollResponse deleteResponse = client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
-      return deleteResponse;
-    } catch (IOException e) {
-      log.error("ERROR: Failed to delete by query. See stacktrace for a more detailed error:");
-      e.printStackTrace();
-    }
-    return null;
+    return deleteResponse.orElse(null);
   }
 
-  public SearchResponse findByParams(Map<String, String> searchParams) {
+  public SearchResponse findByParams(Map<String, String> searchParams, boolean includeSoftDeleted, int from, int size) {
     SearchRequest searchRequest = new SearchRequest();
 
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
     BoolQueryBuilder finalQuery = QueryBuilders.boolQuery();
-    searchParams.entrySet()
-        .forEach(entry -> finalQuery.must(QueryBuilders.termQuery(entry.getKey(), entry.getValue())));
+
+    for (String key : searchParams.keySet()) {
+      finalQuery.must(QueryBuilders.termQuery(key, searchParams.get(key)));
+    }
+
+    if (!includeSoftDeleted) {
+      finalQuery.mustNot(QueryBuilders.termQuery("removed", "true"));
+    }
+
     searchSourceBuilder.query(finalQuery);
 
-    // this is the max page size elastic will return
-    searchSourceBuilder.size(10000);
+    searchSourceBuilder.from(from);
+    searchSourceBuilder.size(size);
 
     searchRequest.source(searchSourceBuilder);
 
@@ -140,15 +126,16 @@ public class ESSystemMetadataDAO {
     return null;
   }
 
-  public SearchResponse findByRegistry(String registryName, String registryVersion) {
+  public SearchResponse findByRegistry(String registryName, String registryVersion, boolean includeSoftDeleted,
+      int from, int size) {
     Map<String, String> params = new HashMap<>();
     params.put("registryName", registryName);
     params.put("registryVersion", registryVersion);
-    return findByParams(params);
+    return findByParams(params, includeSoftDeleted, from, size);
   }
 
-  public SearchResponse findByRunId(String runId) {
-    return findByParams(Collections.singletonMap("runId", runId));
+  public SearchResponse findByRunId(String runId, boolean includeSoftDeleted, int from, int size) {
+    return findByParams(Collections.singletonMap("runId", runId), includeSoftDeleted, from, size);
   }
 
   public SearchResponse findRuns(Integer pageOffset, Integer pageSize) {
@@ -170,7 +157,8 @@ public class ESSystemMetadataDAO {
     TermsAggregationBuilder aggregation = AggregationBuilders.terms("runId")
         .field("runId")
         .subAggregation(AggregationBuilders.max("maxTimestamp").field("lastUpdated"))
-        .subAggregation(bucketSort);
+        .subAggregation(bucketSort)
+        .subAggregation(AggregationBuilders.filter("removed", QueryBuilders.termQuery("removed", "true")));
 
     searchSourceBuilder.aggregation(aggregation);
 

@@ -20,9 +20,9 @@ from datahub.metadata.schema_classes import SchemaFieldDataTypeClass, StringType
 def flatten(d: dict, prefix: str = "") -> Generator:
     for k, v in d.items():
         if isinstance(v, dict):
-            yield from flatten(v, prefix + "." + k)
+            yield from flatten(v, f"{prefix}.{k}")
         else:
-            yield (prefix + "-" + k).strip(".")
+            yield f"{prefix}-{k}".strip(".")
 
 
 def flatten2list(d: dict) -> list:
@@ -53,15 +53,15 @@ def request_call(
     headers = {"accept": "application/json"}
 
     if username is not None and password is not None:
-        response = requests.get(
+        return requests.get(
             url, headers=headers, auth=HTTPBasicAuth(username, password)
         )
+
     elif token is not None:
-        headers["Authorization"] = "Bearer " + token
-        response = requests.get(url, headers=headers)
+        headers["Authorization"] = f"Bearer {token}"
+        return requests.get(url, headers=headers)
     else:
-        response = requests.get(url, headers=headers)
-    return response
+        return requests.get(url, headers=headers)
 
 
 def get_swag_json(
@@ -77,14 +77,13 @@ def get_swag_json(
     else:
         response = request_call(url=tot_url, username=username, password=password)
 
-    if response.status_code == 200:
-        try:
-            dict_data = json.loads(response.content)
-        except json.JSONDecodeError:  # it's not a JSON!
-            dict_data = yaml.safe_load(response.content)
-        return dict_data
-    else:
+    if response.status_code != 200:
         raise Exception(f"Unable to retrieve {tot_url}, error {response.status_code}")
+    try:
+        dict_data = json.loads(response.content)
+    except json.JSONDecodeError:  # it's not a JSON!
+        dict_data = yaml.safe_load(response.content)
+    return dict_data
 
 
 def get_url_basepath(sw_dict: dict) -> str:
@@ -95,7 +94,7 @@ def get_url_basepath(sw_dict: dict) -> str:
 
 
 def check_sw_version(sw_dict: dict) -> None:
-    if "swagger" in sw_dict.keys():
+    if "swagger" in sw_dict:
         v_split = sw_dict["swagger"].split(".")
     else:
         v_split = sw_dict["openapi"].split(".")
@@ -120,10 +119,14 @@ def get_endpoints(sw_dict: dict) -> dict:  # noqa: C901
         # will track only the "get" methods, which are the ones that give us data
         if "get" in p_o.keys():
 
-            try:
+            if "200" in p_o["get"]["responses"].keys():
                 base_res = p_o["get"]["responses"]["200"]
-            except KeyError:  # if you read a plain yml file the 200 will be an integer
+            elif 200 in p_o["get"]["responses"].keys():
+                # if you read a plain yml file the 200 will be an integer
                 base_res = p_o["get"]["responses"][200]
+            else:
+                # the endpoint does not have a 200 response
+                continue
 
             if "description" in p_o["get"].keys():
                 desc = p_o["get"]["description"]
@@ -172,7 +175,7 @@ def get_endpoints(sw_dict: dict) -> dict:  # noqa: C901
             if "parameters" in p_o["get"].keys():
                 url_details[p_k]["parameters"] = p_o["get"]["parameters"]
 
-    return url_details
+    return dict(sorted(url_details.items()))
 
 
 def guessing_url_name(url: str, examples: dict) -> str:
@@ -182,10 +185,7 @@ def guessing_url_name(url: str, examples: dict) -> str:
     extr_data = {"advancedcomputersearches": {'id': 202, 'name': '_unmanaged'}}
     -->> guessed_url = /advancedcomputersearches/name/_unmanaged/id/202'
     """
-    if url[0] == "/":
-        url2op = url[1:]  # operational url does not need the very first /
-    else:
-        url2op = url
+    url2op = url[1:] if url[0] == "/" else url
     divisions = url2op.split("/")
 
     # the very first part of the url should stay the same.
@@ -206,11 +206,15 @@ def guessing_url_name(url: str, examples: dict) -> str:
             if div_pos > 0:
                 root = root[: div_pos - 1]  # like "base/field" should become "base"
 
-    if root in examples.keys():
+    if root in examples:
         # if our root is contained in our samples examples...
         ex2use = root
-    elif root[:-1] in examples.keys():
+    elif root[:-1] in examples:
         ex2use = root[:-1]
+    elif root.replace("/", ".") in examples:
+        ex2use = root.replace("/", ".")
+    elif root[:-1].replace("/", ".") in examples:
+        ex2use = root[:-1].replace("/", ".")
     else:
         return url
 
@@ -268,8 +272,7 @@ def try_guessing(url: str, examples: dict) -> str:
     Any non-guessed name will stay as it was (with parenthesis{})
     """
     url_guess = guessing_url_name(url, examples)  # try to fill with known informations
-    url_guess_id = maybe_theres_simple_id(url_guess)  # try to fill IDs with "1"s...
-    return url_guess_id
+    return maybe_theres_simple_id(url_guess)
 
 
 def clean_url(url: str) -> str:
@@ -332,19 +335,38 @@ def extract_fields(
             return [], {}
 
 
-def get_tok(url: str, username: str = "", password: str = "") -> str:
+def get_tok(
+    url: str,
+    username: str = "",
+    password: str = "",
+    tok_url: str = "",
+    method: str = "post",
+) -> str:
     """
     Trying to post username/password to get auth.
-    Simplified version: it expect a POST at api/authenticate
     """
-    data = {"username": username, "password": password}
-    url2post = url + "api/authenticate/"
-    response = requests.post(url2post, data=data)
-    if response.status_code == 200:
-        cont = json.loads(response.content)
-        return cont["tokens"]["access"]
+    token = ""
+    url4req = url + tok_url
+    if method == "post":
+        # this will make a POST call with username and password
+        data = {"username": username, "password": password}
+        # url2post = url + "api/authenticate/"
+        response = requests.post(url4req, data=data)
+        if response.status_code == 200:
+            cont = json.loads(response.content)
+            token = cont["tokens"]["access"]
+    elif method == "get":
+        # this will make a GET call with username and password
+        response = requests.get(url4req)
+        if response.status_code == 200:
+            cont = json.loads(response.content)
+            token = cont["token"]
     else:
-        raise Exception("Unable to get a valid token")
+        raise ValueError(f"Method unrecognised: {method}")
+    if token != "":
+        return token
+    else:
+        raise Exception(f"Unable to get a valid token: {response.text}")
 
 
 def set_metadata(

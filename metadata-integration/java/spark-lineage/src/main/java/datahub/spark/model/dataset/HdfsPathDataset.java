@@ -3,29 +3,41 @@ package datahub.spark.model.dataset;
 import org.apache.hadoop.fs.Path;
 
 import com.linkedin.common.FabricType;
-import com.linkedin.common.urn.DataPlatformUrn;
-import com.linkedin.common.urn.DatasetUrn;
 
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode
+import java.net.URI;
+
 @ToString
-public class HdfsPathDataset implements SparkDataset {
-  private final DatasetUrn urn;
+public class HdfsPathDataset extends SparkDataset {
 
-  public HdfsPathDataset(Path path) {
+  private static String getPath(Path path, boolean includeScheme) {
+    URI uri = path.toUri();
+
+    if (includeScheme) {
+      return uri.toString();
+    } else {
+      return uri.getHost() + uri.getPath();
+    }
+  }
+
+  private static String getPlatform(Path path) {
+    String scheme = path.toUri().getScheme();
+    if (scheme.equals("s3a") || scheme.equals("s3n")) {
+      return "s3";
+    } else {
+      return scheme;
+    }
+  }
+
+  public HdfsPathDataset(Path path, String platformInstance, boolean includeScheme, FabricType fabricType) {
     // TODO check static partitions?
-    this(path.toUri().toString());
+    this(getPath(path, includeScheme), platformInstance, getPlatform(path), fabricType);
   }
 
-  public HdfsPathDataset(String pathUri) {
+  public HdfsPathDataset(String pathUri, String platformInstance, String platform, FabricType fabricType) {
     // TODO check static partitions?
-    this.urn = new DatasetUrn(new DataPlatformUrn("hdfs"), pathUri, FabricType.PROD);
+    super(platform, platformInstance, pathUri, fabricType);
   }
 
-  @Override
-  public DatasetUrn urn() {
-    return this.urn;
-  }
 }

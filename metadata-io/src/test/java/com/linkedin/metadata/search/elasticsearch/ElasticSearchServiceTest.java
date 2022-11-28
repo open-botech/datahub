@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.linkedin.common.urn.TestEntityUrn;
 import com.linkedin.common.urn.Urn;
+import com.linkedin.metadata.ElasticSearchTestConfiguration;
 import com.linkedin.metadata.browse.BrowseResult;
 import com.linkedin.metadata.models.registry.EntityRegistry;
 import com.linkedin.metadata.models.registry.SnapshotEntityRegistry;
@@ -14,55 +15,47 @@ import com.linkedin.metadata.search.elasticsearch.indexbuilder.EntityIndexBuilde
 import com.linkedin.metadata.search.elasticsearch.indexbuilder.SettingsBuilder;
 import com.linkedin.metadata.search.elasticsearch.query.ESBrowseDAO;
 import com.linkedin.metadata.search.elasticsearch.query.ESSearchDAO;
-import com.linkedin.metadata.search.elasticsearch.update.BulkListener;
+import com.linkedin.metadata.search.elasticsearch.update.ESBulkProcessor;
 import com.linkedin.metadata.search.elasticsearch.update.ESWriteDAO;
 import com.linkedin.metadata.utils.elasticsearch.IndexConvention;
 import com.linkedin.metadata.utils.elasticsearch.IndexConventionImpl;
-import java.util.Collections;
-import javax.annotation.Nonnull;
-import org.apache.http.HttpHost;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.elasticsearch.action.bulk.BackoffPolicy;
-import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.TimeValue;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.shaded.com.google.common.collect.ImmutableMap;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static com.linkedin.metadata.DockerTestUtils.checkContainerEngine;
-import static com.linkedin.metadata.ElasticSearchTestUtils.syncAfterWrite;
+import javax.annotation.Nonnull;
+import java.util.Collections;
+
+import static com.linkedin.metadata.ElasticSearchTestConfiguration.syncAfterWrite;
 import static org.testng.Assert.assertEquals;
 
+@Import(ElasticSearchTestConfiguration.class)
+public class ElasticSearchServiceTest extends AbstractTestNGSpringContextTests {
 
-public class ElasticSearchServiceTest {
-
-  private ElasticsearchContainer _elasticsearchContainer;
+  @Autowired
   private RestHighLevelClient _searchClient;
+  @Autowired
+  private ESBulkProcessor _bulkProcessor;
+  @Autowired
+  private ESIndexBuilder _esIndexBuilder;
+
   private EntityRegistry _entityRegistry;
   private IndexConvention _indexConvention;
   private SettingsBuilder _settingsBuilder;
   private ElasticSearchService _elasticSearchService;
 
-  private static final String IMAGE_NAME = "docker.elastic.co/elasticsearch/elasticsearch:7.9.3";
-  private static final int HTTP_PORT = 9200;
   private static final String ENTITY_NAME = "testEntity";
 
-  @BeforeTest
+  @BeforeClass
   public void setup() {
     _entityRegistry = new SnapshotEntityRegistry(new Snapshot());
-    _indexConvention = new IndexConventionImpl(null);
-    _elasticsearchContainer = new ElasticsearchContainer(IMAGE_NAME);
-    _settingsBuilder = new SettingsBuilder(Collections.emptyList());
-    checkContainerEngine(_elasticsearchContainer.getDockerClient());
-    _elasticsearchContainer.start();
-    _searchClient = buildRestClient();
+    _indexConvention = new IndexConventionImpl("es_service_test");
+    _settingsBuilder = new SettingsBuilder(Collections.emptyList(), null);
     _elasticSearchService = buildService();
     _elasticSearchService.configure();
   }
@@ -70,50 +63,17 @@ public class ElasticSearchServiceTest {
   @BeforeMethod
   public void wipe() throws Exception {
     _elasticSearchService.clear();
-    syncAfterWrite(_searchClient);
-  }
-
-  @Nonnull
-  private RestHighLevelClient buildRestClient() {
-    final RestClientBuilder builder =
-        RestClient.builder(new HttpHost("localhost", _elasticsearchContainer.getMappedPort(HTTP_PORT), "http"))
-            .setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultIOReactorConfig(
-                IOReactorConfig.custom().setIoThreadCount(1).build()));
-
-    builder.setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder.
-        setConnectionRequestTimeout(3000));
-
-    return new RestHighLevelClient(builder);
-  }
-
-  public static BulkProcessor getBulkProcessor(RestHighLevelClient searchClient) {
-    return BulkProcessor.builder((request, bulkListener) -> {
-      searchClient.bulkAsync(request, RequestOptions.DEFAULT, bulkListener);
-    }, BulkListener.getInstance())
-        .setBulkActions(1)
-        .setFlushInterval(TimeValue.timeValueSeconds(1))
-        .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1000), 1))
-        .build();
-  }
-
-  public static ESIndexBuilder getIndexBuilder(RestHighLevelClient searchClient) {
-    return new ESIndexBuilder(searchClient, 1, 1, 3);
   }
 
   @Nonnull
   private ElasticSearchService buildService() {
     EntityIndexBuilders indexBuilders =
-        new EntityIndexBuilders(getIndexBuilder(_searchClient), _entityRegistry, _indexConvention, _settingsBuilder);
+        new EntityIndexBuilders(_esIndexBuilder, _entityRegistry, _indexConvention, _settingsBuilder);
     ESSearchDAO searchDAO = new ESSearchDAO(_entityRegistry, _searchClient, _indexConvention);
     ESBrowseDAO browseDAO = new ESBrowseDAO(_entityRegistry, _searchClient, _indexConvention);
     ESWriteDAO writeDAO =
-        new ESWriteDAO(_entityRegistry, _searchClient, _indexConvention, getBulkProcessor(_searchClient));
+        new ESWriteDAO(_entityRegistry, _searchClient, _indexConvention, _bulkProcessor, 1);
     return new ElasticSearchService(indexBuilders, searchDAO, browseDAO, writeDAO);
-  }
-
-  @AfterTest
-  public void tearDown() {
-    _elasticsearchContainer.stop();
   }
 
   @Test
@@ -131,10 +91,14 @@ public class ElasticSearchServiceTest {
     document.set("keyPart1", JsonNodeFactory.instance.textNode("test"));
     document.set("textFieldOverride", JsonNodeFactory.instance.textNode("textFieldOverride"));
     document.set("browsePaths", JsonNodeFactory.instance.textNode("/a/b/c"));
+    document.set("foreignKey", JsonNodeFactory.instance.textNode("urn:li:tag:Node.Value"));
     _elasticSearchService.upsertDocument(ENTITY_NAME, document.toString(), urn.toString());
-    syncAfterWrite(_searchClient);
+    syncAfterWrite();
 
     searchResult = _elasticSearchService.search(ENTITY_NAME, "test", null, null, 0, 10);
+    assertEquals(searchResult.getNumEntities().intValue(), 1);
+    assertEquals(searchResult.getEntities().get(0).getEntity(), urn);
+    searchResult = _elasticSearchService.search(ENTITY_NAME, "foreignKey:Node", null, null, 0, 10);
     assertEquals(searchResult.getNumEntities().intValue(), 1);
     assertEquals(searchResult.getEntities().get(0).getEntity(), urn);
     browseResult = _elasticSearchService.browse(ENTITY_NAME, "", null, 0, 10);
@@ -154,7 +118,7 @@ public class ElasticSearchServiceTest {
     document2.set("textFieldOverride", JsonNodeFactory.instance.textNode("textFieldOverride2"));
     document2.set("browsePaths", JsonNodeFactory.instance.textNode("/b/c"));
     _elasticSearchService.upsertDocument(ENTITY_NAME, document2.toString(), urn2.toString());
-    syncAfterWrite(_searchClient);
+    syncAfterWrite();
 
     searchResult = _elasticSearchService.search(ENTITY_NAME, "test", null, null, 0, 10);
     assertEquals(searchResult.getNumEntities().intValue(), 1);
@@ -172,7 +136,7 @@ public class ElasticSearchServiceTest {
 
     _elasticSearchService.deleteDocument(ENTITY_NAME, urn.toString());
     _elasticSearchService.deleteDocument(ENTITY_NAME, urn2.toString());
-    syncAfterWrite(_searchClient);
+    syncAfterWrite();
     searchResult = _elasticSearchService.search(ENTITY_NAME, "test", null, null, 0, 10);
     assertEquals(searchResult.getNumEntities().intValue(), 0);
     browseResult = _elasticSearchService.browse(ENTITY_NAME, "", null, 0, 10);

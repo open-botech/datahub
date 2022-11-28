@@ -2,6 +2,7 @@ query getChart($urn: String!) {
     chart(urn: $urn) {
         urn
         type
+        lastIngested
         tool
         chartId
         platform {
@@ -39,18 +40,7 @@ query getChart($urn: String!) {
             description
         }
         institutionalMemory {
-            elements {
-                url
-                author {
-                    urn
-                    username
-                }
-                label
-                created {
-                    time
-                    actor
-                }
-            }
+            ...institutionalMemoryFields
         }
         glossaryTerms {
             ...glossaryTerms
@@ -58,11 +48,51 @@ query getChart($urn: String!) {
         domain {
             ...entityDomain
         }
+        deprecation {
+            ...deprecationFields
+        }
         inputs: relationships(input: { types: ["Consumes"], direction: OUTGOING, start: 0, count: 100 }) {
             ...fullRelationshipResults
         }
         dashboards: relationships(input: { types: ["Contains"], direction: INCOMING, start: 0, count: 100 }) {
             ...fullRelationshipResults
+        }
+        parentContainers {
+            ...parentContainersFields
+        }
+        upstream: lineage(input: { direction: UPSTREAM, start: 0, count: 100 }) {
+            ...partialLineageResults
+        }
+        downstream: lineage(input: { direction: DOWNSTREAM, start: 0, count: 100 }) {
+            ...partialLineageResults
+        }
+        status {
+            removed
+        }
+        dataPlatformInstance {
+            ...dataPlatformInstanceFields
+        }
+        statsSummary {
+            viewCount
+            uniqueUserCountLast30Days
+            topUsersLast30Days {
+                urn
+                type
+                username
+                properties {
+                    displayName
+                    firstName
+                    lastName
+                    fullName
+                }
+                editableProperties {
+                    displayName
+                    pictureLink
+                }
+            }
+        }
+        inputFields {
+            ...inputFieldsFields
         }
     }
 }

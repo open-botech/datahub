@@ -1,18 +1,19 @@
 import logging
-from typing import Callable, Union
+from typing import Callable, Dict, Optional, Union
 
+import pydantic
 from confluent_kafka import SerializingProducer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import SerializationContext, StringSerializer
-from pydantic import Field, root_validator
 
-from datahub.configuration.common import ConfigModel, ConfigurationError
+from datahub.configuration.common import ConfigModel
 from datahub.configuration.kafka import KafkaProducerConnectionConfig
+from datahub.configuration.validate_field_rename import pydantic_renamed_field
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
-from datahub.metadata.com.linkedin.pegasus2avro.mxe import (
-    MetadataChangeEvent,
-    MetadataChangeProposal,
+from datahub.metadata.schema_classes import (
+    MetadataChangeEventClass as MetadataChangeEvent,
+    MetadataChangeProposalClass as MetadataChangeProposal,
 )
 from datahub.metadata.schemas import (
     getMetadataChangeEventSchema,
@@ -29,33 +30,28 @@ MCP_KEY = "MetadataChangeProposal"
 
 
 class KafkaEmitterConfig(ConfigModel):
-    connection: KafkaProducerConnectionConfig = Field(
+    connection: KafkaProducerConnectionConfig = pydantic.Field(
         default_factory=KafkaProducerConnectionConfig
     )
-    topic: str = DEFAULT_MCE_KAFKA_TOPIC
-    topic_routes: dict = {
+    topic_routes: Dict[str, str] = {
         MCE_KEY: DEFAULT_MCE_KAFKA_TOPIC,
         MCP_KEY: DEFAULT_MCP_KAFKA_TOPIC,
     }
 
-    @root_validator
-    def validate_topic_routes(cls: "KafkaEmitterConfig", values: dict) -> dict:
-        old_topic = values["topic"]
-        new_mce_topic = values["topic_routes"][MCE_KEY]
-        if old_topic != DEFAULT_MCE_KAFKA_TOPIC:
-            # Looks like a non default topic has been set using the old style
-            if new_mce_topic != DEFAULT_MCE_KAFKA_TOPIC:
-                # Looks like a non default topic has ALSO been set using the new style
-                raise ConfigurationError(
-                    "Using both topic and topic_routes configuration for Kafka is not supported. Use only topic_routes"
-                )
-            else:
-                logger.warning(
-                    "Looks like you're using the deprecated `topic` configuration. Please migrate to `topic_routes`."
-                )
-                # upgrade topic provided to topic_routes mce entry
-                values["topic_routes"][MCE_KEY] = values["topic"]
-        return values
+    _topic_field_compat = pydantic_renamed_field(
+        "topic",
+        "topic_routes",
+        transform=lambda x: {
+            MCE_KEY: x,
+            MCP_KEY: DEFAULT_MCP_KAFKA_TOPIC,
+        },
+    )
+
+    @pydantic.validator("topic_routes")
+    def validate_topic_routes(cls, v: Dict[str, str]) -> Dict[str, str]:
+        assert MCE_KEY in v, f"topic_routes must contain a route for {MCE_KEY}"
+        assert MCP_KEY in v, f"topic_routes must contain a route for {MCP_KEY}"
+        return v
 
 
 class DatahubKafkaEmitter:
@@ -70,8 +66,7 @@ class DatahubKafkaEmitter:
         def convert_mce_to_dict(
             mce: MetadataChangeEvent, ctx: SerializationContext
         ) -> dict:
-            tuple_encoding = mce.to_obj(tuples=True)
-            return tuple_encoding
+            return mce.to_obj(tuples=True)
 
         mce_avro_serializer = AvroSerializer(
             schema_str=getMetadataChangeEventSchema(),
@@ -83,8 +78,7 @@ class DatahubKafkaEmitter:
             mcp: Union[MetadataChangeProposal, MetadataChangeProposalWrapper],
             ctx: SerializationContext,
         ) -> dict:
-            tuple_encoding = mcp.to_obj(tuples=True)
-            return tuple_encoding
+            return mcp.to_obj(tuples=True)
 
         mcp_avro_serializer = AvroSerializer(
             schema_str=getMetadataChangeProposalSchema(),
@@ -119,12 +113,12 @@ class DatahubKafkaEmitter:
             MetadataChangeProposal,
             MetadataChangeProposalWrapper,
         ],
-        callback: Callable[[Exception, str], None],
+        callback: Optional[Callable[[Exception, str], None]] = None,
     ) -> None:
         if isinstance(item, (MetadataChangeProposal, MetadataChangeProposalWrapper)):
-            return self.emit_mcp_async(item, callback)
+            return self.emit_mcp_async(item, callback or _noop_callback)
         else:
-            return self.emit_mce_async(item, callback)
+            return self.emit_mce_async(item, callback or _noop_callback)
 
     def emit_mce_async(
         self,
@@ -159,3 +153,7 @@ class DatahubKafkaEmitter:
     def flush(self) -> None:
         for producer in self.producers.values():
             producer.flush()
+
+
+def _noop_callback(err: Exception, msg: str) -> None:
+    pass

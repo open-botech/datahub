@@ -2,9 +2,14 @@ package com.linkedin.metadata.recommendation.candidatesource;
 
 import com.codahale.metrics.Timer;
 import com.datahub.util.exception.ESQueryException;
+import com.google.common.collect.ImmutableSet;
 import com.linkedin.common.urn.Urn;
+import com.linkedin.common.urn.UrnUtils;
+import com.linkedin.metadata.Constants;
 import com.linkedin.metadata.datahubusage.DataHubUsageEventConstants;
 import com.linkedin.metadata.datahubusage.DataHubUsageEventType;
+import com.linkedin.metadata.entity.EntityService;
+import com.linkedin.metadata.entity.EntityUtils;
 import com.linkedin.metadata.recommendation.EntityProfileParams;
 import com.linkedin.metadata.recommendation.RecommendationContent;
 import com.linkedin.metadata.recommendation.RecommendationParams;
@@ -16,9 +21,9 @@ import com.linkedin.metadata.utils.elasticsearch.IndexConvention;
 import com.linkedin.metadata.utils.metrics.MetricUtils;
 import io.opentelemetry.extension.annotations.WithSpan;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +45,23 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 @Slf4j
 @RequiredArgsConstructor
 public class RecentlyViewedSource implements RecommendationSource {
+  /**
+   * Entity Types that should be in scope for this type of recommendation.
+   */
+  private static final Set<String> SUPPORTED_ENTITY_TYPES = ImmutableSet.of(Constants.DATASET_ENTITY_NAME,
+      Constants.DATA_FLOW_ENTITY_NAME,
+      Constants.DATA_JOB_ENTITY_NAME,
+      Constants.CONTAINER_ENTITY_NAME,
+      Constants.DASHBOARD_ENTITY_NAME,
+      Constants.CHART_ENTITY_NAME,
+      Constants.ML_MODEL_ENTITY_NAME,
+      Constants.ML_FEATURE_ENTITY_NAME,
+      Constants.ML_MODEL_GROUP_ENTITY_NAME,
+      Constants.ML_FEATURE_TABLE_ENTITY_NAME
+  );
   private final RestHighLevelClient _searchClient;
   private final IndexConvention _indexConvention;
+  private final EntityService _entityService;
 
   private static final String DATAHUB_USAGE_INDEX = "datahub_usage_event";
   private static final String ENTITY_AGG_NAME = "entity";
@@ -87,7 +107,7 @@ public class RecentlyViewedSource implements RecommendationSource {
           .stream()
           .map(bucket -> buildContent(bucket.getKeyAsString()))
           .filter(Optional::isPresent)
-          .map(Optional::get)
+          .map(Optional::get).limit(MAX_CONTENT)
           .collect(Collectors.toList());
     } catch (Exception e) {
       log.error("Search query to get most recently viewed entities failed", e);
@@ -96,6 +116,7 @@ public class RecentlyViewedSource implements RecommendationSource {
   }
 
   private SearchRequest buildSearchRequest(@Nonnull Urn userUrn) {
+    // TODO: Proactively filter for entity types in the supported set.
     SearchRequest request = new SearchRequest();
     SearchSourceBuilder source = new SearchSourceBuilder();
     BoolQueryBuilder query = QueryBuilders.boolQuery();
@@ -122,13 +143,11 @@ public class RecentlyViewedSource implements RecommendationSource {
   }
 
   private Optional<RecommendationContent> buildContent(@Nonnull String entityUrn) {
-    Urn entity;
-    try {
-      entity = Urn.createFromString(entityUrn);
-    } catch (URISyntaxException e) {
-      log.error("Error decoding entity URN: {}", entityUrn, e);
+    Urn entity = UrnUtils.getUrn(entityUrn);
+    if (EntityUtils.checkIfRemoved(_entityService, entity) || !RecommendationUtils.isSupportedEntityType(entity, SUPPORTED_ENTITY_TYPES)) {
       return Optional.empty();
     }
+
     return Optional.of(new RecommendationContent().setEntity(entity)
         .setValue(entityUrn)
         .setParams(new RecommendationParams().setEntityProfileParams(new EntityProfileParams().setUrn(entity))));

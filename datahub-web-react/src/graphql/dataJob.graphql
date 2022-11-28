@@ -1,23 +1,16 @@
 query getDataJob($urn: String!) {
     dataJob(urn: $urn) {
         ...dataJobFields
-        parentFlow: relationships(input: { types: ["IsPartOf"], direction: OUTGOING, start: 0, count: 1 }) {
-            ...fullRelationshipResults
+        upstream: lineage(input: { direction: UPSTREAM, start: 0, count: 100 }) {
+            ...partialLineageResults
         }
-        incoming: relationships(
-            input: {
-                types: ["DownstreamOf", "Consumes", "Produces", "TrainedBy"]
-                direction: INCOMING
-                start: 0
-                count: 100
-            }
-        ) {
-            ...fullRelationshipResults
+        downstream: lineage(input: { direction: DOWNSTREAM, start: 0, count: 100 }) {
+            ...partialLineageResults
         }
-        outgoing: relationships(
-            input: { types: ["DownstreamOf", "Consumes", "Produces"], direction: OUTGOING, start: 0, count: 100 }
-        ) {
-            ...fullRelationshipResults
+        runs(start: 0, count: 20) {
+            count
+            start
+            total
         }
     }
 }
@@ -25,5 +18,13 @@ query getDataJob($urn: String!) {
 mutation updateDataJob($urn: String!, $input: DataJobUpdateInput!) {
     updateDataJob(urn: $urn, input: $input) {
         urn
+    }
+}
+
+query getDataJobRuns($urn: String!, $start: Int!, $count: Int!) {
+    dataJob(urn: $urn) {
+        runs(start: $start, count: $count) {
+            ...runResults
+        }
     }
 }

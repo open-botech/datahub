@@ -1,8 +1,12 @@
 package com.linkedin.entity.client;
 
 import com.datahub.authentication.Authentication;
+import com.datahub.util.RecordUtils;
+import com.google.common.collect.ImmutableList;
+import com.linkedin.common.VersionedUrn;
 import com.linkedin.common.client.BaseClient;
 import com.linkedin.common.urn.Urn;
+import com.linkedin.common.urn.UrnUtils;
 import com.linkedin.data.DataMap;
 import com.linkedin.data.template.RecordTemplate;
 import com.linkedin.data.template.StringArray;
@@ -15,34 +19,50 @@ import com.linkedin.entity.EntitiesDoAutocompleteRequestBuilder;
 import com.linkedin.entity.EntitiesDoBatchGetTotalEntityCountRequestBuilder;
 import com.linkedin.entity.EntitiesDoBatchIngestRequestBuilder;
 import com.linkedin.entity.EntitiesDoBrowseRequestBuilder;
+import com.linkedin.entity.EntitiesDoDeleteReferencesRequestBuilder;
 import com.linkedin.entity.EntitiesDoDeleteRequestBuilder;
+import com.linkedin.entity.EntitiesDoExistsRequestBuilder;
 import com.linkedin.entity.EntitiesDoFilterRequestBuilder;
 import com.linkedin.entity.EntitiesDoGetBrowsePathsRequestBuilder;
-import com.linkedin.entity.EntitiesDoGetTotalEntityCountRequestBuilder;
 import com.linkedin.entity.EntitiesDoIngestRequestBuilder;
 import com.linkedin.entity.EntitiesDoListRequestBuilder;
 import com.linkedin.entity.EntitiesDoListUrnsRequestBuilder;
 import com.linkedin.entity.EntitiesDoSearchAcrossEntitiesRequestBuilder;
+import com.linkedin.entity.EntitiesDoSearchAcrossLineageRequestBuilder;
 import com.linkedin.entity.EntitiesDoSearchRequestBuilder;
 import com.linkedin.entity.EntitiesDoSetWritableRequestBuilder;
 import com.linkedin.entity.EntitiesRequestBuilders;
 import com.linkedin.entity.EntitiesV2BatchGetRequestBuilder;
+import com.linkedin.entity.EntitiesV2GetRequestBuilder;
 import com.linkedin.entity.EntitiesV2RequestBuilders;
+import com.linkedin.entity.EntitiesVersionedV2BatchGetRequestBuilder;
+import com.linkedin.entity.EntitiesVersionedV2RequestBuilders;
 import com.linkedin.entity.Entity;
 import com.linkedin.entity.EntityArray;
 import com.linkedin.entity.EntityResponse;
+import com.linkedin.entity.RunsDoRollbackRequestBuilder;
+import com.linkedin.entity.RunsRequestBuilders;
 import com.linkedin.metadata.aspect.EnvelopedAspect;
 import com.linkedin.metadata.aspect.VersionedAspect;
 import com.linkedin.metadata.browse.BrowseResult;
-import com.datahub.util.RecordUtils;
+import com.linkedin.metadata.graph.LineageDirection;
 import com.linkedin.metadata.query.AutoCompleteResult;
 import com.linkedin.metadata.query.ListResult;
 import com.linkedin.metadata.query.ListUrnsResult;
+import com.linkedin.metadata.query.filter.Condition;
+import com.linkedin.metadata.query.filter.ConjunctiveCriterion;
+import com.linkedin.metadata.query.filter.ConjunctiveCriterionArray;
+import com.linkedin.metadata.query.filter.Criterion;
+import com.linkedin.metadata.query.filter.CriterionArray;
 import com.linkedin.metadata.query.filter.Filter;
 import com.linkedin.metadata.query.filter.SortCriterion;
+import com.linkedin.metadata.search.LineageSearchResult;
 import com.linkedin.metadata.search.SearchResult;
 import com.linkedin.mxe.MetadataChangeProposal;
+import com.linkedin.mxe.PlatformEvent;
 import com.linkedin.mxe.SystemMetadata;
+import com.linkedin.platform.PlatformDoProducePlatformEventRequestBuilder;
+import com.linkedin.platform.PlatformRequestBuilders;
 import com.linkedin.r2.RemoteInvocationException;
 import com.linkedin.restli.client.Client;
 import com.linkedin.restli.client.RestLiResponseException;
@@ -52,6 +72,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,18 +83,30 @@ import javax.mail.MethodNotSupportedException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.linkedin.metadata.search.utils.QueryUtils.newFilter;
-
 
 @Slf4j
 public class RestliEntityClient extends BaseClient implements EntityClient {
 
   private static final EntitiesRequestBuilders ENTITIES_REQUEST_BUILDERS = new EntitiesRequestBuilders();
   private static final EntitiesV2RequestBuilders ENTITIES_V2_REQUEST_BUILDERS = new EntitiesV2RequestBuilders();
+  private static final EntitiesVersionedV2RequestBuilders ENTITIES_VERSIONED_V2_REQUEST_BUILDERS =
+      new EntitiesVersionedV2RequestBuilders();
   private static final AspectsRequestBuilders ASPECTS_REQUEST_BUILDERS = new AspectsRequestBuilders();
+  private static final PlatformRequestBuilders PLATFORM_REQUEST_BUILDERS = new PlatformRequestBuilders();
+  private static final RunsRequestBuilders RUNS_REQUEST_BUILDERS = new RunsRequestBuilders();
 
   public RestliEntityClient(@Nonnull final Client restliClient) {
     super(restliClient);
+  }
+
+  @Nullable
+  public EntityResponse getV2(@Nonnull String entityName, @Nonnull final Urn urn,
+      @Nullable final Set<String> aspectNames, @Nonnull final Authentication authentication)
+      throws RemoteInvocationException, URISyntaxException {
+    final EntitiesV2GetRequestBuilder requestBuilder = ENTITIES_V2_REQUEST_BUILDERS.get()
+        .aspectsParam(aspectNames)
+        .id(urn.toString());
+    return sendClientRequest(requestBuilder, authentication).getEntity();
   }
 
   @Nonnull
@@ -84,9 +117,9 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
 
   /**
    * Legacy! Use {#batchGetV2} instead, as this method leverages Snapshot models, and will not work
-   * for fetching entities + aspects added by Entity Registry configuration. 
+   * for fetching entities + aspects added by Entity Registry configuration.
    *
-   * Batch get a set of {@link Entity} objects by urn.  
+   * Batch get a set of {@link Entity} objects by urn.
    *
    * @param urns the urns of the entities to batch get
    * @param authentication the authentication to include in the request to the Metadata Service
@@ -124,9 +157,9 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
   }
 
   /**
-   * Batch get a set of aspects for a single entity. 
+   * Batch get a set of aspects for a single entity.
    *
-   * @param entityName the entity type to fetch 
+   * @param entityName the entity type to fetch
    * @param urns the urns of the entities to batch get
    * @param aspectNames the aspect names to batch get
    * @param authentication the authentication to include in the request to the Metadata Service
@@ -134,7 +167,7 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
    */
   @Nonnull
   public Map<Urn, EntityResponse> batchGetV2(@Nonnull String entityName, @Nonnull final Set<Urn> urns,
-      @Nullable final Set<String> aspectNames, @Nonnull final Authentication authentication) throws Exception {
+      @Nullable final Set<String> aspectNames, @Nonnull final Authentication authentication) throws RemoteInvocationException, URISyntaxException {
 
     final EntitiesV2BatchGetRequestBuilder requestBuilder = ENTITIES_V2_REQUEST_BUILDERS.batchGet()
         .aspectsParam(aspectNames)
@@ -155,9 +188,40 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
   }
 
   /**
-   * Autocomplete a search query for a particular field of an entity. 
+   * Batch get a set of versioned aspects for a single entity.
    *
-   * @param entityType the entity type to autocomplete against, e.g. 'dataset' 
+   * @param entityName the entity type to fetch
+   * @param versionedUrns the urns of the entities to batch get
+   * @param aspectNames the aspect names to batch get
+   * @param authentication the authentication to include in the request to the Metadata Service
+   * @throws RemoteInvocationException
+   */
+  @Nonnull
+  public Map<Urn, EntityResponse> batchGetVersionedV2(
+      @Nonnull String entityName,
+      @Nonnull final Set<VersionedUrn> versionedUrns,
+      @Nullable final Set<String> aspectNames,
+      @Nonnull final Authentication authentication) throws RemoteInvocationException, URISyntaxException {
+
+    final EntitiesVersionedV2BatchGetRequestBuilder requestBuilder = ENTITIES_VERSIONED_V2_REQUEST_BUILDERS.batchGet()
+        .aspectsParam(aspectNames)
+        .entityTypeParam(entityName)
+        .ids(versionedUrns.stream()
+            .map(versionedUrn -> com.linkedin.common.urn.VersionedUrn.of(versionedUrn.getUrn().toString(), versionedUrn.getVersionStamp()))
+            .collect(Collectors.toSet()));
+
+    return sendClientRequest(requestBuilder, authentication).getEntity()
+        .getResults()
+        .entrySet()
+        .stream()
+        .collect(Collectors.toMap(entry ->
+            UrnUtils.getUrn(entry.getKey().getUrn()), entry -> entry.getValue().getEntity()));
+  }
+
+  /**
+   * Autocomplete a search query for a particular field of an entity.
+   *
+   * @param entityType the entity type to autocomplete against, e.g. 'dataset'
    * @param query search query
    * @param field field of the dataset
    * @param requestFilters autocomplete filters
@@ -179,9 +243,9 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
   }
 
   /**
-   * Autocomplete a search query for a particular entity type. 
+   * Autocomplete a search query for a particular entity type.
    *
-   * @param entityType the entity type to autocomplete against, e.g. 'dataset' 
+   * @param entityType the entity type to autocomplete against, e.g. 'dataset'
    * @param query search query
    * @param requestFilters autocomplete filters
    * @param limit max number of autocomplete results
@@ -302,14 +366,16 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
    *
    * @param input search query
    * @param filter search filters
+   * @param sortCriterion sort criterion
    * @param start start offset for search results
    * @param count max number of search results requested
    * @return Snapshot key
    * @throws RemoteInvocationException
    */
   @Nonnull
-  public SearchResult search(@Nonnull String entity, @Nonnull String input, @Nullable Filter filter, int start,
-      int count, @Nonnull final Authentication authentication) throws RemoteInvocationException {
+  public SearchResult search(@Nonnull String entity, @Nonnull String input, @Nullable Filter filter,
+      SortCriterion sortCriterion, int start, int count, @Nonnull final Authentication authentication)
+      throws RemoteInvocationException {
 
     final EntitiesDoSearchRequestBuilder requestBuilder = ENTITIES_REQUEST_BUILDERS.actionSearch()
         .entityParam(entity)
@@ -319,6 +385,10 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
 
     if (filter != null) {
       requestBuilder.filterParam(filter);
+    }
+
+    if (sortCriterion != null) {
+      requestBuilder.sortParam(sortCriterion);
     }
 
     return sendClientRequest(requestBuilder, authentication).getEntity();
@@ -353,6 +423,31 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
     return sendClientRequest(requestBuilder, authentication).getEntity();
   }
 
+  @Nonnull
+  @Override
+  public LineageSearchResult searchAcrossLineage(@Nonnull Urn sourceUrn, @Nonnull LineageDirection direction,
+      @Nonnull List<String> entities, @Nonnull String input, @Nullable Integer maxHops, @Nullable Filter filter,
+      @Nullable SortCriterion sortCriterion, int start, int count, @Nonnull final Authentication authentication)
+      throws RemoteInvocationException {
+
+    final EntitiesDoSearchAcrossLineageRequestBuilder requestBuilder =
+        ENTITIES_REQUEST_BUILDERS.actionSearchAcrossLineage()
+            .urnParam(sourceUrn.toString())
+            .directionParam(direction.name())
+            .inputParam(input)
+            .startParam(start)
+            .countParam(count);
+
+    if (entities != null) {
+      requestBuilder.entitiesParam(new StringArray(entities));
+    }
+    if (filter != null) {
+      requestBuilder.filterParam(filter);
+    }
+
+    return sendClientRequest(requestBuilder, authentication).getEntity();
+  }
+
   /**
    * Gets browse path(s) given dataset urn
    *
@@ -373,14 +468,6 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
     EntitiesDoSetWritableRequestBuilder requestBuilder =
         ENTITIES_REQUEST_BUILDERS.actionSetWritable().valueParam(canWrite);
     sendClientRequest(requestBuilder, authentication);
-  }
-
-  @Nonnull
-  public long getTotalEntityCount(@Nonnull String entityName, @Nonnull final Authentication authentication)
-      throws RemoteInvocationException {
-    EntitiesDoGetTotalEntityCountRequestBuilder requestBuilder =
-        ENTITIES_REQUEST_BUILDERS.actionGetTotalEntityCount().entityParam(entityName);
-    return sendClientRequest(requestBuilder, authentication).getEntity();
   }
 
   @Nonnull
@@ -410,6 +497,16 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
     sendClientRequest(requestBuilder, authentication);
   }
 
+  /**
+   * Delete all references to a particular entity.
+   */
+  @Override
+  public void deleteEntityReferences(@Nonnull Urn urn, @Nonnull Authentication authentication)
+      throws RemoteInvocationException {
+    EntitiesDoDeleteReferencesRequestBuilder requestBuilder = ENTITIES_REQUEST_BUILDERS.actionDeleteReferences().urnParam(urn.toString());
+    sendClientRequest(requestBuilder, authentication);
+  }
+
   @Nonnull
   @Override
   public SearchResult filter(@Nonnull String entity, @Nonnull Filter filter, @Nullable SortCriterion sortCriterion,
@@ -422,6 +519,14 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
     if (sortCriterion != null) {
       requestBuilder.sortParam(sortCriterion);
     }
+    return sendClientRequest(requestBuilder, authentication).getEntity();
+  }
+
+  @Nonnull
+  @Override
+  public boolean exists(@Nonnull Urn urn, @Nonnull final Authentication authentication) throws RemoteInvocationException {
+    EntitiesDoExistsRequestBuilder requestBuilder = ENTITIES_REQUEST_BUILDERS.actionExists()
+        .urnParam(urn.toString());
     return sendClientRequest(requestBuilder, authentication).getEntity();
   }
 
@@ -519,10 +624,11 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
    * Ingest a MetadataChangeProposal event.
    * @return
    */
+  @Override
   public String ingestProposal(@Nonnull final MetadataChangeProposal metadataChangeProposal,
-      @Nonnull final Authentication authentication) throws RemoteInvocationException {
+      @Nonnull final Authentication authentication, final boolean async) throws RemoteInvocationException {
     final AspectsDoIngestProposalRequestBuilder requestBuilder =
-        ASPECTS_REQUEST_BUILDERS.actionIngestProposal().proposalParam(metadataChangeProposal);
+        ASPECTS_REQUEST_BUILDERS.actionIngestProposal().proposalParam(metadataChangeProposal).asyncParam(String.valueOf(async));
     return sendClientRequest(requestBuilder, authentication).getEntity();
   }
 
@@ -560,5 +666,46 @@ public class RestliEntityClient extends BaseClient implements EntityClient {
   public DataMap getRawAspect(@Nonnull String urn, @Nonnull String aspect, @Nonnull Long version,
       @Nonnull Authentication authentication) throws RemoteInvocationException {
     throw new MethodNotSupportedException();
+  }
+
+  @Override
+  public void producePlatformEvent(@Nonnull String name, @Nullable String key, @Nonnull PlatformEvent event, @Nonnull final Authentication authentication)
+      throws Exception {
+    final PlatformDoProducePlatformEventRequestBuilder requestBuilder =
+        PLATFORM_REQUEST_BUILDERS.actionProducePlatformEvent()
+          .nameParam(name)
+          .eventParam(event);
+    if (key != null) {
+      requestBuilder.keyParam(key);
+    }
+    sendClientRequest(requestBuilder, authentication);
+  }
+
+  @Override
+  public void rollbackIngestion(@Nonnull String runId, @Nonnull final Authentication authentication)
+      throws Exception {
+    final RunsDoRollbackRequestBuilder requestBuilder = RUNS_REQUEST_BUILDERS.actionRollback().runIdParam(runId).dryRunParam(false);
+    sendClientRequest(requestBuilder, authentication);
+  }
+
+  // TODO: Refactor QueryUtils inside of metadata-io to extract these methods into a single shared library location.
+  // Creates new Filter from a map of Criteria by removing null-valued Criteria and using EQUAL condition (default).
+  @Nonnull
+  public static Filter newFilter(@Nullable Map<String, String> params) {
+    if (params == null) {
+      return new Filter().setOr(new ConjunctiveCriterionArray());
+    }
+    CriterionArray criteria = params.entrySet()
+        .stream()
+        .filter(e -> Objects.nonNull(e.getValue()))
+        .map(e -> newCriterion(e.getKey(), e.getValue(), Condition.EQUAL))
+        .collect(Collectors.toCollection(CriterionArray::new));
+    return new Filter().setOr(
+        new ConjunctiveCriterionArray(ImmutableList.of(new ConjunctiveCriterion().setAnd(criteria))));
+  }
+
+  @Nonnull
+  public static Criterion newCriterion(@Nonnull String field, @Nonnull String value, @Nonnull Condition condition) {
+    return new Criterion().setField(field).setValue(value).setCondition(condition);
   }
 }

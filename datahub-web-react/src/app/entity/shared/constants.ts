@@ -7,6 +7,7 @@ export const REDESIGN_COLORS = {
 export const ANTD_GRAY = {
     1: '#FFFFFF',
     2: '#FAFAFA',
+    2.5: '#F8F8F8',
     3: '#F5F5F5',
     4: '#F0F0F0',
     4.5: '#E9E9E9',
@@ -46,4 +47,22 @@ export const EMPTY_MESSAGES = {
         title: 'No domain set',
         description: 'Group related entities based on your organizational structure using by adding them to a Domain.',
     },
+    contains: {
+        title: 'Contains no Terms',
+        description: 'Terms can contain other terms to represent an "Has A" style relationship.',
+    },
+    inherits: {
+        title: 'Does not inherit from any terms',
+        description: 'Terms can inherit from other terms to represent an "Is A" style relationship.',
+    },
+};
+
+export const ELASTIC_MAX_COUNT = 10000;
+
+export const getElasticCappedTotalValueText = (count: number) => {
+    if (count === ELASTIC_MAX_COUNT) {
+        return `${ELASTIC_MAX_COUNT}+`;
+    }
+
+    return `${count}`;
 };

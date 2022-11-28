@@ -1,5 +1,6 @@
 package com.linkedin.datahub.graphql.resolvers.mutate;
 
+import com.google.common.collect.ImmutableList;
 import com.linkedin.common.urn.CorpuserUrn;
 
 import com.linkedin.common.urn.Urn;
@@ -7,6 +8,9 @@ import com.linkedin.datahub.graphql.QueryContext;
 import com.linkedin.datahub.graphql.exception.AuthorizationException;
 import com.linkedin.datahub.graphql.generated.AddOwnerInput;
 import com.linkedin.datahub.graphql.generated.OwnerEntityType;
+import com.linkedin.datahub.graphql.generated.OwnerInput;
+import com.linkedin.datahub.graphql.generated.OwnershipType;
+import com.linkedin.datahub.graphql.generated.ResourceRefInput;
 import com.linkedin.datahub.graphql.resolvers.mutate.util.OwnerUtils;
 import com.linkedin.metadata.entity.EntityService;
 import graphql.schema.DataFetcher;
@@ -30,6 +34,7 @@ public class AddOwnerResolver implements DataFetcher<CompletableFuture<Boolean>>
 
     Urn ownerUrn = Urn.createFromString(input.getOwnerUrn());
     OwnerEntityType ownerEntityType = input.getOwnerEntityType();
+    OwnershipType type = input.getType() == null ? OwnershipType.NONE : input.getType();
     Urn targetUrn = Urn.createFromString(input.getResourceUrn());
 
     if (!OwnerUtils.isAuthorizedToUpdateOwners(environment.getContext(), targetUrn)) {
@@ -45,12 +50,12 @@ public class AddOwnerResolver implements DataFetcher<CompletableFuture<Boolean>>
       );
       try {
 
-        log.debug("Adding Link. input: {}", input.toString());
+        log.debug("Adding Owner. input: {}", input.toString());
 
         Urn actor = CorpuserUrn.createFromString(((QueryContext) environment.getContext()).getActorUrn());
-        OwnerUtils.addOwner(
-            ownerUrn,
-            targetUrn,
+        OwnerUtils.addOwnersToResources(
+            ImmutableList.of(new OwnerInput(input.getOwnerUrn(), ownerEntityType, type)),
+            ImmutableList.of(new ResourceRefInput(input.getResourceUrn(), null, null)),
             actor,
             _entityService
         );

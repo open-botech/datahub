@@ -1,15 +1,19 @@
+import json
 import logging
 import os
 import re
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Type
 
 import pytest
 
 from datahub.ingestion.extractor.schema_util import avro_schema_to_mce_fields
 from datahub.metadata.com.linkedin.pegasus2avro.schema import (
+    DateTypeClass,
+    NumberTypeClass,
     SchemaField,
     StringTypeClass,
+    TimeTypeClass,
 )
 
 logger = logging.getLogger(__name__)
@@ -59,6 +63,25 @@ SCHEMA_WITH_OPTIONAL_FIELD_VIA_PRIMITIVE_TYPE = """
 }
 """
 
+SCHEMA_WITH_OPTIONAL_FIELD_VIA_FIXED_TYPE: str = json.dumps(
+    {
+        "type": "record",
+        "name": "__struct_",
+        "fields": [
+            {
+                "name": "value",
+                "type": {
+                    "type": "fixed",
+                    "name": "__fixed_d9d2d051916045d9975d6c573aaabb89",
+                    "size": 4,
+                    "native_data_type": "fixed[4]",
+                    "_nullable": True,
+                },
+            },
+        ],
+    }
+)
+
 
 def log_field_paths(fields: List[SchemaField]) -> None:
     logger.debug('FieldPaths=\n"' + '",\n"'.join(f.fieldPath for f in fields) + '"')
@@ -89,11 +112,13 @@ def assert_field_paths_match(
         SCHEMA_WITH_OPTIONAL_FIELD_VIA_UNION_TYPE,
         SCHEMA_WITH_OPTIONAL_FIELD_VIA_UNION_TYPE_NULL_ISNT_FIRST_IN_UNION,
         SCHEMA_WITH_OPTIONAL_FIELD_VIA_PRIMITIVE_TYPE,
+        SCHEMA_WITH_OPTIONAL_FIELD_VIA_FIXED_TYPE,
     ],
     ids=[
         "optional_field_via_union_type",
         "optional_field_via_union_null_not_first",
         "optional_field_via_primitive",
+        "optional_field_via_fixed",
     ],
 )
 def test_avro_schema_to_mce_fields_events_with_nullable_fields(schema):
@@ -246,15 +271,17 @@ def test_avro_sample_payment_schema_to_mce_fields_with_nesting():
   "namespace": "some.event.namespace",
   "fields": [
     {"name": "id", "type": "string"},
-    {"name": "amount", "type": "double"},
+    {"name": "amount", "type": "double", "doc": "amountDoc"},
     {"name": "name","type": "string","default": ""},
     {"name": "phoneNumber",
      "type": [{
          "type": "record",
          "name": "PhoneNumber",
+         "doc": "testDoc",
          "fields": [{
              "name": "areaCode",
              "type": "string",
+             "doc": "areaCodeDoc",
              "default": ""
              }, {
              "name": "countryCode",
@@ -273,6 +300,21 @@ def test_avro_sample_payment_schema_to_mce_fields_with_nesting():
          "null"
      ],
      "default": "null"
+    },
+    {"name": "address",
+     "type": [{
+         "type": "record",
+         "name": "Address",
+         "fields": [{
+             "name": "street",
+             "type": "string",
+             "default": ""
+             }]
+         },
+         "null"
+     ],
+      "doc": "addressDoc",
+     "default": "null"
     }
   ]
 }
@@ -287,8 +329,14 @@ def test_avro_sample_payment_schema_to_mce_fields_with_nesting():
         "[version=2.0].[type=Payment].[type=PhoneNumber].phoneNumber.[type=string].countryCode",
         "[version=2.0].[type=Payment].[type=PhoneNumber].phoneNumber.[type=string].prefix",
         "[version=2.0].[type=Payment].[type=PhoneNumber].phoneNumber.[type=string].number",
+        "[version=2.0].[type=Payment].[type=Address].address",
+        "[version=2.0].[type=Payment].[type=Address].address.[type=string].street",
     ]
     assert_field_paths_match(fields, expected_field_paths)
+    assert fields[1].description == "amountDoc"
+    assert fields[3].description == "testDoc\nField default value: null"
+    assert fields[4].description == "areaCodeDoc\nField default value: "
+    assert fields[8].description == "addressDoc\nField default value: null"
 
 
 def test_avro_schema_to_mce_fields_with_nesting_across_records():
@@ -644,7 +692,7 @@ def test_key_schema_handling():
         assert f.isPartOfKey
 
 
-def test_logical_types():
+def test_logical_types_bare():
     schema: str = """
 {
     "type": "record",
@@ -661,6 +709,7 @@ def test_logical_types():
 }
     """
     fields: List[SchemaField] = avro_schema_to_mce_fields(schema, is_key_schema=False)
+    # validate field paths
     expected_field_paths: List[str] = [
         "[version=2.0].[type=test_logical_types].[type=bytes].decimal_logical",
         "[version=2.0].[type=test_logical_types].[type=string].uuid_logical",
@@ -671,6 +720,44 @@ def test_logical_types():
         "[version=2.0].[type=test_logical_types].[type=long].timestamp_micros_logical",
     ]
     assert_field_paths_match(fields, expected_field_paths)
+
+    # validate field types.
+    expected_types: List[Type] = [
+        NumberTypeClass,
+        StringTypeClass,
+        DateTypeClass,
+        TimeTypeClass,
+        TimeTypeClass,
+        TimeTypeClass,
+        TimeTypeClass,
+    ]
+    assert expected_types == [type(field.type.type) for field in fields]
+
+
+def test_logical_types_fully_specified_in_type():
+    schema: Dict = {
+        "type": "record",
+        "name": "test",
+        "fields": [
+            {
+                "name": "name",
+                "type": {
+                    "type": "bytes",
+                    "logicalType": "decimal",
+                    "precision": 3,
+                    "scale": 2,
+                    "native_data_type": "decimal(3, 2)",
+                    "_nullable": True,
+                },
+            }
+        ],
+    }
+    fields: List[SchemaField] = avro_schema_to_mce_fields(
+        json.dumps(schema), default_nullable=True
+    )
+    assert len(fields) == 1
+    assert "[version=2.0].[type=test].[type=bytes].name" == fields[0].fieldPath
+    assert isinstance(fields[0].type.type, NumberTypeClass)
 
 
 def test_ignore_exceptions():

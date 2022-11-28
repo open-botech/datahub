@@ -11,7 +11,6 @@ import com.linkedin.entity.EntityResponse;
 import com.linkedin.entity.EnvelopedAspect;
 import com.linkedin.entity.EnvelopedAspectMap;
 import com.linkedin.entity.client.EntityClient;
-import com.linkedin.entity.client.JavaEntityClient;
 import com.linkedin.events.metadata.ChangeType;
 import com.linkedin.execution.ExecutionRequestInput;
 import com.linkedin.execution.ExecutionRequestSource;
@@ -21,7 +20,7 @@ import com.linkedin.metadata.Constants;
 import com.linkedin.metadata.config.IngestionConfiguration;
 import com.linkedin.metadata.key.ExecutionRequestKey;
 import com.linkedin.metadata.query.ListResult;
-import com.linkedin.metadata.utils.GenericAspectUtils;
+import com.linkedin.metadata.utils.GenericRecordUtils;
 import com.linkedin.mxe.MetadataChangeProposal;
 import com.linkedin.r2.RemoteInvocationException;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 
@@ -68,6 +69,7 @@ import org.springframework.scheduling.support.CronSequenceGenerator;
  * schedules on a once-per-day cadence.
  */
 @Slf4j
+@RequiredArgsConstructor
 public class IngestionScheduler {
 
   private final Authentication _systemAuthentication;
@@ -80,23 +82,19 @@ public class IngestionScheduler {
   // Shared executor service used for executing an ingestion source on a schedule
   private final ScheduledExecutorService _sharedExecutorService = Executors.newScheduledThreadPool(1);
   private final IngestionConfiguration _ingestionConfiguration;
+  private final int _batchGetDelayIntervalSeconds;
+  private final int _batchGetRefreshIntervalSeconds;
 
-  // Visible for testing.
-  public IngestionScheduler(@Nonnull final Authentication systemAuthentication,
-      @Nonnull final JavaEntityClient entityClient, @Nonnull final IngestionConfiguration configuration,
-      final int batchGetDelayIntervalSeconds, final int batchGetRefreshIntervalSeconds) {
-    _systemAuthentication = Objects.requireNonNull(systemAuthentication);
-    _entityClient = Objects.requireNonNull(entityClient);
-    _ingestionConfiguration = configuration;
-
+  public void init() {
     final BatchRefreshSchedulesRunnable batchRefreshSchedulesRunnable = new BatchRefreshSchedulesRunnable(
-        systemAuthentication,
-        entityClient,
-        this::scheduleNextIngestionSourceExecution);
+        _systemAuthentication,
+        _entityClient,
+        this::scheduleNextIngestionSourceExecution,
+        this::unscheduleAll);
 
     // Schedule a recurring batch-reload task.
     _sharedExecutorService.scheduleAtFixedRate(
-        batchRefreshSchedulesRunnable, batchGetDelayIntervalSeconds, batchGetRefreshIntervalSeconds,
+        batchRefreshSchedulesRunnable, _batchGetDelayIntervalSeconds, _batchGetRefreshIntervalSeconds,
         TimeUnit.SECONDS);
   }
 
@@ -104,11 +102,23 @@ public class IngestionScheduler {
    * Removes the next scheduled execution of a particular ingestion source, if it exists.
    */
   public void unscheduleNextIngestionSourceExecution(final Urn ingestionSourceUrn) {
+    log.info("Unscheduling ingestion source with urn {}", ingestionSourceUrn);
     // Deleting an ingestion source schedule. Un-schedule the next execution.
     ScheduledFuture<?> future = _nextIngestionSourceExecutionCache.get(ingestionSourceUrn);
     if (future != null) {
-      future.cancel(true);
+      future.cancel(false); // Do not interrupt running processes
       _nextIngestionSourceExecutionCache.remove(ingestionSourceUrn);
+    }
+  }
+
+  /**
+   * Un-schedule all ingestion sources that are scheduled for execution. This is performed on refresh of ingestion sources.
+   */
+  public void unscheduleAll() {
+    // Deleting an ingestion source schedule. Un-schedule the next execution.
+    Set<Urn> scheduledSources = new HashSet<>(_nextIngestionSourceExecutionCache.keySet()); // Create copy to avoid concurrent mod.
+    for (Urn urn : scheduledSources) {
+      unscheduleNextIngestionSourceExecution(urn);
     }
   }
 
@@ -177,19 +187,25 @@ public class IngestionScheduler {
     private final Authentication _systemAuthentication;
     private final EntityClient _entityClient;
     private final BiConsumer<Urn, DataHubIngestionSourceInfo> _scheduleNextIngestionSourceExecution;
+    private final Runnable _unscheduleAll;
 
     public BatchRefreshSchedulesRunnable(
         @Nonnull final Authentication systemAuthentication,
         @Nonnull final EntityClient entityClient,
-        @Nonnull final BiConsumer<Urn, DataHubIngestionSourceInfo> scheduleNextIngestionSourceExecution) {
+        @Nonnull final BiConsumer<Urn, DataHubIngestionSourceInfo> scheduleNextIngestionSourceExecution,
+        @Nonnull final Runnable unscheduleAll) {
       _systemAuthentication = Objects.requireNonNull(systemAuthentication);
       _entityClient = Objects.requireNonNull(entityClient);
       _scheduleNextIngestionSourceExecution = Objects.requireNonNull(scheduleNextIngestionSourceExecution);
+      _unscheduleAll = unscheduleAll;
     }
 
     @Override
     public void run() {
       try {
+
+        // First un-schedule all currently scheduled runs (to make sure consistency is maintained)
+        _unscheduleAll.run();
 
         int start = 0;
         int count = 30;
@@ -216,6 +232,8 @@ public class IngestionScheduler {
 
             // 3. Reschedule ingestion sources based on the fetched schedules (inside "info")
             log.debug("Received batch of Ingestion Source Info aspects. Attempting to re-schedule execution requests.");
+
+            // Then schedule the next ingestion runs
             scheduleNextIngestionRuns(new ArrayList<>(ingestionSources.values()));
 
             total = ingestionSourceUrns.getTotal();
@@ -265,6 +283,7 @@ public class IngestionScheduler {
     private static final String EXECUTION_REQUEST_SOURCE_NAME = "SCHEDULED_INGESTION_SOURCE";
     private static final String RECIPE_ARGUMENT_NAME = "recipe";
     private static final String VERSION_ARGUMENT_NAME = "version";
+    private static final String DEBUG_MODE_ARG_NAME = "debug_mode";
 
     private final Authentication _systemAuthentication;
     private final EntityClient _entityClient;
@@ -316,7 +335,7 @@ public class IngestionScheduler {
         final UUID uuid = UUID.randomUUID();
         final String uuidStr = uuid.toString();
         key.setId(uuidStr);
-        proposal.setEntityKeyAspect(GenericAspectUtils.serializeAspect(key));
+        proposal.setEntityKeyAspect(GenericRecordUtils.serializeAspect(key));
 
         // Construct arguments (arguments) of the Execution Request
         final ExecutionRequestInput input = new ExecutionRequestInput();
@@ -332,15 +351,19 @@ public class IngestionScheduler {
         arguments.put(VERSION_ARGUMENT_NAME, _ingestionSourceInfo.getConfig().hasVersion()
             ? _ingestionSourceInfo.getConfig().getVersion()
             : _ingestionConfiguration.getDefaultCliVersion());
+        String debugMode = "false";
+        if (_ingestionSourceInfo.getConfig().hasDebugMode()) {
+          debugMode = _ingestionSourceInfo.getConfig().isDebugMode() ? "true" : "false";
+        }
+        arguments.put(DEBUG_MODE_ARG_NAME, debugMode);
         input.setArgs(new StringMap(arguments));
 
         proposal.setEntityType(Constants.EXECUTION_REQUEST_ENTITY_NAME);
         proposal.setAspectName(Constants.EXECUTION_REQUEST_INPUT_ASPECT_NAME);
-        proposal.setAspect(GenericAspectUtils.serializeAspect(input));
+        proposal.setAspect(GenericRecordUtils.serializeAspect(input));
         proposal.setChangeType(ChangeType.UPSERT);
 
         _entityClient.ingestProposal(proposal, _systemAuthentication);
-
       } catch (Exception e) {
         // TODO: This type of thing should likely be proactively reported.
         log.error(String.format(

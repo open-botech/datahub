@@ -1,10 +1,14 @@
 import json
+import logging
 import re
 import uuid
 from typing import Any, Dict, List, Optional, Union
 
 from datahub.ingestion.extractor.schema_util import avro_schema_to_mce_fields
 from datahub.metadata.com.linkedin.pegasus2avro.schema import SchemaField
+from datahub.metadata.schema_classes import NullTypeClass, SchemaFieldDataTypeClass
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 class HiveColumnToAvroConverter:
@@ -22,7 +26,6 @@ class HiveColumnToAvroConverter:
         "float": "float",
         "tinyint": "int",
         "smallint": "int",
-        "int": "int",
         "bigint": "long",
         "varchar": "string",
         "char": "string",
@@ -33,6 +36,8 @@ class HiveColumnToAvroConverter:
     _FIXED_DECIMAL = re.compile(r"(decimal|numeric)(\(\s*(\d+)\s*,\s*(\d+)\s*\))?")
 
     _FIXED_STRING = re.compile(r"(var)?char\(\s*(\d+)\s*\)")
+
+    _STRUCT_TYPE_SEPARATOR = ":"
 
     @staticmethod
     def _parse_datatype_string(
@@ -53,9 +58,12 @@ class HiveColumnToAvroConverter:
             parts = HiveColumnToAvroConverter._ignore_brackets_split(s[4:-1], ",")
             if len(parts) != 2:
                 raise ValueError(
-                    "The map type string format is: 'map<key_type,value_type>', "
-                    + "but got: %s" % s
+                    (
+                        "The map type string format is: 'map<key_type,value_type>', "
+                        + f"but got: {s}"
+                    )
                 )
+
             kt = HiveColumnToAvroConverter._parse_datatype_string(parts[0])
             vt = HiveColumnToAvroConverter._parse_datatype_string(parts[1])
             # keys are assumed to be strings in avro map
@@ -98,14 +106,19 @@ class HiveColumnToAvroConverter:
     @staticmethod
     def _parse_struct_fields_string(s: str, **kwargs: Any) -> Dict[str, object]:
         parts = HiveColumnToAvroConverter._ignore_brackets_split(s, ",")
-        fields = []
+        fields: List[Dict] = []
         for part in parts:
-            name_and_type = HiveColumnToAvroConverter._ignore_brackets_split(part, ":")
+            name_and_type = HiveColumnToAvroConverter._ignore_brackets_split(
+                part.strip(), HiveColumnToAvroConverter._STRUCT_TYPE_SEPARATOR
+            )
             if len(name_and_type) != 2:
                 raise ValueError(
-                    "The struct field string format is: 'field_name:field_type', "
-                    + "but got: %s" % part
+                    (
+                        "The struct field string format is: 'field_name:field_type', "
+                        + f"but got: {part}"
+                    )
                 )
+
             field_name = name_and_type[0].strip()
             if field_name.startswith("`"):
                 if field_name[-1] != "`":
@@ -114,19 +127,20 @@ class HiveColumnToAvroConverter:
             field_type = HiveColumnToAvroConverter._parse_datatype_string(
                 name_and_type[1]
             )
-            fields.append({"name": field_name, "type": field_type})
+
+            if not any(field["name"] == field_name for field in fields):
+                fields.append({"name": field_name, "type": field_type})
 
         if kwargs.get("ustruct_seqn") is not None:
-            struct_name = "__structn_{}_{}".format(
-                kwargs["ustruct_seqn"], str(uuid.uuid4()).replace("-", "")
-            )
+            struct_name = f'__structn_{kwargs["ustruct_seqn"]}_{str(uuid.uuid4()).replace("-", "")}'
+
         else:
-            struct_name = "__struct_{}".format(str(uuid.uuid4()).replace("-", ""))
+            struct_name = f'__struct_{str(uuid.uuid4()).replace("-", "")}'
         return {
             "type": "record",
             "name": struct_name,
             "fields": fields,
-            "native_data_type": "struct<{}>".format(s),
+            "native_data_type": f"struct<{s}>",
         }
 
     @staticmethod
@@ -193,7 +207,7 @@ class HiveColumnToAvroConverter:
                 buf += c
             elif c in HiveColumnToAvroConverter._BRACKETS.values():
                 if level == 0:
-                    raise ValueError("Brackets are not correctly paired: %s" % s)
+                    raise ValueError(f"Brackets are not correctly paired: {s}")
                 level -= 1
                 buf += c
             elif c == separator and level > 0:
@@ -205,7 +219,7 @@ class HiveColumnToAvroConverter:
                 buf += c
 
         if len(buf) == 0:
-            raise ValueError("The %s cannot be the last char: %s" % (separator, s))
+            raise ValueError(f"The {separator} cannot be the last char: {s}")
         parts.append(buf)
         return parts
 
@@ -251,13 +265,28 @@ def get_schema_fields_for_hive_column(
     default_nullable: bool = False,
     is_part_of_key: bool = False,
 ) -> List[SchemaField]:
-    avro_schema_json = get_avro_schema_for_hive_column(
-        hive_column_name=hive_column_name, hive_column_type=hive_column_type
-    )
-    schema_fields = avro_schema_to_mce_fields(
-        avro_schema_string=json.dumps(avro_schema_json),
-        default_nullable=default_nullable,
-    )
+
+    try:
+        avro_schema_json = get_avro_schema_for_hive_column(
+            hive_column_name=hive_column_name, hive_column_type=hive_column_type
+        )
+        schema_fields = avro_schema_to_mce_fields(
+            avro_schema_string=json.dumps(avro_schema_json),
+            default_nullable=default_nullable,
+            swallow_exceptions=False,
+        )
+    except Exception as e:
+        logger.warning(
+            f"Unable to parse column {hive_column_name} and type {hive_column_type} the error was: {e}"
+        )
+        schema_fields = [
+            SchemaField(
+                fieldPath=hive_column_name,
+                type=SchemaFieldDataTypeClass(type=NullTypeClass()),
+                nativeDataType=hive_column_type,
+            )
+        ]
+
     assert schema_fields
     if HiveColumnToAvroConverter.is_primitive_hive_type(hive_column_type):
         # Primitive avro schema does not have any field names. Append it to fieldPath.

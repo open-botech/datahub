@@ -1,22 +1,60 @@
-from abc import abstractmethod
-from typing import Iterable
+import logging
+from abc import ABCMeta
+from typing import List
 
-from datahub.ingestion.api.common import RecordEnvelope
-from datahub.ingestion.api.transform import Transformer
-from datahub.metadata.schema_classes import MetadataChangeEventClass
+from datahub.ingestion.transformer.base_transformer import (
+    BaseTransformer,
+    SingleAspectTransformer,
+)
+
+log = logging.getLogger(__name__)
 
 
-class DatasetTransformer(Transformer):
-    """Transformer that does transforms sequentially on each dataset."""
+class DatasetTransformer(BaseTransformer, SingleAspectTransformer, metaclass=ABCMeta):
+    """Transformer that does transform sequentially on each dataset."""
 
-    def transform(
-        self, record_envelopes: Iterable[RecordEnvelope]
-    ) -> Iterable[RecordEnvelope]:
-        for envelope in record_envelopes:
-            if isinstance(envelope.record, MetadataChangeEventClass):
-                envelope.record = self.transform_one(envelope.record)
-            yield envelope
+    def __init__(self):
+        super().__init__()
 
-    @abstractmethod
-    def transform_one(self, mce: MetadataChangeEventClass) -> MetadataChangeEventClass:
-        pass
+    def entity_types(self) -> List[str]:
+        return ["dataset"]
+
+
+class DatasetOwnershipTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "ownership"
+
+
+class DatasetDomainTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "domains"
+
+
+class DatasetStatusTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "status"
+
+
+class DatasetTagsTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "globalTags"
+
+
+class DatasetTermsTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "glossaryTerms"
+
+
+class DatasetPropertiesTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "datasetProperties"
+
+
+class DatasetBrowsePathsTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "browsePaths"
+
+
+class DatasetSchemaMetadataTransformer(DatasetTransformer, metaclass=ABCMeta):
+    def aspect_name(self) -> str:
+        return "schemaMetadata"

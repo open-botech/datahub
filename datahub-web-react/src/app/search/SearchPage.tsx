@@ -1,9 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as QueryString from 'query-string';
 import { useHistory, useLocation, useParams } from 'react-router';
-import { Alert } from 'antd';
-
-import { SearchablePage } from './SearchablePage';
 import { useEntityRegistry } from '../useEntityRegistry';
 import { FacetFilterInput, EntityType } from '../../types.generated';
 import useFilters from './utils/useFilters';
@@ -12,7 +9,11 @@ import { SearchResults } from './SearchResults';
 import analytics, { EventType } from '../analytics';
 import { useGetSearchResultsForMultipleQuery } from '../../graphql/search.generated';
 import { SearchCfg } from '../../conf';
-import { ENTITY_FILTER_NAME } from './utils/constants';
+import { ENTITY_FILTER_NAME, UnionType } from './utils/constants';
+import { GetSearchResultsParams } from '../entity/shared/components/styled/search/types';
+import { EntityAndType } from '../entity/shared/types';
+import { scrollToTop } from '../shared/searchUtils';
+import { generateOrFilters } from './utils/generateOrFilters';
 
 type SearchPageParams = {
     type?: string;
@@ -26,30 +27,102 @@ export const SearchPage = () => {
     const location = useLocation();
 
     const entityRegistry = useEntityRegistry();
-
     const params = QueryString.parse(location.search, { arrayFormat: 'comma' });
-    const query: string = params.query ? (params.query as string) : '';
+    const query: string = decodeURIComponent(params.query ? (params.query as string) : '');
     const activeType = entityRegistry.getTypeOrDefaultFromPathName(useParams<SearchPageParams>().type || '', undefined);
     const page: number = params.page && Number(params.page as string) > 0 ? Number(params.page as string) : 1;
+    const unionType: UnionType = Number(params.unionType as any as UnionType) || UnionType.AND;
+
     const filters: Array<FacetFilterInput> = useFilters(params);
     const filtersWithoutEntities: Array<FacetFilterInput> = filters.filter(
         (filter) => filter.field !== ENTITY_FILTER_NAME,
     );
     const entityFilters: Array<EntityType> = filters
         .filter((filter) => filter.field === ENTITY_FILTER_NAME)
-        .map((filter) => filter.value.toUpperCase() as EntityType);
+        .flatMap((filter) => filter.values?.map((value) => value?.toUpperCase() as EntityType) || []);
 
-    const { data, loading, error } = useGetSearchResultsForMultipleQuery({
+    const [numResultsPerPage, setNumResultsPerPage] = useState(SearchCfg.RESULTS_PER_PAGE);
+    const [isSelectMode, setIsSelectMode] = useState(false);
+    const [selectedEntities, setSelectedEntities] = useState<EntityAndType[]>([]);
+
+    const {
+        data,
+        loading,
+        error,
+        refetch: realRefetch,
+    } = useGetSearchResultsForMultipleQuery({
+        variables: {
+            input: {
+                types: entityFilters,
+                query,
+                start: (page - 1) * numResultsPerPage,
+                count: numResultsPerPage,
+                filters: [],
+                orFilters: generateOrFilters(unionType, filtersWithoutEntities),
+            },
+        },
+    });
+
+    const searchResultEntities =
+        data?.searchAcrossEntities?.searchResults?.map((result) => ({
+            urn: result.entity.urn,
+            type: result.entity.type,
+        })) || [];
+    const searchResultUrns = searchResultEntities.map((entity) => entity.urn);
+
+    // we need to extract refetch on its own so paging thru results for csv download
+    // doesnt also update search results
+    const { refetch } = useGetSearchResultsForMultipleQuery({
         variables: {
             input: {
                 types: entityFilters,
                 query,
                 start: (page - 1) * SearchCfg.RESULTS_PER_PAGE,
                 count: SearchCfg.RESULTS_PER_PAGE,
-                filters: filtersWithoutEntities,
+                filters: [],
+                orFilters: generateOrFilters(unionType, filtersWithoutEntities),
             },
         },
     });
+
+    const callSearchOnVariables = (variables: GetSearchResultsParams['variables']) => {
+        return refetch(variables).then((res) => res.data.searchAcrossEntities);
+    };
+
+    const onChangeFilters = (newFilters: Array<FacetFilterInput>) => {
+        navigateToSearchUrl({ type: activeType, query, page: 1, filters: newFilters, history, unionType });
+    };
+
+    const onChangeUnionType = (newUnionType: UnionType) => {
+        navigateToSearchUrl({ type: activeType, query, page: 1, filters, history, unionType: newUnionType });
+    };
+
+    const onChangePage = (newPage: number) => {
+        scrollToTop();
+        navigateToSearchUrl({ type: activeType, query, page: newPage, filters, history, unionType });
+    };
+
+    /**
+     * Invoked when the "select all" checkbox is clicked.
+     *
+     * This method either adds the entire current page of search results to
+     * the list of selected entities, or removes the current page from the set of selected entities.
+     */
+    const onChangeSelectAll = (selected: boolean) => {
+        if (selected) {
+            // Add current page of urns to the master selected entity list
+            const entitiesToAdd = searchResultEntities.filter(
+                (entity) =>
+                    selectedEntities.findIndex(
+                        (element) => element.urn === entity.urn && element.type === entity.type,
+                    ) < 0,
+            );
+            setSelectedEntities(Array.from(new Set(selectedEntities.concat(entitiesToAdd))));
+        } else {
+            // Filter out the current page of entity urns from the list
+            setSelectedEntities(selectedEntities.filter((entity) => searchResultUrns.indexOf(entity.urn) === -1));
+        }
+    };
 
     useEffect(() => {
         if (!loading) {
@@ -61,43 +134,43 @@ export const SearchPage = () => {
         }
     }, [query, data, loading]);
 
-    const onSearch = (q: string, type?: EntityType) => {
-        if (q.trim().length === 0) {
-            return;
+    useEffect(() => {
+        // When the query changes, then clear the select mode state
+        setIsSelectMode(false);
+    }, [query]);
+
+    useEffect(() => {
+        if (!isSelectMode) {
+            setSelectedEntities([]);
         }
-        analytics.event({
-            type: EventType.SearchEvent,
-            query: q,
-            entityTypeFilter: activeType,
-            pageNumber: 1,
-            originPath: window.location.pathname,
-        });
-        navigateToSearchUrl({ type: type || activeType, query: q, page: 1, history });
-    };
-
-    const onChangeFilters = (newFilters: Array<FacetFilterInput>) => {
-        navigateToSearchUrl({ type: activeType, query, page: 1, filters: newFilters, history });
-    };
-
-    const onChangePage = (newPage: number) => {
-        navigateToSearchUrl({ type: activeType, query, page: newPage, filters, history });
-    };
+    }, [isSelectMode]);
 
     return (
-        <SearchablePage initialQuery={query} onSearch={onSearch}>
-            {!loading && error && (
-                <Alert type="error" message={error?.message || `Search failed to load for query ${query}`} />
-            )}
+        <>
             <SearchResults
+                unionType={unionType}
+                entityFilters={entityFilters}
+                filtersWithoutEntities={filtersWithoutEntities}
+                callSearchOnVariables={callSearchOnVariables}
                 page={page}
                 query={query}
+                error={error}
                 searchResponse={data?.searchAcrossEntities}
                 filters={data?.searchAcrossEntities?.facets}
                 selectedFilters={filters}
                 loading={loading}
                 onChangeFilters={onChangeFilters}
+                onChangeUnionType={onChangeUnionType}
                 onChangePage={onChangePage}
+                numResultsPerPage={numResultsPerPage}
+                setNumResultsPerPage={setNumResultsPerPage}
+                isSelectMode={isSelectMode}
+                selectedEntities={selectedEntities}
+                setSelectedEntities={setSelectedEntities}
+                setIsSelectMode={setIsSelectMode}
+                onChangeSelectAll={onChangeSelectAll}
+                refetch={realRefetch}
             />
-        </SearchablePage>
+        </>
     );
 };

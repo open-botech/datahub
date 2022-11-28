@@ -1,12 +1,15 @@
 package com.linkedin.datahub.graphql.resolvers.mutate;
 
+import com.google.common.collect.ImmutableList;
 import com.linkedin.common.urn.CorpuserUrn;
 
 import com.linkedin.common.urn.Urn;
 import com.linkedin.datahub.graphql.QueryContext;
 import com.linkedin.datahub.graphql.exception.AuthorizationException;
+import com.linkedin.datahub.graphql.generated.ResourceRefInput;
 import com.linkedin.datahub.graphql.generated.TagAssociationInput;
 import com.linkedin.datahub.graphql.resolvers.mutate.util.LabelUtils;
+import com.linkedin.metadata.Constants;
 import com.linkedin.metadata.entity.EntityService;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -33,12 +36,12 @@ public class AddTagResolver implements DataFetcher<CompletableFuture<Boolean>> {
     }
 
     return CompletableFuture.supplyAsync(() -> {
-      LabelUtils.validateInput(
+      LabelUtils.validateResourceAndLabel(
           tagUrn,
           targetUrn,
           input.getSubResource(),
           input.getSubResourceType(),
-          "tag",
+          Constants.TAG_ENTITY_NAME,
           _entityService,
           false
       );
@@ -51,10 +54,9 @@ public class AddTagResolver implements DataFetcher<CompletableFuture<Boolean>> {
 
         log.info("Adding Tag. input: {}", input.toString());
         Urn actor = CorpuserUrn.createFromString(((QueryContext) environment.getContext()).getActorUrn());
-        LabelUtils.addTagToTarget(
-            tagUrn,
-            targetUrn,
-            input.getSubResource(),
+        LabelUtils.addTagsToResources(
+            ImmutableList.of(tagUrn),
+            ImmutableList.of(new ResourceRefInput(input.getResourceUrn(), input.getSubResourceType(), input.getSubResource())),
             actor,
             _entityService
         );

@@ -28,11 +28,34 @@ query getGlossaryTerm($urn: String!, $start: Int, $count: Int) {
                 }
             }
         }
+        isAChildren: relationships(input: { types: ["IsA"], direction: INCOMING, start: $start, count: $count }) {
+            start
+            count
+            total
+            relationships {
+                entity {
+                    ... on GlossaryTerm {
+                        urn
+                        hierarchicalName
+                    }
+                }
+            }
+        }
+        parentNodes {
+            ...parentNodesFields
+        }
         ownership {
             ...ownershipFields
         }
-        glossaryTermInfo {
-            definition
+        domain {
+            ...entityDomain
+        }
+        institutionalMemory {
+            ...institutionalMemoryFields
+        }
+        properties {
+            name
+            description
             termSource
             sourceRef
             sourceUrl
@@ -42,5 +65,30 @@ query getGlossaryTerm($urn: String!, $start: Int, $count: Int) {
                 value
             }
         }
+        schemaMetadata(version: 0) {
+            ...schemaMetadataFields
+        }
+        deprecation {
+            ...deprecationFields
+        }
+        privileges {
+            canManageEntity
+        }
     }
+}
+
+mutation createGlossaryTerm($input: CreateGlossaryEntityInput!) {
+    createGlossaryTerm(input: $input)
+}
+
+mutation createGlossaryNode($input: CreateGlossaryEntityInput!) {
+    createGlossaryNode(input: $input)
+}
+
+mutation addRelatedTerms($input: RelatedTermsInput!) {
+    addRelatedTerms(input: $input)
+}
+
+mutation removeRelatedTerms($input: RelatedTermsInput!) {
+    removeRelatedTerms(input: $input)
 }

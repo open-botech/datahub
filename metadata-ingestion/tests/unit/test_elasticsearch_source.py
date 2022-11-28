@@ -3,9 +3,13 @@ import logging
 import re
 from typing import Any, Dict, List, Tuple
 
+import pydantic
 import pytest
 
-from datahub.ingestion.source.elastic_search import ElasticToSchemaFieldConverter
+from datahub.ingestion.source.elastic_search import (
+    ElasticsearchSourceConfig,
+    ElasticToSchemaFieldConverter,
+)
 from datahub.metadata.com.linkedin.pegasus2avro.schema import SchemaField
 
 logger = logging.getLogger(__name__)
@@ -1285,8 +1289,9 @@ schema_test_cases: Dict[str, Tuple[str, List[str]]] = {
             "[version=2.0].[type=date].@timestamp",
             "[version=2.0].[type=object].event",
             "[version=2.0].[type=keyword].eventGranularity",
-            "[version=2.0].[type=fieldCounts].[type=integer].count",
-            "[version=2.0].[type=fieldCounts].[type=keyword].fieldPath",
+            "[version=2.0].[type=properties].fieldCounts",
+            "[version=2.0].[type=properties].fieldCounts.[type=integer].count",
+            "[version=2.0].[type=properties].fieldCounts.[type=keyword].fieldPath",
             "[version=2.0].[type=boolean].isExploded",
             "[version=2.0].[type=keyword].messageId",
             "[version=2.0].[type=object].systemMetadata",
@@ -1295,9 +1300,10 @@ schema_test_cases: Dict[str, Tuple[str, List[str]]] = {
             "[version=2.0].[type=integer].totalSqlQueries",
             "[version=2.0].[type=integer].uniqueUserCount",
             "[version=2.0].[type=keyword].urn",
-            "[version=2.0].[type=userCounts].[type=integer].count",
-            "[version=2.0].[type=userCounts].[type=keyword].user",
-            "[version=2.0].[type=userCounts].[type=keyword].userEmail",
+            "[version=2.0].[type=properties].userCounts",
+            "[version=2.0].[type=properties].userCounts.[type=integer].count",
+            "[version=2.0].[type=properties].userCounts.[type=keyword].user",
+            "[version=2.0].[type=properties].userCounts.[type=keyword].userEmail",
         ],
     ),
     "datasetindex_v2": (
@@ -1709,17 +1715,18 @@ schema_test_cases: Dict[str, Tuple[str, List[str]]] = {
             "[version=2.0].[type=keyword].index",
             "[version=2.0].[type=long].index_age",
             "[version=2.0].[type=keyword].policy",
-            "[version=2.0].[type=state].[type=keyword].action",
-            "[version=2.0].[type=state].[type=date].action_time",
-            "[version=2.0].[type=state].[type=date].creation_date",
-            "[version=2.0].[type=state].[type=keyword].failed_step",
-            "[version=2.0].[type=state].[type=keyword].is_auto-retryable_error",
-            "[version=2.0].[type=state].[type=keyword].phase",
-            "[version=2.0].[type=state].[type=text].phase_definition",
-            "[version=2.0].[type=state].[type=date].phase_time",
-            "[version=2.0].[type=state].[type=keyword].step",
-            "[version=2.0].[type=state].[type=text].step_info",
-            "[version=2.0].[type=state].[type=date].step_time",
+            "[version=2.0].[type=properties].state",
+            "[version=2.0].[type=properties].state.[type=keyword].action",
+            "[version=2.0].[type=properties].state.[type=date].action_time",
+            "[version=2.0].[type=properties].state.[type=date].creation_date",
+            "[version=2.0].[type=properties].state.[type=keyword].failed_step",
+            "[version=2.0].[type=properties].state.[type=keyword].is_auto-retryable_error",
+            "[version=2.0].[type=properties].state.[type=keyword].phase",
+            "[version=2.0].[type=properties].state.[type=text].phase_definition",
+            "[version=2.0].[type=properties].state.[type=date].phase_time",
+            "[version=2.0].[type=properties].state.[type=keyword].step",
+            "[version=2.0].[type=properties].state.[type=text].step_info",
+            "[version=2.0].[type=properties].state.[type=date].step_time",
             "[version=2.0].[type=boolean].success",
         ],
     ),
@@ -2431,3 +2438,35 @@ def test_elastic_search_schema_conversion(
     mappings: Dict[str, Any] = {"properties": schema_dict}
     actual_fields = list(ElasticToSchemaFieldConverter.get_schema_fields(mappings))
     assret_field_paths_match(actual_fields, expected_field_paths)
+
+
+def test_no_properties_in_mappings_schema() -> None:
+    fields = list(ElasticToSchemaFieldConverter.get_schema_fields({}))
+    assert fields == []
+
+
+def test_host_port_parsing() -> None:
+    """ensure we handle different styles of host_port specifications correctly"""
+    examples = [
+        "http://localhost:9200",
+        "https://localhost:9200",
+        "localhost:9300",
+        "localhost",
+        "http://localhost:3400",
+        "192.168.0.1",
+        "192.168.0.1:9200",
+        "http://192.168.2.1",
+        "https://192.168.0.1:9300",
+        "https://192.168.0.1/",
+    ]
+    bad_examples = ["localhost:abcd", "htttp://localhost:1234", "localhost:9200//"]
+    for example in examples:
+        config_dict = {"host": example}
+        config = ElasticsearchSourceConfig.parse_obj(config_dict)
+        assert config.host == example
+
+    for bad_example in bad_examples:
+        config_dict = {"host": bad_example}
+
+        with pytest.raises(pydantic.ValidationError):
+            ElasticsearchSourceConfig.parse_obj(config_dict)

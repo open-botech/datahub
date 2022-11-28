@@ -19,11 +19,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.CountRequest;
+
+import static com.linkedin.metadata.search.utils.SearchUtils.EMPTY_SEARCH_RESULT;
 
 
 /**
@@ -51,13 +54,21 @@ public class ESSearchDAO {
 
   @Nonnull
   @WithSpan
-  private SearchResult executeAndExtract(@Nonnull EntitySpec entitySpec, @Nonnull SearchRequest searchRequest, int from,
+  private SearchResult executeAndExtract(@Nonnull EntitySpec entitySpec, @Nonnull SearchRequest searchRequest, @Nullable Filter filter, int from,
       int size) {
-    try (Timer.Context ignored = MetricUtils.timer(this.getClass(), "esSearch").time()) {
+    try (Timer.Context ignored = MetricUtils.timer(this.getClass(), "executeAndExtract_search").time()) {
       final SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
       // extract results, validated against document model as well
-      return SearchRequestHandler.getBuilder(entitySpec).extractResult(searchResponse, from, size);
+      return SearchRequestHandler.getBuilder(entitySpec).extractResult(searchResponse, filter, from, size);
     } catch (Exception e) {
+      if (e instanceof ElasticsearchStatusException) {
+        final ElasticsearchStatusException statusException = (ElasticsearchStatusException) e;
+        if (statusException.status().getStatus() == 400) {
+          // Malformed query -- Could indicate bad search syntax. Return empty response.
+          log.warn("Received 400 from Elasticsearch. Returning empty search response", e);
+          return EMPTY_SEARCH_RESULT;
+        }
+      }
       log.error("Search query failed", e);
       throw new ESQueryException("Search query failed:", e);
     }
@@ -86,7 +97,7 @@ public class ESSearchDAO {
     searchRequest.indices(indexConvention.getIndexName(entitySpec));
     searchRequestTimer.stop();
     // Step 2: execute the query and extract results, validated against document model as well
-    return executeAndExtract(entitySpec, searchRequest, from, size);
+    return executeAndExtract(entitySpec, searchRequest, postFilters, from, size);
   }
 
   /**
@@ -105,7 +116,7 @@ public class ESSearchDAO {
     final SearchRequest searchRequest =
         SearchRequestHandler.getBuilder(entitySpec).getFilterRequest(filters, sortCriterion, from, size);
     searchRequest.indices(indexConvention.getIndexName(entitySpec));
-    return executeAndExtract(entitySpec, searchRequest, from, size);
+    return executeAndExtract(entitySpec, searchRequest, filters, from, size);
   }
 
   /**
@@ -157,7 +168,7 @@ public class ESSearchDAO {
     }
     searchRequest.indices(indexName);
 
-    try (Timer.Context ignored = MetricUtils.timer(this.getClass(), "esSearch").time()) {
+    try (Timer.Context ignored = MetricUtils.timer(this.getClass(), "aggregateByValue_search").time()) {
       final SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
       // extract results, validated against document model as well
       return SearchRequestHandler.extractTermAggregations(searchResponse, field);

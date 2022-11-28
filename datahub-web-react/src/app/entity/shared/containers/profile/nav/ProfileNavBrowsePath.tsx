@@ -38,7 +38,7 @@ const DetailIcon = styled(InfoCircleOutlined)`
     padding-right: 6px;
 `;
 
-const IconGroup = styled.div<{ isSelected: boolean; disabled: boolean }>`
+const IconGroup = styled.div<{ isSelected: boolean; disabled?: boolean }>`
     font-size: 14px;
     color: ${(props) => {
         if (props.disabled) {
@@ -63,6 +63,7 @@ const BrowseRow = styled(Row)`
 const LineageNavContainer = styled.div`
     display: inline-flex;
     line-height: 24px;
+    align-items: center;
 `;
 
 const LineageSummary = styled.div`
@@ -80,7 +81,7 @@ const LineageBadge = styled(Badge)`
     }
 `;
 
-const BreadcrumbItem = styled(Breadcrumb.Item)<{ disabled: boolean }>`
+export const BreadcrumbItem = styled(Breadcrumb.Item)<{ disabled?: boolean }>`
     &&& :hover {
         color: ${(props) => (props.disabled ? ANTD_GRAY[7] : props.theme.styles['primary-color'])};
     }

@@ -110,11 +110,11 @@ describe('TagTermGroup', () => {
                 </TestPageContainer>
             </MockedProvider>,
         );
-        expect(queryByText('Add Tag')).toBeInTheDocument();
-        expect(queryByText('Find a tag')).not.toBeInTheDocument();
-        const AddTagButton = getByText('Add Tag');
+        expect(queryByText('Add Tags')).toBeInTheDocument();
+        expect(queryByText('Search for tag...')).not.toBeInTheDocument();
+        const AddTagButton = getByText('Add Tags');
         fireEvent.click(AddTagButton);
-        expect(queryByText('Find a tag')).toBeInTheDocument();
+        expect(queryByText('Search for tag...')).toBeInTheDocument();
     });
 
     it('renders create term', () => {
@@ -132,11 +132,11 @@ describe('TagTermGroup', () => {
                 </TestPageContainer>
             </MockedProvider>,
         );
-        expect(queryByText('Add Term')).toBeInTheDocument();
-        expect(queryByText('Find a glossary term')).not.toBeInTheDocument();
-        const AddTagButton = getByText('Add Term');
+        expect(queryByText('Add Terms')).toBeInTheDocument();
+        expect(queryByText('Search for glossary term...')).not.toBeInTheDocument();
+        const AddTagButton = getByText('Add Terms');
         fireEvent.click(AddTagButton);
-        expect(queryByText('Find a glossary term')).toBeInTheDocument();
+        expect(queryByText('Search for glossary term...')).toBeInTheDocument();
     });
 
     it('renders terms', () => {

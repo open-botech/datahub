@@ -6,14 +6,6 @@ import datahub.emitter.mce_builder as builder
 
 
 class _Entity:
-    def set_context(self, context):
-        # Required for compat with Airflow 1.10.x
-        pass
-
-    def as_dict(self):
-        # Required for compat with Airflow 1.10.x
-        return attr.asdict(self)
-
     @property
     @abstractmethod
     def urn(self) -> str:

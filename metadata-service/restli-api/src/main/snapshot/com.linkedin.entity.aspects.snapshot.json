@@ -45,10 +45,12 @@
               "doc" : "Generic record structure for serializing an Aspect\n",
               "fields" : [ {
                 "name" : "value",
-                "type" : "bytes"
+                "type" : "bytes",
+                "doc" : "The value of the aspect, serialized as bytes."
               }, {
                 "name" : "contentType",
-                "type" : "string"
+                "type" : "string",
+                "doc" : "The content type, which represents the fashion in which the aspect was serialized.\nThe only type currently supported is application/json."
               } ]
             }
           }, {
@@ -131,12 +133,20 @@
                       "type" : "string",
                       "doc" : "The value of the intended field"
                     }, {
+                      "name" : "values",
+                      "type" : {
+                        "type" : "array",
+                        "items" : "string"
+                      },
+                      "doc" : "Values. one of which the intended field should match\nNote, if values is set, the above \"value\" field will be ignored",
+                      "default" : [ ]
+                    }, {
                       "name" : "condition",
                       "type" : {
                         "type" : "enum",
                         "name" : "Condition",
                         "doc" : "The matching condition in a filter criterion",
-                        "symbols" : [ "CONTAIN", "END_WITH", "EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL_TO", "IN", "LESS_THAN", "LESS_THAN_OR_EQUAL_TO", "START_WITH" ],
+                        "symbols" : [ "CONTAIN", "END_WITH", "EQUAL", "IS_NULL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL_TO", "IN", "LESS_THAN", "LESS_THAN_OR_EQUAL_TO", "START_WITH" ],
                         "symbolDocs" : {
                           "CONTAIN" : "Represent the relation: String field contains value, e.g. name contains Profile",
                           "END_WITH" : "Represent the relation: String field ends with value, e.g. name ends with Event",
@@ -144,6 +154,7 @@
                           "GREATER_THAN" : "Represent the relation greater than, e.g. ownerCount > 5",
                           "GREATER_THAN_OR_EQUAL_TO" : "Represent the relation greater than or equal to, e.g. ownerCount >= 5",
                           "IN" : "Represent the relation: String field is one of the array values to, e.g. name in [\"Profile\", \"Event\"]",
+                          "IS_NULL" : "Represent the relation: field is null, e.g. platform is null",
                           "LESS_THAN" : "Represent the relation less than, e.g. ownerCount < 3",
                           "LESS_THAN_OR_EQUAL_TO" : "Represent the relation less than or equal to, e.g. ownerCount <= 3",
                           "START_WITH" : "Represent the relation: String field starts with value, e.g. name starts with PageView"
@@ -151,6 +162,11 @@
                       },
                       "doc" : "The condition for the criterion, e.g. EQUAL, START_WITH",
                       "default" : "EQUAL"
+                    }, {
+                      "name" : "negated",
+                      "type" : "boolean",
+                      "doc" : "Whether the condition should be negated",
+                      "default" : false
                     } ]
                   }
                 },
@@ -158,7 +174,7 @@
               } ]
             }
           },
-          "doc" : "A list of of disjunctive criterion for the filter.",
+          "doc" : "A list of disjunctive criterion for the filter. (or operation to combine filters)",
           "optional" : true
         }, {
           "name" : "criteria",
@@ -366,6 +382,11 @@
               "type" : "Urn",
               "doc" : "The entity (e.g. a service URN) which performs the change on behalf of the Actor and must be authorized to act as the Actor.",
               "optional" : true
+            }, {
+              "name" : "message",
+              "type" : "string",
+              "doc" : "Additional context around how DataHub was informed of the particular change. For example: was the change created by an automated process, or manually.",
+              "optional" : true
             } ]
           },
           "doc" : "An AuditStamp corresponding to the creation of this resource/association/sub-resource. A value of 0 for time indicates missing data.",
@@ -405,6 +426,7 @@
       "Relationship" : {
         "/*/string" : {
           "entityTypes" : [ "dataset" ],
+          "isLineage" : true,
           "name" : "Consumes"
         }
       }
@@ -414,7 +436,7 @@
         "type" : "enum",
         "name" : "ChartType",
         "doc" : "The various types of charts",
-        "symbols" : [ "BAR", "PIE", "SCATTER", "TABLE", "TEXT", "LINE", "AREA", "HISTOGRAM", "BOX_PLOT" ],
+        "symbols" : [ "BAR", "PIE", "SCATTER", "TABLE", "TEXT", "LINE", "AREA", "HISTOGRAM", "BOX_PLOT", "WORD_CLOUD", "COHORT" ],
         "symbolDocs" : {
           "BAR" : "Chart showing a Bar chart",
           "PIE" : "Chart showing a Pie chart",
@@ -501,7 +523,7 @@
         "type" : "array",
         "items" : "string"
       },
-      "doc" : "A list of valid browse paths for the entity.\n\nBrowse paths are expected to be backslash-separated strings. For example: 'prod/snowflake/datasetName'",
+      "doc" : "A list of valid browse paths for the entity.\n\nBrowse paths are expected to be forward slash-separated strings. For example: 'prod/snowflake/datasetName'",
       "Searchable" : {
         "/*" : {
           "fieldName" : "browsePaths",
@@ -675,7 +697,7 @@
     "type" : "record",
     "name" : "DataPlatformInstance",
     "namespace" : "com.linkedin.common",
-    "doc" : "Tag aspect used for applying tags to an entity",
+    "doc" : "The specific instance of the data platform that this entity belongs to",
     "fields" : [ {
       "name" : "platform",
       "type" : "Urn",
@@ -691,8 +713,10 @@
       "doc" : "Instance of the data platform (e.g. db instance)",
       "optional" : true,
       "Searchable" : {
+        "addToFilters" : true,
         "fieldName" : "platformInstance",
-        "fieldType" : "URN"
+        "fieldType" : "URN",
+        "filterNameOverride" : "Platform Instance"
       }
     } ],
     "Aspect" : {
@@ -736,12 +760,18 @@
     "name" : "FabricType",
     "namespace" : "com.linkedin.common",
     "doc" : "Fabric group type",
-    "symbols" : [ "DEV", "EI", "PROD", "CORP" ],
+    "symbols" : [ "DEV", "TEST", "QA", "UAT", "EI", "PRE", "STG", "NON_PROD", "PROD", "CORP" ],
     "symbolDocs" : {
       "CORP" : "Designates corporation fabrics",
       "DEV" : "Designates development fabrics",
-      "EI" : "Designates early-integration (staging) fabrics",
-      "PROD" : "Designates production fabrics"
+      "EI" : "Designates early-integration fabrics",
+      "NON_PROD" : "Designates non-production fabrics",
+      "PRE" : "Designates pre-production fabrics",
+      "PROD" : "Designates production fabrics",
+      "QA" : "Designates quality assurance fabrics",
+      "STG" : "Designates staging fabrics",
+      "TEST" : "Designates testing fabrics",
+      "UAT" : "Designates user acceptance testing fabrics"
     }
   }, {
     "type" : "record",
@@ -787,6 +817,10 @@
               }
             },
             "doc" : "Urn of the applied tag",
+            "Relationship" : {
+              "entityTypes" : [ "tag" ],
+              "name" : "TaggedWith"
+            },
             "Searchable" : {
               "addToFilters" : true,
               "fieldName" : "tags",
@@ -794,6 +828,11 @@
               "filterNameOverride" : "Tag",
               "hasValuesFieldName" : "hasTags"
             }
+          }, {
+            "name" : "context",
+            "type" : "string",
+            "doc" : "Additional context about the association",
+            "optional" : true
           } ]
         }
       },
@@ -864,12 +903,22 @@
         }
       },
       "doc" : "Urn of the applied glossary term",
+      "Relationship" : {
+        "entityTypes" : [ "glossaryTerm" ],
+        "name" : "TermedWith"
+      },
       "Searchable" : {
         "addToFilters" : true,
         "fieldName" : "glossaryTerms",
         "fieldType" : "URN",
-        "filterNameOverride" : "Glossary Term"
+        "filterNameOverride" : "Glossary Term",
+        "hasValuesFieldName" : "hasGlossaryTerms"
       }
+    }, {
+      "name" : "context",
+      "type" : "string",
+      "doc" : "Additional context about the association",
+      "optional" : true
     } ]
   }, "com.linkedin.common.GlossaryTermUrn", {
     "type" : "record",
@@ -991,12 +1040,14 @@
       "type" : "Urn",
       "doc" : "Owner URN, e.g. urn:li:corpuser:ldap, urn:li:corpGroup:group_name, and urn:li:multiProduct:mp_name\n(Caveat: only corpuser is currently supported in the frontend.)",
       "Relationship" : {
-        "entityTypes" : [ "corpUser", "corpGroup" ],
+        "entityTypes" : [ "corpuser", "corpGroup" ],
         "name" : "OwnedBy"
       },
       "Searchable" : {
+        "addToFilters" : true,
         "fieldName" : "owners",
         "fieldType" : "URN",
+        "filterNameOverride" : "Owned By",
         "hasValuesFieldName" : "hasOwners",
         "queryByDefault" : false
       }
@@ -1005,15 +1056,27 @@
       "type" : {
         "type" : "enum",
         "name" : "OwnershipType",
-        "doc" : "Owner category or owner role",
-        "symbols" : [ "DEVELOPER", "DATAOWNER", "DELEGATE", "PRODUCER", "CONSUMER", "STAKEHOLDER" ],
+        "doc" : "Asset owner types",
+        "symbols" : [ "TECHNICAL_OWNER", "BUSINESS_OWNER", "DATA_STEWARD", "NONE", "DEVELOPER", "DATAOWNER", "DELEGATE", "PRODUCER", "CONSUMER", "STAKEHOLDER" ],
         "symbolDocs" : {
-          "CONSUMER" : "A person, group, or service that consumes the data",
-          "DATAOWNER" : "A person or group that is owning the data",
-          "DELEGATE" : "A person or a group that overseas the operation, e.g. a DBA or SRE.",
-          "DEVELOPER" : "A person or group that is in charge of developing the code",
-          "PRODUCER" : "A person, group, or service that produces/generates the data",
-          "STAKEHOLDER" : "A person or a group that has direct business interest"
+          "BUSINESS_OWNER" : "A person or group who is responsible for logical, or business related, aspects of the asset.",
+          "CONSUMER" : "A person, group, or service that consumes the data\nDeprecated! Use TECHNICAL_OWNER or BUSINESS_OWNER instead.",
+          "DATAOWNER" : "A person or group that is owning the data\nDeprecated! Use TECHNICAL_OWNER instead.",
+          "DATA_STEWARD" : "A steward, expert, or delegate responsible for the asset.",
+          "DELEGATE" : "A person or a group that overseas the operation, e.g. a DBA or SRE.\nDeprecated! Use TECHNICAL_OWNER instead.",
+          "DEVELOPER" : "A person or group that is in charge of developing the code\nDeprecated! Use TECHNICAL_OWNER instead.",
+          "NONE" : "No specific type associated to the owner.",
+          "PRODUCER" : "A person, group, or service that produces/generates the data\nDeprecated! Use TECHNICAL_OWNER instead.",
+          "STAKEHOLDER" : "A person or a group that has direct business interest\nDeprecated! Use TECHNICAL_OWNER, BUSINESS_OWNER, or STEWARD instead.",
+          "TECHNICAL_OWNER" : "person or group who is responsible for technical aspects of the asset."
+        },
+        "deprecatedSymbols" : {
+          "CONSUMER" : true,
+          "DATAOWNER" : true,
+          "DELEGATE" : true,
+          "DEVELOPER" : true,
+          "PRODUCER" : true,
+          "STAKEHOLDER" : true
         }
       },
       "doc" : "The type of the ownership"
@@ -1079,11 +1142,11 @@
     "type" : "record",
     "name" : "Status",
     "namespace" : "com.linkedin.common",
-    "doc" : "The status metadata of an entity, e.g. dataset, metric, feature, etc.\nThis aspect is used to represent soft deletes conventionally.",
+    "doc" : "The lifecycle status metadata of an entity, e.g. dataset, metric, feature, etc.\nThis aspect is used to represent soft deletes conventionally.",
     "fields" : [ {
       "name" : "removed",
       "type" : "boolean",
-      "doc" : "whether the entity is removed or not",
+      "doc" : "Whether the entity has been removed (soft-deleted).",
       "default" : false,
       "Searchable" : {
         "fieldType" : "BOOLEAN"
@@ -1144,7 +1207,23 @@
       "Relationship" : {
         "/*" : {
           "entityTypes" : [ "chart" ],
+          "isLineage" : true,
           "name" : "Contains"
+        }
+      }
+    }, {
+      "name" : "datasets",
+      "type" : {
+        "type" : "array",
+        "items" : "com.linkedin.common.Urn"
+      },
+      "doc" : "Datasets consumed by a dashboard",
+      "default" : [ ],
+      "Relationship" : {
+        "/*" : {
+          "entityTypes" : [ "dataset" ],
+          "isLineage" : true,
+          "name" : "Consumes"
         }
       }
     }, {
@@ -1299,6 +1378,7 @@
       "Relationship" : {
         "/*" : {
           "entityTypes" : [ "dataset" ],
+          "isLineage" : true,
           "name" : "Consumes"
         }
       },
@@ -1320,6 +1400,8 @@
       "Relationship" : {
         "/*" : {
           "entityTypes" : [ "dataset" ],
+          "isLineage" : true,
+          "isUpstream" : false,
           "name" : "Produces"
         }
       },
@@ -1342,9 +1424,121 @@
       "Relationship" : {
         "/*" : {
           "entityTypes" : [ "dataJob" ],
+          "isLineage" : true,
           "name" : "DownstreamOf"
         }
       }
+    }, {
+      "name" : "inputDatasetFields",
+      "type" : {
+        "type" : "array",
+        "items" : "com.linkedin.common.Urn"
+      },
+      "doc" : "Fields of the input datasets used by this job",
+      "optional" : true,
+      "Relationship" : {
+        "/*" : {
+          "entityTypes" : [ "schemaField" ],
+          "name" : "Consumes"
+        }
+      },
+      "Searchable" : {
+        "/*" : {
+          "fieldName" : "inputFields",
+          "fieldType" : "URN",
+          "numValuesFieldName" : "numInputFields",
+          "queryByDefault" : false
+        }
+      }
+    }, {
+      "name" : "outputDatasetFields",
+      "type" : {
+        "type" : "array",
+        "items" : "com.linkedin.common.Urn"
+      },
+      "doc" : "Fields of the output datasets this job writes to",
+      "optional" : true,
+      "Relationship" : {
+        "/*" : {
+          "entityTypes" : [ "schemaField" ],
+          "name" : "Produces"
+        }
+      },
+      "Searchable" : {
+        "/*" : {
+          "fieldName" : "outputFields",
+          "fieldType" : "URN",
+          "numValuesFieldName" : "numOutputFields",
+          "queryByDefault" : false
+        }
+      }
+    }, {
+      "name" : "fineGrainedLineages",
+      "type" : {
+        "type" : "array",
+        "items" : {
+          "type" : "record",
+          "name" : "FineGrainedLineage",
+          "namespace" : "com.linkedin.dataset",
+          "doc" : "A fine-grained lineage from upstream fields/datasets to downstream field(s)",
+          "fields" : [ {
+            "name" : "upstreamType",
+            "type" : {
+              "type" : "enum",
+              "name" : "FineGrainedLineageUpstreamType",
+              "doc" : "The type of upstream entity in a fine-grained lineage",
+              "symbols" : [ "FIELD_SET", "DATASET", "NONE" ],
+              "symbolDocs" : {
+                "DATASET" : " Indicates that this lineage is originating from upstream dataset(s)",
+                "FIELD_SET" : " Indicates that this lineage is originating from upstream field(s)",
+                "NONE" : " Indicates that there is no upstream lineage i.e. the downstream field is not a derived field"
+              }
+            },
+            "doc" : "The type of upstream entity"
+          }, {
+            "name" : "upstreams",
+            "type" : {
+              "type" : "array",
+              "items" : "com.linkedin.common.Urn"
+            },
+            "doc" : "Upstream entities in the lineage",
+            "optional" : true
+          }, {
+            "name" : "downstreamType",
+            "type" : {
+              "type" : "enum",
+              "name" : "FineGrainedLineageDownstreamType",
+              "doc" : "The type of downstream field(s) in a fine-grained lineage",
+              "symbols" : [ "FIELD", "FIELD_SET" ],
+              "symbolDocs" : {
+                "FIELD" : " Indicates that the lineage is for a single, specific, downstream field",
+                "FIELD_SET" : " Indicates that the lineage is for a set of downstream fields"
+              }
+            },
+            "doc" : "The type of downstream field(s)"
+          }, {
+            "name" : "downstreams",
+            "type" : {
+              "type" : "array",
+              "items" : "com.linkedin.common.Urn"
+            },
+            "doc" : "Downstream fields in the lineage",
+            "optional" : true
+          }, {
+            "name" : "transformOperation",
+            "type" : "string",
+            "doc" : "The transform operation applied to the upstream entities to produce the downstream field(s)",
+            "optional" : true
+          }, {
+            "name" : "confidenceScore",
+            "type" : "float",
+            "doc" : "The confidence in this lineage between 0 (low confidence) and 1 (high confidence)",
+            "default" : 1.0
+          } ]
+        }
+      },
+      "doc" : "Fine-grained column-level lineages",
+      "optional" : true
     } ],
     "Aspect" : {
       "name" : "dataJobInputOutput"
@@ -1353,7 +1547,7 @@
     "type" : "record",
     "name" : "DatasetDeprecation",
     "namespace" : "com.linkedin.dataset",
-    "doc" : "Dataset deprecation status",
+    "doc" : "Dataset deprecation status\nDeprecated! This aspect is deprecated in favor of the more-general-purpose 'Deprecation' aspect.",
     "fields" : [ {
       "name" : "deprecated",
       "type" : "boolean",
@@ -1381,7 +1575,8 @@
     } ],
     "Aspect" : {
       "name" : "datasetDeprecation"
-    }
+    },
+    "Deprecated" : true
   }, {
     "type" : "enum",
     "name" : "DatasetLineageType",
@@ -1400,6 +1595,27 @@
     "doc" : "Properties associated with a Dataset",
     "include" : [ "com.linkedin.common.CustomProperties", "com.linkedin.common.ExternalReference" ],
     "fields" : [ {
+      "name" : "name",
+      "type" : "string",
+      "doc" : "Display name of the Dataset",
+      "optional" : true,
+      "Searchable" : {
+        "boostScore" : 10.0,
+        "enableAutocomplete" : true,
+        "fieldType" : "TEXT_PARTIAL"
+      }
+    }, {
+      "name" : "qualifiedName",
+      "type" : "string",
+      "doc" : "Fully-qualified name of the Dataset",
+      "optional" : true,
+      "Searchable" : {
+        "addToFilters" : false,
+        "boostScore" : 10.0,
+        "enableAutocomplete" : true,
+        "fieldType" : "TEXT"
+      }
+    }, {
       "name" : "description",
       "type" : "string",
       "doc" : "Documentation of the dataset",
@@ -1425,7 +1641,7 @@
     "Aspect" : {
       "name" : "datasetProperties"
     }
-  }, {
+  }, "com.linkedin.dataset.FineGrainedLineage", "com.linkedin.dataset.FineGrainedLineageDownstreamType", "com.linkedin.dataset.FineGrainedLineageUpstreamType", {
     "type" : "typeref",
     "name" : "SchemaFieldPath",
     "namespace" : "com.linkedin.dataset",
@@ -1451,6 +1667,7 @@
       "doc" : "The upstream dataset the lineage points to",
       "Relationship" : {
         "entityTypes" : [ "dataset" ],
+        "isLineage" : true,
         "name" : "DownstreamOf"
       },
       "Searchable" : {
@@ -1475,6 +1692,20 @@
         "items" : "Upstream"
       },
       "doc" : "List of upstream dataset lineage information"
+    }, {
+      "name" : "fineGrainedLineages",
+      "type" : {
+        "type" : "array",
+        "items" : "FineGrainedLineage"
+      },
+      "doc" : " List of fine-grained lineage information, including field-level lineage",
+      "optional" : true,
+      "Relationship" : {
+        "/*/upstreams/*" : {
+          "entityTypes" : [ "dataset", "schemaField" ],
+          "name" : "DownstreamOf"
+        }
+      }
     } ],
     "Aspect" : {
       "name" : "upstreamLineage"
@@ -1484,11 +1715,12 @@
     "name" : "ChangeType",
     "namespace" : "com.linkedin.events.metadata",
     "doc" : "Descriptor for a change action",
-    "symbols" : [ "UPSERT", "CREATE", "UPDATE", "DELETE", "PATCH" ],
+    "symbols" : [ "UPSERT", "CREATE", "UPDATE", "DELETE", "PATCH", "RESTATE" ],
     "symbolDocs" : {
       "CREATE" : "NOT SUPPORTED YET\ninsert if not exists. otherwise fail",
       "DELETE" : "NOT SUPPORTED YET\ndelete action",
       "PATCH" : "NOT SUPPORTED YET\npatch the changes instead of full replace",
+      "RESTATE" : "Restate an aspect, eg. in a index refresh.",
       "UPDATE" : "NOT SUPPORTED YET\nupdate if exists. otherwise fail",
       "UPSERT" : "insert if not exists. otherwise update"
     }
@@ -1506,7 +1738,36 @@
       "name" : "parentNode",
       "type" : "com.linkedin.common.GlossaryNodeUrn",
       "doc" : "Parent node of the glossary term",
-      "optional" : true
+      "optional" : true,
+      "Relationship" : {
+        "entityTypes" : [ "glossaryNode" ],
+        "name" : "IsPartOf"
+      },
+      "Searchable" : {
+        "fieldName" : "parentNode",
+        "fieldType" : "URN",
+        "hasValuesFieldName" : "hasParentNode"
+      }
+    }, {
+      "name" : "name",
+      "type" : "string",
+      "doc" : "Display name of the node",
+      "optional" : true,
+      "Searchable" : {
+        "boostScore" : 10.0,
+        "enableAutocomplete" : true,
+        "fieldName" : "displayName",
+        "fieldType" : "TEXT_PARTIAL"
+      }
+    }, {
+      "name" : "id",
+      "type" : "string",
+      "doc" : "Optional id for the GlossaryNode",
+      "optional" : true,
+      "Searchable" : {
+        "enableAutocomplete" : true,
+        "fieldType" : "TEXT_PARTIAL"
+      }
     } ],
     "Aspect" : {
       "name" : "glossaryNodeInfo"
@@ -1516,16 +1777,45 @@
     "name" : "GlossaryTermInfo",
     "namespace" : "com.linkedin.glossary",
     "doc" : "Properties associated with a GlossaryTerm",
+    "include" : [ "com.linkedin.common.CustomProperties" ],
     "fields" : [ {
+      "name" : "id",
+      "type" : "string",
+      "doc" : "Optional id for the term",
+      "optional" : true,
+      "Searchable" : {
+        "enableAutocomplete" : true,
+        "fieldType" : "TEXT_PARTIAL"
+      }
+    }, {
+      "name" : "name",
+      "type" : "string",
+      "doc" : "Display name of the term",
+      "optional" : true,
+      "Searchable" : {
+        "boostScore" : 10.0,
+        "enableAutocomplete" : true,
+        "fieldType" : "TEXT_PARTIAL"
+      }
+    }, {
       "name" : "definition",
       "type" : "string",
-      "doc" : "Definition of business term",
+      "doc" : "Definition of business term.",
       "Searchable" : { }
     }, {
       "name" : "parentNode",
       "type" : "com.linkedin.common.GlossaryNodeUrn",
       "doc" : "Parent node of the glossary term",
-      "optional" : true
+      "optional" : true,
+      "Relationship" : {
+        "entityTypes" : [ "glossaryNode" ],
+        "name" : "IsPartOf"
+      },
+      "Searchable" : {
+        "fieldName" : "parentNode",
+        "fieldType" : "URN",
+        "hasValuesFieldName" : "hasParentNode"
+      }
     }, {
       "name" : "termSource",
       "type" : "string",
@@ -1547,18 +1837,11 @@
       "doc" : "The abstracted URL such as https://spec.edmcouncil.org/fibo/ontology/FBC/FinancialInstruments/FinancialInstruments/CashInstrument.",
       "optional" : true
     }, {
-      "name" : "customProperties",
-      "type" : {
-        "type" : "map",
-        "values" : "string"
-      },
-      "doc" : "A key-value map to capture any other non-standardized properties for the glossary term",
-      "default" : { }
-    }, {
       "name" : "rawSchema",
       "type" : "string",
       "doc" : "Schema definition of the glossary term",
-      "optional" : true
+      "optional" : true,
+      "deprecated" : true
     } ],
     "Aspect" : {
       "name" : "glossaryTermInfo"
@@ -1567,11 +1850,11 @@
     "type" : "record",
     "name" : "CorpGroupInfo",
     "namespace" : "com.linkedin.identity",
-    "doc" : "group of corpUser, it may contains nested group",
+    "doc" : "Information about a Corp Group ingested from a third party source",
     "fields" : [ {
       "name" : "displayName",
       "type" : "string",
-      "doc" : "The name to use when displaying the group.",
+      "doc" : "The name of the group.",
       "optional" : true,
       "Searchable" : {
         "fieldType" : "TEXT_PARTIAL"
@@ -1587,39 +1870,42 @@
         "type" : "array",
         "items" : "com.linkedin.common.CorpuserUrn"
       },
-      "doc" : "owners of this group",
+      "doc" : "owners of this group\nDeprecated! Replaced by Ownership aspect.",
       "Relationship" : {
         "/*" : {
-          "entityTypes" : [ "corpUser" ],
+          "entityTypes" : [ "corpuser" ],
           "name" : "OwnedBy"
         }
-      }
+      },
+      "deprecated" : true
     }, {
       "name" : "members",
       "type" : {
         "type" : "array",
         "items" : "com.linkedin.common.CorpuserUrn"
       },
-      "doc" : "List of ldap urn in this group.",
+      "doc" : "List of ldap urn in this group.\nDeprecated! Replaced by GroupMembership aspect.",
       "Relationship" : {
         "/*" : {
-          "entityTypes" : [ "corpUser" ],
+          "entityTypes" : [ "corpuser" ],
           "name" : "IsPartOf"
         }
-      }
+      },
+      "deprecated" : true
     }, {
       "name" : "groups",
       "type" : {
         "type" : "array",
         "items" : "com.linkedin.common.CorpGroupUrn"
       },
-      "doc" : "List of groups in this group.",
+      "doc" : "List of groups in this group.\nDeprecated! This field is unused.",
       "Relationship" : {
         "/*" : {
           "entityTypes" : [ "corpGroup" ],
           "name" : "IsPartOf"
         }
-      }
+      },
+      "deprecated" : true
     }, {
       "name" : "description",
       "type" : "string",
@@ -1628,6 +1914,11 @@
       "Searchable" : {
         "fieldType" : "TEXT_PARTIAL"
       }
+    }, {
+      "name" : "slack",
+      "type" : "string",
+      "doc" : "Slack channel for the group",
+      "optional" : true
     } ],
     "Aspect" : {
       "EntityUrns" : [ "com.linkedin.common.CorpGroupUrn" ],
@@ -1673,7 +1964,37 @@
       "name" : "pictureLink",
       "type" : "com.linkedin.common.Url",
       "doc" : "A URL which points to a picture which user wants to set as a profile photo",
-      "default" : "https://raw.githubusercontent.com/linkedin/datahub/master/datahub-web-react/src/images/default_avatar.png"
+      "default" : "https://raw.githubusercontent.com/datahub-project/datahub/master/datahub-web-react/src/images/default_avatar.png"
+    }, {
+      "name" : "displayName",
+      "type" : "string",
+      "doc" : "DataHub-native display name",
+      "optional" : true,
+      "Searchable" : {
+        "boostScore" : 10.0,
+        "fieldType" : "TEXT_PARTIAL",
+        "queryByDefault" : true
+      }
+    }, {
+      "name" : "title",
+      "type" : "string",
+      "doc" : "DataHub-native Title, e.g. 'Software Engineer'",
+      "optional" : true
+    }, {
+      "name" : "slack",
+      "type" : "string",
+      "doc" : "Slack handle for the user",
+      "optional" : true
+    }, {
+      "name" : "phone",
+      "type" : "string",
+      "doc" : "Phone number to contact the user",
+      "optional" : true
+    }, {
+      "name" : "email",
+      "type" : "string",
+      "doc" : "Email address to contact the user",
+      "optional" : true
     } ],
     "Aspect" : {
       "EntityUrns" : [ "com.linkedin.common.CorpuserUrn" ],
@@ -1723,7 +2044,7 @@
       "doc" : "direct manager of this user",
       "optional" : true,
       "Relationship" : {
-        "entityTypes" : [ "corpUser" ],
+        "entityTypes" : [ "corpuser" ],
         "name" : "ReportsTo"
       },
       "Searchable" : {
@@ -2141,6 +2462,26 @@
                 "fieldType" : "TEXT"
               }
             }, {
+              "name" : "label",
+              "type" : "string",
+              "doc" : "Label of the field. Provides a more human-readable name for the field than field path. Some sources will\nprovide this metadata but not all sources have the concept of a label. If just one string is associated with\na field in a source, that is most likely a description.",
+              "optional" : true,
+              "Searchable" : {
+                "boostScore" : 0.2,
+                "fieldName" : "fieldLabels",
+                "fieldType" : "TEXT"
+              }
+            }, {
+              "name" : "created",
+              "type" : "com.linkedin.common.AuditStamp",
+              "doc" : "An AuditStamp corresponding to the creation of this schema field.",
+              "optional" : true
+            }, {
+              "name" : "lastModified",
+              "type" : "com.linkedin.common.AuditStamp",
+              "doc" : "An AuditStamp corresponding to the last modification of this schema field.",
+              "optional" : true
+            }, {
               "name" : "type",
               "type" : {
                 "type" : "record",
@@ -2258,6 +2599,12 @@
               "type" : "com.linkedin.common.GlobalTags",
               "doc" : "Tags associated with the field",
               "optional" : true,
+              "Relationship" : {
+                "/tags/*/tag" : {
+                  "entityTypes" : [ "tag" ],
+                  "name" : "SchemaFieldTaggedWith"
+                }
+              },
               "Searchable" : {
                 "/tags/*/tag" : {
                   "boostScore" : 0.5,
@@ -2270,6 +2617,12 @@
               "type" : "com.linkedin.common.GlossaryTerms",
               "doc" : "Glossary terms associated with the field",
               "optional" : true,
+              "Relationship" : {
+                "/terms/*/urn" : {
+                  "entityTypes" : [ "glossaryTerm" ],
+                  "name" : "SchemaFieldWithGlossaryTerm"
+                }
+              },
               "Searchable" : {
                 "/terms/*/urn" : {
                   "boostScore" : 0.5,
@@ -2282,6 +2635,11 @@
               "type" : "boolean",
               "doc" : "For schema fields that are part of complex keys, set this field to true\nWe do this to easily distinguish between value and key fields",
               "default" : false
+            }, {
+              "name" : "isPartitioningKey",
+              "type" : "boolean",
+              "doc" : "For Datasets which are partitioned, this determines the partitioning key.",
+              "optional" : true
             }, {
               "name" : "jsonProps",
               "type" : "string",
@@ -2428,6 +2786,12 @@
               "type" : "com.linkedin.common.GlobalTags",
               "doc" : "Tags associated with the field",
               "optional" : true,
+              "Relationship" : {
+                "/tags/*/tag" : {
+                  "entityTypes" : [ "tag" ],
+                  "name" : "EditableSchemaFieldTaggedWith"
+                }
+              },
               "Searchable" : {
                 "/tags/*/tag" : {
                   "boostScore" : 0.5,
@@ -2440,6 +2804,12 @@
               "type" : "com.linkedin.common.GlossaryTerms",
               "doc" : "Glossary terms associated with the field",
               "optional" : true,
+              "Relationship" : {
+                "/terms/*/urn" : {
+                  "entityTypes" : [ "glossaryTerm" ],
+                  "name" : "EditableSchemaFieldWithGlossaryTerm"
+                }
+              },
               "Searchable" : {
                 "/terms/*/urn" : {
                   "boostScore" : 0.5,
@@ -2479,8 +2849,10 @@
       "fields" : [ {
         "name" : "name",
         "type" : "string",
+        "doc" : "The term name, which serves as a unique id",
         "Searchable" : {
           "enableAutocomplete" : true,
+          "fieldName" : "id",
           "fieldType" : "TEXT_PARTIAL"
         }
       } ],
@@ -2543,6 +2915,7 @@
         "Relationship" : {
           "/*" : {
             "entityTypes" : [ "dataset" ],
+            "isLineage" : true,
             "name" : "DerivedFrom"
           }
         }
@@ -2966,7 +3339,14 @@
           "items" : "com.linkedin.common.MLFeatureUrn"
         },
         "doc" : "List of features used for MLModel training",
-        "optional" : true
+        "optional" : true,
+        "Relationship" : {
+          "/*" : {
+            "entityTypes" : [ "mlFeature" ],
+            "isLineage" : true,
+            "name" : "Consumes"
+          }
+        }
       }, {
         "name" : "tags",
         "type" : {
@@ -3000,6 +3380,7 @@
         "Relationship" : {
           "/*" : {
             "entityTypes" : [ "dataJob" ],
+            "isLineage" : true,
             "name" : "TrainedBy"
           }
         }
@@ -3028,6 +3409,8 @@
         "Relationship" : {
           "/*" : {
             "entityTypes" : [ "mlModelGroup" ],
+            "isLineage" : true,
+            "isUpstream" : false,
             "name" : "MemberOf"
           }
         }
@@ -3116,10 +3499,11 @@
       "fields" : [ {
         "name" : "name",
         "type" : "string",
-        "doc" : "The unique tag name",
+        "doc" : "The tag name, which serves as a unique id",
         "Searchable" : {
           "boostScore" : 10.0,
           "enableAutocomplete" : true,
+          "fieldName" : "id",
           "fieldType" : "TEXT_PARTIAL"
         }
       } ],
@@ -3134,11 +3518,22 @@
       "fields" : [ {
         "name" : "name",
         "type" : "string",
-        "doc" : "Name of the tag"
+        "doc" : "Display name of the tag",
+        "Searchable" : {
+          "boostScore" : 10.0,
+          "enableAutocomplete" : true,
+          "fieldType" : "TEXT_PARTIAL"
+        }
       }, {
         "name" : "description",
         "type" : "string",
         "doc" : "Documentation of the tag",
+        "optional" : true,
+        "Searchable" : { }
+      }, {
+        "name" : "colorHex",
+        "type" : "string",
+        "doc" : "The color associated with the Tag in Hex. For example #FFFFFF.",
         "optional" : true
       } ],
       "Aspect" : {
@@ -3164,7 +3559,7 @@
     "fields" : [ {
       "name" : "auditHeader",
       "type" : "com.linkedin.avro2pegasus.events.KafkaAuditHeader",
-      "doc" : "Kafka audit header. See go/kafkaauditheader for more info.",
+      "doc" : "Kafka audit header. Currently remains unused in the open source.",
       "optional" : true
     }, {
       "name" : "entityType",
@@ -3187,11 +3582,12 @@
     }, {
       "name" : "aspectName",
       "type" : "string",
-      "doc" : "Aspect of the entity being written to\nNot filling this out implies that the writer wants to affect the entire entity\nNote: This is only valid for CREATE and DELETE operations.\n",
+      "doc" : "Aspect of the entity being written to\nNot filling this out implies that the writer wants to affect the entire entity\nNote: This is only valid for CREATE, UPSERT, and DELETE operations.\n",
       "optional" : true
     }, {
       "name" : "aspect",
       "type" : "GenericAspect",
+      "doc" : "The value of the new aspect.",
       "optional" : true
     }, {
       "name" : "systemMetadata",
@@ -3226,6 +3622,17 @@
         } ]
       } ],
       "actions" : [ {
+        "name" : "getCount",
+        "parameters" : [ {
+          "name" : "aspect",
+          "type" : "string"
+        }, {
+          "name" : "urnLike",
+          "type" : "string",
+          "optional" : true
+        } ],
+        "returns" : "int"
+      }, {
         "name" : "getTimeseriesAspectValues",
         "parameters" : [ {
           "name" : "urn",
@@ -3263,6 +3670,34 @@
         "parameters" : [ {
           "name" : "proposal",
           "type" : "com.linkedin.mxe.MetadataChangeProposal"
+        }, {
+          "name" : "async",
+          "type" : "string",
+          "default" : "unset"
+        } ],
+        "returns" : "string"
+      }, {
+        "name" : "restoreIndices",
+        "parameters" : [ {
+          "name" : "aspect",
+          "type" : "string",
+          "optional" : true
+        }, {
+          "name" : "urn",
+          "type" : "string",
+          "optional" : true
+        }, {
+          "name" : "urnLike",
+          "type" : "string",
+          "optional" : true
+        }, {
+          "name" : "start",
+          "type" : "int",
+          "optional" : true
+        }, {
+          "name" : "batchSize",
+          "type" : "int",
+          "optional" : true
         } ],
         "returns" : "string"
       } ],

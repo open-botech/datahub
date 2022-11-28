@@ -22,10 +22,26 @@ query appConfig {
         analyticsConfig {
             enabled
         }
+        authConfig {
+            tokenAuthEnabled
+        }
         identityManagementConfig {
             enabled
         }
+        lineageConfig {
+            supportsImpactAnalysis
+        }
         managedIngestionConfig {
+            enabled
+        }
+        visualConfig {
+            logoUrl
+            faviconUrl
+        }
+        telemetryConfig {
+            enableThirdPartyLogging
+        }
+        testsConfig {
             enabled
         }
     }

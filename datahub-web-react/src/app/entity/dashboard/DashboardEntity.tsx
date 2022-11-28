@@ -1,25 +1,30 @@
 import { DashboardFilled, DashboardOutlined } from '@ant-design/icons';
 import * as React from 'react';
+
 import {
     GetDashboardQuery,
     useGetDashboardQuery,
     useUpdateDashboardMutation,
 } from '../../../graphql/dashboard.generated';
-import { Dashboard, EntityType, PlatformType, SearchResult } from '../../../types.generated';
-import { EntityAndType } from '../../lineage/types';
-import { Entity, IconStyleType, PreviewType } from '../Entity';
+import { Dashboard, EntityType, LineageDirection, OwnershipType, SearchResult } from '../../../types.generated';
+import { Entity, EntityCapabilityType, IconStyleType, PreviewType } from '../Entity';
 import { EntityProfile } from '../shared/containers/profile/EntityProfile';
 import { SidebarOwnerSection } from '../shared/containers/profile/sidebar/Ownership/SidebarOwnerSection';
 import { SidebarAboutSection } from '../shared/containers/profile/sidebar/SidebarAboutSection';
 import { SidebarTagsSection } from '../shared/containers/profile/sidebar/SidebarTagsSection';
 import { DocumentationTab } from '../shared/tabs/Documentation/DocumentationTab';
 import { DashboardChartsTab } from '../shared/tabs/Entity/DashboardChartsTab';
+import { DashboardDatasetsTab } from '../shared/tabs/Entity/DashboardDatasetsTab';
 import { PropertiesTab } from '../shared/tabs/Properties/PropertiesTab';
 import { GenericEntityProperties } from '../shared/types';
 import { DashboardPreview } from './preview/DashboardPreview';
 import { getDataForEntityType } from '../shared/containers/profile/utils';
-import { capitalizeFirstLetter } from '../../shared/textUtil';
 import { SidebarDomainSection } from '../shared/containers/profile/sidebar/Domain/SidebarDomainSection';
+import { EntityMenuItems } from '../shared/EntityDropdown/EntityDropdown';
+import { LineageTab } from '../shared/tabs/Lineage/LineageTab';
+import { capitalizeFirstLetterOnly } from '../../shared/textUtil';
+import { DashboardStatsSummarySubHeader } from './profile/DashboardStatsSummarySubHeader';
+import { ChartSnippet } from '../chart/ChartSnippet';
 
 /**
  * Definition of the DataHub Dashboard entity.
@@ -73,7 +78,21 @@ export class DashboardEntity implements Entity<Dashboard> {
             useEntityQuery={useGetDashboardQuery}
             useUpdateQuery={useUpdateDashboardMutation}
             getOverrideProperties={this.getOverridePropertiesFromEntity}
+            headerDropdownItems={new Set([EntityMenuItems.UPDATE_DEPRECATION])}
+            subHeader={{
+                component: DashboardStatsSummarySubHeader,
+            }}
             tabs={[
+                {
+                    name: 'Charts',
+                    component: DashboardChartsTab,
+                    display: {
+                        visible: (_, dashboard: GetDashboardQuery) =>
+                            (dashboard?.dashboard?.charts?.total || 0) > 0 ||
+                            (dashboard?.dashboard?.datasets?.total || 0) === 0,
+                        enabled: (_, dashboard: GetDashboardQuery) => (dashboard?.dashboard?.charts?.total || 0) > 0,
+                    },
+                },
                 {
                     name: 'Documentation',
                     component: DocumentationTab,
@@ -83,11 +102,27 @@ export class DashboardEntity implements Entity<Dashboard> {
                     component: PropertiesTab,
                 },
                 {
-                    name: 'Charts',
-                    component: DashboardChartsTab,
+                    name: 'Lineage',
+                    component: LineageTab,
+                    properties: {
+                        defaultDirection: LineageDirection.Upstream,
+                    },
                     display: {
                         visible: (_, _1) => true,
-                        enabled: (_, dashboard: GetDashboardQuery) => (dashboard?.dashboard?.charts?.total || 0) > 0,
+                        enabled: (_, dashboard: GetDashboardQuery) => {
+                            return (
+                                (dashboard?.dashboard?.upstream?.total || 0) > 0 ||
+                                (dashboard?.dashboard?.downstream?.total || 0) > 0
+                            );
+                        },
+                    },
+                },
+                {
+                    name: 'Datasets',
+                    component: DashboardDatasetsTab,
+                    display: {
+                        visible: (_, dashboard: GetDashboardQuery) => (dashboard?.dashboard?.datasets?.total || 0) > 0,
+                        enabled: (_, dashboard: GetDashboardQuery) => (dashboard?.dashboard?.datasets?.total || 0) > 0,
                     },
                 },
             ]}
@@ -104,6 +139,9 @@ export class DashboardEntity implements Entity<Dashboard> {
                 },
                 {
                     component: SidebarOwnerSection,
+                    properties: {
+                        defaultOwnerType: OwnershipType.TechnicalOwner,
+                    },
                 },
                 {
                     component: SidebarDomainSection,
@@ -114,23 +152,13 @@ export class DashboardEntity implements Entity<Dashboard> {
 
     getOverridePropertiesFromEntity = (dashboard?: Dashboard | null): GenericEntityProperties => {
         // TODO: Get rid of this once we have correctly formed platform coming back.
-        const tool = dashboard?.tool || '';
         const name = dashboard?.properties?.name;
         const externalUrl = dashboard?.properties?.externalUrl;
+        const subTypes = dashboard?.subTypes;
         return {
             name,
             externalUrl,
-            platform: {
-                urn: `urn:li:dataPlatform:(${tool})`,
-                type: EntityType.DataPlatform,
-                name: tool,
-                properties: {
-                    logoUrl: dashboard?.platform?.properties?.logoUrl || '',
-                    displayName: capitalizeFirstLetter(tool),
-                    type: PlatformType.Others,
-                    datasetNameDelimiter: '.',
-                },
-            },
+            entityTypeOverride: subTypes ? capitalizeFirstLetterOnly(subTypes.typeNames?.[0]) : '',
         };
     };
 
@@ -138,7 +166,7 @@ export class DashboardEntity implements Entity<Dashboard> {
         return (
             <DashboardPreview
                 urn={data.urn}
-                platform={data.tool}
+                platform={data.platform.properties?.displayName || data.platform.name}
                 name={data.properties?.name}
                 description={data.editableProperties?.description || data.properties?.description}
                 access={data.properties?.access}
@@ -146,18 +174,28 @@ export class DashboardEntity implements Entity<Dashboard> {
                 owners={data.ownership?.owners}
                 glossaryTerms={data?.glossaryTerms}
                 logoUrl={data?.platform?.properties?.logoUrl}
-                domain={data.domain}
+                domain={data.domain?.domain}
+                container={data.container}
+                parentContainers={data.parentContainers}
+                deprecation={data.deprecation}
+                externalUrl={data.properties?.externalUrl}
+                statsSummary={data.statsSummary}
+                lastUpdatedMs={data.properties?.lastModified?.time}
+                createdMs={data.properties?.created?.time}
+                subtype={data.subTypes?.typeNames?.[0]}
             />
         );
     };
 
     renderSearch = (result: SearchResult) => {
         const data = result.entity as Dashboard;
+
         return (
             <DashboardPreview
                 urn={data.urn}
-                platform={data.tool}
+                platform={data.platform.properties?.displayName || data.platform.name}
                 name={data.properties?.name}
+                platformInstanceId={data.dataPlatformInstance?.instanceId}
                 description={data.editableProperties?.description || data.properties?.description}
                 access={data.properties?.access}
                 tags={data.globalTags || undefined}
@@ -165,7 +203,22 @@ export class DashboardEntity implements Entity<Dashboard> {
                 glossaryTerms={data?.glossaryTerms}
                 insights={result.insights}
                 logoUrl={data?.platform?.properties?.logoUrl || ''}
-                domain={data.domain}
+                domain={data.domain?.domain}
+                container={data.container}
+                parentContainers={data.parentContainers}
+                deprecation={data.deprecation}
+                externalUrl={data.properties?.externalUrl}
+                statsSummary={data.statsSummary}
+                lastUpdatedMs={data.properties?.lastModified?.time}
+                createdMs={data.properties?.created?.time}
+                snippet={
+                    <ChartSnippet
+                        isMatchingDashboard
+                        matchedFields={result.matchedFields}
+                        inputFields={data.inputFields}
+                    />
+                }
+                subtype={data.subTypes?.typeNames?.[0]}
             />
         );
     };
@@ -175,13 +228,9 @@ export class DashboardEntity implements Entity<Dashboard> {
             urn: entity.urn,
             name: entity.properties?.name || '',
             type: EntityType.Dashboard,
-            // eslint-disable-next-line @typescript-eslint/dot-notation
-            upstreamChildren: entity?.['charts']?.relationships?.map(
-                (relationship) => ({ entity: relationship.entity, type: relationship.entity.type } as EntityAndType),
-            ),
-            downstreamChildren: undefined,
+            subtype: entity?.subTypes?.typeNames?.[0] || undefined,
             icon: entity?.platform?.properties?.logoUrl || '',
-            platform: entity.tool,
+            platform: entity?.platform,
         };
     };
 
@@ -195,5 +244,16 @@ export class DashboardEntity implements Entity<Dashboard> {
             entityType: this.type,
             getOverrideProperties: this.getOverridePropertiesFromEntity,
         });
+    };
+
+    supportedCapabilities = () => {
+        return new Set([
+            EntityCapabilityType.OWNERS,
+            EntityCapabilityType.GLOSSARY_TERMS,
+            EntityCapabilityType.TAGS,
+            EntityCapabilityType.DOMAINS,
+            EntityCapabilityType.DEPRECATION,
+            EntityCapabilityType.SOFT_DELETE,
+        ]);
     };
 }

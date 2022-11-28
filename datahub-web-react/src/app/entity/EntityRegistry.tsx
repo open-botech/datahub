@@ -1,8 +1,8 @@
-import { EntityType, SearchResult } from '../../types.generated';
+import { Entity as EntityInterface, EntityType, SearchResult } from '../../types.generated';
 import { FetchedEntity } from '../lineage/types';
-import { Entity, IconStyleType, PreviewType } from './Entity';
+import { Entity, EntityCapabilityType, IconStyleType, PreviewType } from './Entity';
 import { GenericEntityProperties } from './shared/types';
-import { urlEncodeUrn } from './shared/utils';
+import { dictToQueryStringParams, urlEncodeUrn } from './shared/utils';
 
 function validatedGet<K, V>(key: K, map: Map<K, V>): V {
     if (map.has(key)) {
@@ -78,8 +78,8 @@ export default class EntityRegistry {
         return entity.getPathName();
     }
 
-    getEntityUrl(type: EntityType, urn: string): string {
-        return `/${this.getPathName(type)}/${urlEncodeUrn(urn)}`;
+    getEntityUrl(type: EntityType, urn: string, params?: Record<string, string | boolean>): string {
+        return `/${this.getPathName(type)}/${urlEncodeUrn(urn)}${params ? `?${dictToQueryStringParams(params)}` : ''}`;
     }
 
     getTypeFromPathName(pathName: string): EntityType {
@@ -116,7 +116,35 @@ export default class EntityRegistry {
 
     getLineageVizConfig<T>(type: EntityType, data: T): FetchedEntity | undefined {
         const entity = validatedGet(type, this.entityTypeToEntity);
-        return entity.getLineageVizConfig?.(data) || undefined;
+        const genericEntityProperties = this.getGenericEntityProperties(type, data);
+        return (
+            ({
+                ...entity.getLineageVizConfig?.(data),
+                downstreamChildren: genericEntityProperties?.downstream?.relationships
+                    ?.filter((relationship) => relationship.entity)
+                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                    ?.filter((relationship) => !relationship.entity?.['status']?.removed)
+                    ?.map((relationship) => ({
+                        entity: relationship.entity as EntityInterface,
+                        type: (relationship.entity as EntityInterface).type,
+                    })),
+                numDownstreamChildren: genericEntityProperties?.downstream?.total,
+                upstreamChildren: genericEntityProperties?.upstream?.relationships
+                    ?.filter((relationship) => relationship.entity)
+                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                    ?.filter((relationship) => !relationship.entity?.['status']?.removed)
+                    ?.map((relationship) => ({
+                        entity: relationship.entity as EntityInterface,
+                        type: (relationship.entity as EntityInterface).type,
+                    })),
+                numUpstreamChildren: genericEntityProperties?.upstream?.total,
+                status: genericEntityProperties?.status,
+                siblingPlatforms: genericEntityProperties?.siblingPlatforms,
+                fineGrainedLineages: genericEntityProperties?.fineGrainedLineages,
+                schemaMetadata: genericEntityProperties?.schemaMetadata,
+                inputFields: genericEntityProperties?.inputFields,
+            } as FetchedEntity) || undefined
+        );
     }
 
     getDisplayName<T>(type: EntityType, data: T): string {
@@ -127,5 +155,18 @@ export default class EntityRegistry {
     getGenericEntityProperties<T>(type: EntityType, data: T): GenericEntityProperties | null {
         const entity = validatedGet(type, this.entityTypeToEntity);
         return entity.getGenericEntityProperties(data);
+    }
+
+    getSupportedEntityCapabilities(type: EntityType): Set<EntityCapabilityType> {
+        const entity = validatedGet(type, this.entityTypeToEntity);
+        return entity.supportedCapabilities();
+    }
+
+    getTypesWithSupportedCapabilities(capability: EntityCapabilityType): Set<EntityType> {
+        return new Set(
+            this.getEntities()
+                .filter((entity) => entity.supportedCapabilities().has(capability))
+                .map((entity) => entity.type),
+        );
     }
 }

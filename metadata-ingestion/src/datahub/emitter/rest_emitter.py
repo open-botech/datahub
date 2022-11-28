@@ -1,18 +1,21 @@
 import datetime
-import itertools
+import functools
 import json
 import logging
-import shlex
+import os
 from json.decoder import JSONDecodeError
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
 from requests.exceptions import HTTPError, RequestException
 
+from datahub.cli.cli_utils import get_system_auth
 from datahub.configuration.common import ConfigurationError, OperationalError
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
+from datahub.emitter.request_helper import _make_curl_command
 from datahub.emitter.serialization_helper import pre_json_transform
+from datahub.ingestion.api.closeable import Closeable
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import (
     MetadataChangeEvent,
     MetadataChangeProposal,
@@ -22,24 +25,7 @@ from datahub.metadata.com.linkedin.pegasus2avro.usage import UsageAggregation
 logger = logging.getLogger(__name__)
 
 
-def _make_curl_command(
-    session: requests.Session, method: str, url: str, payload: str
-) -> str:
-    fragments: List[str] = [
-        "curl",
-        *itertools.chain(
-            *[
-                ("-X", method),
-                *[("-H", f"{k}: {v}") for (k, v) in session.headers.items()],
-                ("--data", payload),
-            ]
-        ),
-        url,
-    ]
-    return " ".join(shlex.quote(fragment) for fragment in fragments)
-
-
-class DatahubRestEmitter:
+class DataHubRestEmitter(Closeable):
     DEFAULT_CONNECT_TIMEOUT_SEC = 30  # 30 seconds should be plenty to connect
     DEFAULT_READ_TIMEOUT_SEC = (
         30  # Any ingest call taking longer than 30 seconds should be abandoned
@@ -50,7 +36,10 @@ class DatahubRestEmitter:
         503,
         504,
     ]
-    DEFAULT_RETRY_MAX_TIMES = 1
+    DEFAULT_RETRY_METHODS = ["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"]
+    DEFAULT_RETRY_MAX_TIMES = int(
+        os.getenv("DATAHUB_REST_EMITTER_DEFAULT_RETRY_MAX_TIMES", "3")
+    )
 
     _gms_server: str
     _token: Optional[str]
@@ -58,6 +47,7 @@ class DatahubRestEmitter:
     _connect_timeout_sec: float = DEFAULT_CONNECT_TIMEOUT_SEC
     _read_timeout_sec: float = DEFAULT_READ_TIMEOUT_SEC
     _retry_status_codes: List[int] = DEFAULT_RETRY_STATUS_CODES
+    _retry_methods: List[str] = DEFAULT_RETRY_METHODS
     _retry_max_times: int = DEFAULT_RETRY_MAX_TIMES
 
     def __init__(
@@ -67,12 +57,17 @@ class DatahubRestEmitter:
         connect_timeout_sec: Optional[float] = None,
         read_timeout_sec: Optional[float] = None,
         retry_status_codes: Optional[List[int]] = None,
+        retry_methods: Optional[List[str]] = None,
         retry_max_times: Optional[int] = None,
         extra_headers: Optional[Dict[str, str]] = None,
         ca_certificate_path: Optional[str] = None,
+        server_telemetry_id: Optional[str] = None,
+        disable_ssl_verification: bool = False,
     ):
         self._gms_server = gms_server
         self._token = token
+        self.server_config: Dict[str, Any] = {}
+        self.server_telemetry_id: str = ""
 
         self._session = requests.Session()
 
@@ -84,12 +79,19 @@ class DatahubRestEmitter:
         )
         if token:
             self._session.headers.update({"Authorization": f"Bearer {token}"})
+        else:
+            system_auth = get_system_auth()
+            if system_auth is not None:
+                self._session.headers.update({"Authorization": system_auth})
 
         if extra_headers:
             self._session.headers.update(extra_headers)
 
         if ca_certificate_path:
             self._session.verify = ca_certificate_path
+
+        if disable_ssl_verification:
+            self._session.verify = False
 
         if connect_timeout_sec:
             self._connect_timeout_sec = connect_timeout_sec
@@ -105,14 +107,27 @@ class DatahubRestEmitter:
         if retry_status_codes is not None:  # Only if missing. Empty list is allowed
             self._retry_status_codes = retry_status_codes
 
+        if retry_methods is not None:
+            self._retry_methods = retry_methods
+
         if retry_max_times:
             self._retry_max_times = retry_max_times
 
-        retry_strategy = Retry(
-            total=self._retry_max_times,
-            status_forcelist=self._retry_status_codes,
-            backoff_factor=2,
-        )
+        try:
+            retry_strategy = Retry(
+                total=self._retry_max_times,
+                status_forcelist=self._retry_status_codes,
+                backoff_factor=2,
+                allowed_methods=self._retry_methods,
+            )
+        except TypeError:
+            # Prior to urllib3 1.26, the Retry class used `method_whitelist` instead of `allowed_methods`.
+            retry_strategy = Retry(
+                total=self._retry_max_times,
+                status_forcelist=self._retry_status_codes,
+                backoff_factor=2,
+                method_whitelist=self._retry_methods,
+            )
 
         adapter = HTTPAdapter(
             pool_connections=100, pool_maxsize=100, max_retries=retry_strategy
@@ -120,12 +135,21 @@ class DatahubRestEmitter:
         self._session.mount("http://", adapter)
         self._session.mount("https://", adapter)
 
-    def test_connection(self) -> None:
+        # Shim session.request to apply default timeout values.
+        # Via https://stackoverflow.com/a/59317604.
+        self._session.request = functools.partial(  # type: ignore
+            self._session.request,
+            timeout=(self._connect_timeout_sec, self._read_timeout_sec),
+        )
+
+    def test_connection(self) -> dict:
         response = self._session.get(f"{self._gms_server}/config")
         if response.status_code == 200:
             config: dict = response.json()
             if config.get("noCode") == "true":
-                return
+                self.server_config = config
+                return config
+
             else:
                 # Looks like we either connected to an old GMS or to some other service. Let's see if we can determine which before raising an error
                 # A common misconfiguration is connecting to datahub-frontend so we special-case this check
@@ -214,12 +238,7 @@ class DatahubRestEmitter:
             curl_command,
         )
         try:
-            response = self._session.post(
-                url,
-                data=payload,
-                timeout=(self._connect_timeout_sec, self._read_timeout_sec),
-            )
-
+            response = self._session.post(url, data=payload)
             response.raise_for_status()
         except HTTPError as e:
             try:
@@ -236,3 +255,22 @@ class DatahubRestEmitter:
             raise OperationalError(
                 "Unable to emit metadata to DataHub GMS", {"message": str(e)}
             ) from e
+
+    def __repr__(self) -> str:
+        token_str = (
+            f" with token: {self._token[:4]}**********{self._token[-4:]}"
+            if self._token
+            else ""
+        )
+        return (
+            f"DataHubRestEmitter: configured to talk to {self._gms_server}{token_str}"
+        )
+
+    def close(self) -> None:
+        self._session.close()
+
+
+class DatahubRestEmitter(DataHubRestEmitter):
+    """This class exists as a pass-through for backwards compatibility"""
+
+    pass

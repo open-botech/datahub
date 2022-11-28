@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ShareAltOutlined } from '@ant-design/icons';
-import { DataFlow, EntityType, PlatformType, SearchResult } from '../../../types.generated';
+import { DataFlow, EntityType, OwnershipType, SearchResult } from '../../../types.generated';
 import { Preview } from './preview/Preview';
-import { Entity, IconStyleType, PreviewType } from '../Entity';
+import { Entity, EntityCapabilityType, IconStyleType, PreviewType } from '../Entity';
 import { EntityProfile } from '../shared/containers/profile/EntityProfile';
 import { useGetDataFlowQuery, useUpdateDataFlowMutation } from '../../../graphql/dataFlow.generated';
 import { DocumentationTab } from '../shared/tabs/Documentation/DocumentationTab';
@@ -13,8 +13,8 @@ import { SidebarOwnerSection } from '../shared/containers/profile/sidebar/Owners
 import { GenericEntityProperties } from '../shared/types';
 import { DataFlowJobsTab } from '../shared/tabs/Entity/DataFlowJobsTab';
 import { getDataForEntityType } from '../shared/containers/profile/utils';
-import { capitalizeFirstLetter } from '../../shared/textUtil';
 import { SidebarDomainSection } from '../shared/containers/profile/sidebar/Domain/SidebarDomainSection';
+import { EntityMenuItems } from '../shared/EntityDropdown/EntityDropdown';
 
 /**
  * Definition of the DataHub DataFlow entity.
@@ -62,6 +62,7 @@ export class DataFlowEntity implements Entity<DataFlow> {
             useEntityQuery={useGetDataFlowQuery}
             useUpdateQuery={useUpdateDataFlowMutation}
             getOverrideProperties={this.getOverridePropertiesFromEntity}
+            headerDropdownItems={new Set([EntityMenuItems.UPDATE_DEPRECATION])}
             tabs={[
                 {
                     name: 'Documentation',
@@ -89,6 +90,9 @@ export class DataFlowEntity implements Entity<DataFlow> {
                 },
                 {
                     component: SidebarOwnerSection,
+                    properties: {
+                        defaultOwnerType: OwnershipType.TechnicalOwner,
+                    },
                 },
                 {
                     component: SidebarDomainSection,
@@ -99,56 +103,47 @@ export class DataFlowEntity implements Entity<DataFlow> {
 
     getOverridePropertiesFromEntity = (dataFlow?: DataFlow | null): GenericEntityProperties => {
         // TODO: Get rid of this once we have correctly formed platform coming back.
-        const tool = dataFlow?.orchestrator || '';
         const name = dataFlow?.properties?.name;
         const externalUrl = dataFlow?.properties?.externalUrl;
         return {
             name,
             externalUrl,
-            platform: {
-                urn: `urn:li:dataPlatform:(${tool})`,
-                type: EntityType.DataPlatform,
-                name: tool,
-                properties: {
-                    logoUrl: dataFlow?.platform?.properties?.logoUrl || '',
-                    displayName: capitalizeFirstLetter(tool),
-                    type: PlatformType.Others,
-                    datasetNameDelimiter: '.',
-                },
-            },
         };
     };
 
     renderPreview = (_: PreviewType, data: DataFlow) => {
-        const platformName = data.orchestrator.charAt(0).toUpperCase() + data.orchestrator.slice(1);
         return (
             <Preview
                 urn={data.urn}
                 name={data.properties?.name || ''}
                 description={data.editableProperties?.description || data.properties?.description}
-                platformName={platformName}
+                platformName={data.platform.properties?.displayName || data.platform.name}
                 platformLogo={data?.platform?.properties?.logoUrl || ''}
                 owners={data.ownership?.owners}
                 globalTags={data.globalTags}
-                domain={data.domain}
+                domain={data.domain?.domain}
+                externalUrl={data.properties?.externalUrl}
             />
         );
     };
 
     renderSearch = (result: SearchResult) => {
         const data = result.entity as DataFlow;
-        const platformName = data.orchestrator.charAt(0).toUpperCase() + data.orchestrator.slice(1);
         return (
             <Preview
                 urn={data.urn}
                 name={data.properties?.name || ''}
+                platformInstanceId={data.dataPlatformInstance?.instanceId}
                 description={data.editableProperties?.description || data.properties?.description || ''}
-                platformName={platformName}
+                platformName={data.platform.properties?.displayName || data.platform.name}
                 platformLogo={data?.platform?.properties?.logoUrl || ''}
                 owners={data.ownership?.owners}
                 globalTags={data.globalTags}
                 insights={result.insights}
-                domain={data.domain}
+                domain={data.domain?.domain}
+                externalUrl={data.properties?.externalUrl}
+                jobCount={(data as any).childJobs?.total}
+                deprecation={data.deprecation}
             />
         );
     };
@@ -163,5 +158,16 @@ export class DataFlowEntity implements Entity<DataFlow> {
             entityType: this.type,
             getOverrideProperties: this.getOverridePropertiesFromEntity,
         });
+    };
+
+    supportedCapabilities = () => {
+        return new Set([
+            EntityCapabilityType.OWNERS,
+            EntityCapabilityType.GLOSSARY_TERMS,
+            EntityCapabilityType.TAGS,
+            EntityCapabilityType.DOMAINS,
+            EntityCapabilityType.DEPRECATION,
+            EntityCapabilityType.SOFT_DELETE,
+        ]);
     };
 }

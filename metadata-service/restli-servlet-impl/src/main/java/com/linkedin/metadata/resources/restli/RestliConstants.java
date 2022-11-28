@@ -19,6 +19,7 @@ public final class RestliConstants {
   public static final String ACTION_LIST_URNS_FROM_INDEX = "listUrnsFromIndex";
 
   public static final String PARAM_INPUT = "input";
+  public static final String PARAM_MAX_HOPS = "maxHops";
   public static final String PARAM_ASPECTS = "aspects";
   public static final String PARAM_FILTER = "filter";
   public static final String PARAM_GROUP = "group";
@@ -31,6 +32,10 @@ public final class RestliConstants {
   public static final String PARAM_LIMIT = "limit";
   public static final String PARAM_SNAPSHOT = "snapshot";
   public static final String PARAM_URN = "urn";
+  public static final String PARAM_URN_LIKE = "urnLike";
   public static final String PARAM_URNS = "urns";
   public static final String PARAM_MODE = "mode";
+  public static final String PARAM_DIRECTION = "direction";
+  public static final String PARAM_ENTITY_TYPE = "entityType";
+  public static final String PARAM_VERSIONED_URN_PAIRS = "versionedUrns";
 }

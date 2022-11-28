@@ -19,7 +19,7 @@ installed to be able to build because UI tests have a dependency on `Google Chro
 ```
 However, if you only want to build `DataHub Frontend` specifically:
 ```
-./gradlew :datahub-frontend:build
+./gradlew :datahub-frontend:dist
 ```
 
 ## Dependencies
@@ -40,7 +40,7 @@ cd datahub-frontend/run && ./run-local-frontend
 After starting your application in one of the two ways mentioned above, you can connect to it by typing below
 into your favorite web browser:
 ```
-http://localhost:9001
+http://localhost:9002
 ```
 
 To be able to sign in, you need to provide your user name. The default account is `datahub`, password `datahub`.
@@ -62,14 +62,14 @@ WHZ-Authentication {
 
 ### Authentication in React
 The React app supports both JAAS as described above and separately OIDC authentication. To learn about configuring OIDC for React,
-see the [OIDC in React](../docs/how/auth/sso/configure-oidc-react.md) document.
+see the [OIDC in React](../docs/authentication/guides/sso/configure-oidc-react.md) document.
 
 
 ### API Debugging
 Most DataHub frontend API endpoints are protected using [Play Authentication](https://www.playframework.com/documentation/2.1.0/JavaGuide4), which means it requires authentication information stored in the cookie for the request to go through. This makes debugging using curl difficult. One option is to first make a curl call against the `/authenticate` endpoint and stores the authentication info in a cookie file like this
 
 ```
-curl -c cookie.txt -d '{"username":"datahub", "password":"datahub"}' -H 'Content-Type: application/json' http://localhost:9001/authenticate
+curl -c cookie.txt -d '{"username":"datahub", "password":"datahub"}' -H 'Content-Type: application/json' http://localhost:9002/authenticate
 ```
 
 You can then make all subsequent calls using the same cookie file to pass the authentication check.

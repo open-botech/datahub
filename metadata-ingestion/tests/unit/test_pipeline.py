@@ -1,27 +1,29 @@
-import unittest
 from typing import Iterable, List, cast
 from unittest.mock import patch
 
+import pytest
 from freezegun import freeze_time
 
+from datahub.configuration.common import DynamicTypedConfig
+from datahub.ingestion.api.committable import CommitPolicy, Committable
 from datahub.ingestion.api.common import RecordEnvelope, WorkUnit
 from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.transform import Transformer
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.ingestion.run.pipeline import Pipeline, PipelineContext
-from datahub.metadata.com.linkedin.pegasus2avro.common import Status
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import SystemMetadata
 from datahub.metadata.schema_classes import (
     DatasetPropertiesClass,
     DatasetSnapshotClass,
     MetadataChangeEventClass,
+    StatusClass,
 )
 from tests.test_helpers.sink_helpers import RecordingSinkReport
 
 FROZEN_TIME = "2020-04-14 07:00:00"
 
 
-class PipelineTest(unittest.TestCase):
+class TestPipeline(object):
     @patch("datahub.ingestion.source.kafka.KafkaSource.get_workunits", autospec=True)
     @patch("datahub.ingestion.sink.console.ConsoleSink.close", autospec=True)
     @freeze_time(FROZEN_TIME)
@@ -40,6 +42,133 @@ class PipelineTest(unittest.TestCase):
         pipeline.pretty_print_summary()
         mock_source.assert_called_once()
         mock_sink.assert_called_once()
+
+    @freeze_time(FROZEN_TIME)
+    @patch(
+        "datahub.emitter.rest_emitter.DatahubRestEmitter.test_connection",
+        return_value={"noCode": True},
+    )
+    @patch(
+        "datahub.ingestion.graph.client.DataHubGraph.get_config",
+        return_value={"noCode": True},
+    )
+    def test_configure_without_sink(self, mock_emitter, mock_graph):
+        pipeline = Pipeline.create(
+            {
+                "source": {
+                    "type": "file",
+                    "config": {"filename": "test_file.json"},
+                },
+            }
+        )
+        # assert that the default sink config is for a DatahubRestSink
+        assert isinstance(pipeline.config.sink, DynamicTypedConfig)
+        assert pipeline.config.sink.type == "datahub-rest"
+        assert pipeline.config.sink.config == {
+            "server": "http://localhost:8080",
+            "token": None,
+        }
+
+    @freeze_time(FROZEN_TIME)
+    @patch(
+        "datahub.emitter.rest_emitter.DatahubRestEmitter.test_connection",
+        return_value={"noCode": True},
+    )
+    @patch(
+        "datahub.ingestion.graph.client.DataHubGraph.get_config",
+        return_value={"noCode": True},
+    )
+    def test_configure_with_rest_sink_initializes_graph(
+        self, mock_source, mock_test_connection
+    ):
+        pipeline = Pipeline.create(
+            {
+                "source": {
+                    "type": "file",
+                    "config": {"filename": "test_events.json"},
+                },
+                "sink": {
+                    "type": "datahub-rest",
+                    "config": {
+                        "server": "http://somehost.someplace.some:8080",
+                        "token": "foo",
+                    },
+                },
+            }
+        )
+        # assert that the default sink config is for a DatahubRestSink
+        assert isinstance(pipeline.config.sink, DynamicTypedConfig)
+        assert pipeline.config.sink.type == "datahub-rest"
+        assert pipeline.config.sink.config == {
+            "server": "http://somehost.someplace.some:8080",
+            "token": "foo",
+        }
+        assert pipeline.ctx.graph is not None, "DataHubGraph should be initialized"
+        assert pipeline.ctx.graph.config.server == pipeline.config.sink.config["server"]
+        assert pipeline.ctx.graph.config.token == pipeline.config.sink.config["token"]
+
+    @freeze_time(FROZEN_TIME)
+    @patch(
+        "datahub.emitter.rest_emitter.DatahubRestEmitter.test_connection",
+        return_value={"noCode": True},
+    )
+    @patch(
+        "datahub.ingestion.graph.client.DataHubGraph.get_config",
+        return_value={"noCode": True},
+    )
+    def test_configure_with_rest_sink_with_additional_props_initializes_graph(
+        self, mock_source, mock_test_connection
+    ):
+        pipeline = Pipeline.create(
+            {
+                "source": {
+                    "type": "file",
+                    "config": {"filename": "test_events.json"},
+                },
+                "sink": {
+                    "type": "datahub-rest",
+                    "config": {
+                        "server": "http://somehost.someplace.some:8080",
+                        "token": "foo",
+                        "mode": "sync",
+                    },
+                },
+            }
+        )
+        # assert that the default sink config is for a DatahubRestSink
+        assert isinstance(pipeline.config.sink, DynamicTypedConfig)
+        assert pipeline.config.sink.type == "datahub-rest"
+        assert pipeline.config.sink.config == {
+            "server": "http://somehost.someplace.some:8080",
+            "token": "foo",
+            "mode": "sync",
+        }
+        assert pipeline.ctx.graph is not None, "DataHubGraph should be initialized"
+        assert pipeline.ctx.graph.config.server == pipeline.config.sink.config["server"]
+        assert pipeline.ctx.graph.config.token == pipeline.config.sink.config["token"]
+
+    @freeze_time(FROZEN_TIME)
+    @patch("datahub.ingestion.source.kafka.KafkaSource.get_workunits", autospec=True)
+    def test_configure_with_file_sink_does_not_init_graph(self, mock_source, tmp_path):
+        pipeline = Pipeline.create(
+            {
+                "source": {
+                    "type": "kafka",
+                    "config": {"connection": {"bootstrap": "localhost:9092"}},
+                },
+                "sink": {
+                    "type": "file",
+                    "config": {
+                        "filename": str(tmp_path / "test.json"),
+                    },
+                },
+            }
+        )
+        # assert that the default sink config is for a DatahubRestSink
+        assert isinstance(pipeline.config.sink, DynamicTypedConfig)
+        assert pipeline.config.sink.type == "file"
+        assert pipeline.config.sink.config == {"filename": str(tmp_path / "test.json")}
+        assert pipeline.ctx.graph is None, "DataHubGraph should not be initialized"
 
     @freeze_time(FROZEN_TIME)
     def test_run_including_fake_transformation(self):
@@ -65,8 +194,8 @@ class PipelineTest(unittest.TestCase):
             RecordingSinkReport, pipeline.sink.get_report()
         )
 
-        self.assertEqual(len(sink_report.received_records), 1)
-        self.assertEqual(expected_mce, sink_report.received_records[0].record)
+        assert len(sink_report.received_records) == 1
+        assert expected_mce == sink_report.received_records[0].record
 
     @freeze_time(FROZEN_TIME)
     def test_run_including_registered_transformation(self):
@@ -86,6 +215,97 @@ class PipelineTest(unittest.TestCase):
         )
         assert pipeline
 
+    @pytest.mark.parametrize(
+        "commit_policy,source,should_commit",
+        [
+            pytest.param(
+                CommitPolicy.ALWAYS,
+                "FakeSource",
+                True,
+                id="ALWAYS-no-warnings-no-errors",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS,
+                "FakeSource",
+                True,
+                id="ON_NO_ERRORS-no-warnings-no-errors",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS_AND_NO_WARNINGS,
+                "FakeSource",
+                True,
+                id="ON_NO_ERRORS_AND_NO_WARNINGS-no-warnings-no-errors",
+            ),
+            pytest.param(
+                CommitPolicy.ALWAYS,
+                "FakeSourceWithWarnings",
+                True,
+                id="ALWAYS-with-warnings",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS,
+                "FakeSourceWithWarnings",
+                True,
+                id="ON_NO_ERRORS-with-warnings",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS_AND_NO_WARNINGS,
+                "FakeSourceWithWarnings",
+                False,
+                id="ON_NO_ERRORS_AND_NO_WARNINGS-with-warnings",
+            ),
+            pytest.param(
+                CommitPolicy.ALWAYS,
+                "FakeSourceWithFailures",
+                True,
+                id="ALWAYS-with-errors",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS,
+                "FakeSourceWithFailures",
+                False,
+                id="ON_NO_ERRORS-with-errors",
+            ),
+            pytest.param(
+                CommitPolicy.ON_NO_ERRORS_AND_NO_WARNINGS,
+                "FakeSourceWithFailures",
+                False,
+                id="ON_NO_ERRORS_AND_NO_WARNINGS-with-errors",
+            ),
+        ],
+    )
+    @freeze_time(FROZEN_TIME)
+    def test_pipeline_process_commits(self, commit_policy, source, should_commit):
+        pipeline = Pipeline.create(
+            {
+                "source": {"type": f"tests.unit.test_pipeline.{source}"},
+                "sink": {"type": "console"},
+                "run_id": "pipeline_test",
+            }
+        )
+
+        class FakeCommittable(Committable):
+            def __init__(self, commit_policy: CommitPolicy):
+                self.name = "test_checkpointer"
+                self.commit_policy = commit_policy
+
+            def commit(self) -> None:
+                pass
+
+        fake_committable: Committable = FakeCommittable(commit_policy)
+
+        with patch.object(
+            FakeCommittable, "commit", wraps=fake_committable.commit
+        ) as mock_commit:
+            pipeline.ctx.register_reporter(fake_committable)
+
+            pipeline.run()
+            # check that we called the commit method once only if should_commit is True
+            if should_commit:
+                mock_commit.assert_called_once()
+            else:
+                mock_commit.assert_not_called()
+
 
 class AddStatusRemovedTransformer(Transformer):
     @classmethod
@@ -96,9 +316,13 @@ class AddStatusRemovedTransformer(Transformer):
         self, record_envelopes: Iterable[RecordEnvelope]
     ) -> Iterable[RecordEnvelope]:
         for record_envelope in record_envelopes:
-            record_envelope.record.proposedSnapshot.aspects.append(
-                get_status_removed_aspect()
-            )
+            if isinstance(record_envelope.record, MetadataChangeEventClass):
+                assert isinstance(
+                    record_envelope.record.proposedSnapshot, DatasetSnapshotClass
+                )
+                record_envelope.record.proposedSnapshot.aspects.append(
+                    get_status_removed_aspect()
+                )
             yield record_envelope
 
 
@@ -112,7 +336,7 @@ class FakeSource(Source):
     @classmethod
     def create(cls, config_dict: dict, ctx: PipelineContext) -> "Source":
         assert not config_dict
-        return FakeSource()
+        return cls()
 
     def get_workunits(self) -> Iterable[WorkUnit]:
         return self.work_units
@@ -122,6 +346,24 @@ class FakeSource(Source):
 
     def close(self):
         pass
+
+
+class FakeSourceWithWarnings(FakeSource):
+    def __init__(self):
+        super().__init__()
+        self.source_report.report_warning("test_warning", "warning_text")
+
+    def get_report(self) -> SourceReport:
+        return self.source_report
+
+
+class FakeSourceWithFailures(FakeSource):
+    def __init__(self):
+        super().__init__()
+        self.source_report.report_failure("test_failure", "failure_text")
+
+    def get_report(self) -> SourceReport:
+        return self.source_report
 
 
 def get_initial_mce() -> MetadataChangeEventClass:
@@ -140,5 +382,5 @@ def get_initial_mce() -> MetadataChangeEventClass:
     )
 
 
-def get_status_removed_aspect() -> Status:
-    return Status(removed=False)
+def get_status_removed_aspect() -> StatusClass:
+    return StatusClass(removed=False)

@@ -2,6 +2,7 @@ package com.linkedin.gms.factory.ingestion;
 
 import com.datahub.authentication.Authentication;
 import com.datahub.metadata.ingestion.IngestionScheduler;
+import com.linkedin.entity.client.RestliEntityClient;
 import com.linkedin.gms.factory.auth.SystemAuthenticationFactory;
 import com.linkedin.gms.factory.config.ConfigurationProvider;
 import com.linkedin.gms.factory.entity.RestliEntityClientFactory;
@@ -13,11 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import com.linkedin.entity.client.JavaEntityClient;
 import org.springframework.context.annotation.Scope;
 
 
-@Import({SystemAuthenticationFactory.class, RestliEntityClientFactory.class})
+@Import({SystemAuthenticationFactory.class, RestliEntityClientFactory.class, ConfigurationProvider.class})
 @PropertySource(value = "classpath:/application.yml", factory = YamlPropertySourceFactory.class)
 public class IngestionSchedulerFactory {
 
@@ -26,22 +26,23 @@ public class IngestionSchedulerFactory {
   private Authentication _systemAuthentication;
 
   @Autowired
-  @Qualifier("javaEntityClient")
-  private JavaEntityClient _entityClient;
+  @Qualifier("restliEntityClient")
+  private RestliEntityClient _entityClient;
 
   @Autowired
   private ConfigurationProvider _configProvider;
 
-  @Value("${ingestion.scheduler.delayIntervalSeconds:30}")
+  @Value("${ingestion.scheduler.delayIntervalSeconds:45}") // Boot up ingestion source cache after waiting 45 seconds for startup.
   private Integer _delayIntervalSeconds;
 
-  @Value("${ingestion.scheduler.refreshIntervalSeconds:86400}")
+  @Value("${ingestion.scheduler.refreshIntervalSeconds:43200}") // By default, refresh ingestion sources 2 times per day.
   private Integer _refreshIntervalSeconds;
 
   @Bean(name = "ingestionScheduler")
   @Scope("singleton")
   @Nonnull
   protected IngestionScheduler getInstance() {
-    return new IngestionScheduler(_systemAuthentication, _entityClient, _configProvider.getIngestion(), _delayIntervalSeconds, _refreshIntervalSeconds);
+    return new IngestionScheduler(_systemAuthentication, _entityClient, _configProvider.getIngestion(),
+        _delayIntervalSeconds, _refreshIntervalSeconds);
   }
 }

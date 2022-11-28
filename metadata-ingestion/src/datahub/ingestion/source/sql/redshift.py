@@ -1,13 +1,16 @@
+import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from urllib.parse import urlparse
 
 # These imports verify that the dependencies are available.
 import psycopg2  # noqa: F401
-import pydantic  # noqa: F401
+import pydantic
+import sqlalchemy
 import sqlalchemy_redshift  # noqa: F401
+from pydantic.fields import Field
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine import Connection, reflection
 from sqlalchemy.engine.reflection import Inspector
@@ -15,17 +18,28 @@ from sqlalchemy_redshift.dialect import RedshiftDialect, RelationKey
 from sqllineage.runner import LineageRunner
 
 import datahub.emitter.mce_builder as builder
+from datahub.configuration import ConfigModel
 from datahub.configuration.source_common import DatasetLineageProviderConfigBase
 from datahub.configuration.time_window_config import BaseTimeWindowConfig
 from datahub.emitter import mce_builder
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.ingestion.api.common import PipelineContext
+from datahub.ingestion.api.decorators import (
+    SourceCapability,
+    SupportStatus,
+    capability,
+    config_class,
+    platform_name,
+    support_status,
+)
 from datahub.ingestion.api.workunit import MetadataWorkUnit
+from datahub.ingestion.source.aws.path_spec import PathSpec
+from datahub.ingestion.source.aws.s3_util import strip_s3_prefix
 from datahub.ingestion.source.sql.postgres import PostgresConfig
 from datahub.ingestion.source.sql.sql_common import (
     SQLAlchemySource,
+    SQLSourceReport,
     SqlWorkUnit,
-    logger,
 )
 
 # TRICKY: it's necessary to import the Postgres source because
@@ -40,6 +54,8 @@ from datahub.metadata.schema_classes import (
     DatasetSnapshotClass,
     UpstreamClass,
 )
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 class LineageMode(Enum):
@@ -88,8 +104,31 @@ class LineageItem:
             self.dataset_lineage_type = DatasetLineageTypeClass.TRANSFORMED
 
 
+class S3LineageProviderConfig(ConfigModel):
+    """
+    Any source that produces s3 lineage from/to Datasets should inherit this class.
+    """
+
+    path_specs: List[PathSpec] = Field(
+        description="List of PathSpec. See below the details about PathSpec"
+    )
+
+
+class DatasetS3LineageProviderConfigBase(ConfigModel):
+    """
+    Any source that produces s3 lineage from/to Datasets should inherit this class.
+    """
+
+    s3_lineage_config: Optional[S3LineageProviderConfig] = Field(
+        default=None, description="Common config for S3 lineage generation"
+    )
+
+
 class RedshiftConfig(
-    PostgresConfig, BaseTimeWindowConfig, DatasetLineageProviderConfigBase
+    PostgresConfig,
+    BaseTimeWindowConfig,
+    DatasetLineageProviderConfigBase,
+    DatasetS3LineageProviderConfigBase,
 ):
     # Although Amazon Redshift is compatible with Postgres's wire format,
     # we actually want to use the sqlalchemy-redshift package and dialect
@@ -99,15 +138,33 @@ class RedshiftConfig(
     # Because of this behavior, it uses dramatically fewer round trips for
     # large Redshift warehouses. As an example, see this query for the columns:
     # https://github.com/sqlalchemy-redshift/sqlalchemy-redshift/blob/60b4db04c1d26071c291aeea52f1dcb5dd8b0eb0/sqlalchemy_redshift/dialect.py#L745.
-    scheme = "redshift+psycopg2"
+    scheme = Field(
+        default="redshift+psycopg2",
+        description="",
+        hidden_from_schema=True,
+    )
 
-    default_schema: str = "public"
+    default_schema: str = Field(
+        default="public",
+        description="The default schema to use if the sql parser fails to parse the schema with `sql_based` lineage collector",
+    )
 
-    include_table_lineage: Optional[bool] = True
-    include_copy_lineage: Optional[bool] = True
-    capture_lineage_query_parser_failures: Optional[bool] = False
+    include_table_lineage: Optional[bool] = Field(
+        default=True, description="Whether table lineage should be ingested."
+    )
+    include_copy_lineage: Optional[bool] = Field(
+        default=True,
+        description="Whether lineage should be collected from copy commands",
+    )
+    capture_lineage_query_parser_failures: Optional[bool] = Field(
+        default=False,
+        description="Whether to capture lineage query parser errors with dataset properties for debuggings",
+    )
 
-    table_lineage_mode: Optional[LineageMode] = LineageMode.STL_SCAN_BASED
+    table_lineage_mode: Optional[LineageMode] = Field(
+        default=LineageMode.STL_SCAN_BASED,
+        description="Which table lineage collector mode to use. Available modes are: [stl_scan_based, sql_based, mixed]",
+    )
 
     @pydantic.validator("platform")
     def platform_is_always_redshift(cls, v):
@@ -336,18 +393,11 @@ def _get_schema_column_info(self, connection, schema=None, **kw):
 
 def _get_external_db_mapping(connection):
     # SQL query to get mapping of external schemas in redshift to its external database.
-    try:
-        result = connection.execute(
-            """
-            select * from svv_external_schemas
-            """
-        )
-        return result
-    except Exception as e:
-        logger.error(
-            "Error querying svv_external_schemas to get external database mapping.", e
-        )
-        return None
+    return connection.execute(
+        """
+        select * from svv_external_schemas
+        """
+    )
 
 
 # This monkey-patching enables us to batch fetch the table descriptions, rather than
@@ -360,15 +410,114 @@ RedshiftDialect._get_schema_column_info = _get_schema_column_info
 redshift_datetime_format = "%Y-%m-%d %H:%M:%S"
 
 
+@dataclass
+class RedshiftReport(SQLSourceReport):
+    # https://forums.aws.amazon.com/ann.jspa?annID=9105
+    saas_version: str = ""
+    upstream_lineage: Dict[str, List[str]] = field(default_factory=dict)
+
+
+@platform_name("Redshift")
+@config_class(RedshiftConfig)
+@support_status(SupportStatus.CERTIFIED)
+@capability(SourceCapability.PLATFORM_INSTANCE, "Enabled by default")
+@capability(SourceCapability.DOMAINS, "Supported via the `domain` config field")
+@capability(SourceCapability.DATA_PROFILING, "Optionally enabled via configuration")
+@capability(SourceCapability.DESCRIPTIONS, "Enabled by default")
+@capability(SourceCapability.LINEAGE_COARSE, "Optionally enabled via configuration")
+@capability(
+    SourceCapability.USAGE_STATS,
+    "Not provided by this module, use `redshift-usage` for that.",
+    supported=False,
+)
+@capability(SourceCapability.DELETION_DETECTION, "Enabled via stateful ingestion")
 class RedshiftSource(SQLAlchemySource):
-    config: RedshiftConfig
-    catalog_metadata: Dict = {}
+    """
+    This plugin extracts the following:
+
+    - Metadata for databases, schemas, views and tables
+    - Column types associated with each table
+    - Also supports PostGIS extensions
+    - Table, row, and column statistics via optional SQL profiling
+    - Table lineage
+
+    :::tip
+
+    You can also get fine-grained usage statistics for Redshift using the `redshift-usage` source described below.
+
+    :::
+
+    ### Prerequisites
+
+    This source needs to access system tables that require extra permissions.
+    To grant these permissions, please alter your datahub Redshift user the following way:
+    ```sql
+    ALTER USER datahub_user WITH SYSLOG ACCESS UNRESTRICTED;
+    GRANT SELECT ON pg_catalog.svv_table_info to datahub_user;
+    GRANT SELECT ON pg_catalog.svl_user_info to datahub_user;
+    ```
+    :::note
+
+    Giving a user unrestricted access to system tables gives the user visibility to data generated by other users. For example, STL_QUERY and STL_QUERYTEXT contain the full text of INSERT, UPDATE, and DELETE statements.
+
+    :::
+
+    ### Lineage
+
+    There are multiple lineage collector implementations as Redshift does not support table lineage out of the box.
+
+    #### stl_scan_based
+    The stl_scan based collector uses Redshift's [stl_insert](https://docs.aws.amazon.com/redshift/latest/dg/r_STL_INSERT.html) and [stl_scan](https://docs.aws.amazon.com/redshift/latest/dg/r_STL_SCAN.html) system tables to
+    discover lineage between tables.
+    Pros:
+    - Fast
+    - Reliable
+
+    Cons:
+    - Does not work with Spectrum/external tables because those scans do not show up in stl_scan table.
+    - If a table is depending on a view then the view won't be listed as dependency. Instead the table will be connected with the view's dependencies.
+
+    #### sql_based
+    The sql_based based collector uses Redshift's [stl_insert](https://docs.aws.amazon.com/redshift/latest/dg/r_STL_INSERT.html) to discover all the insert queries
+    and uses sql parsing to discover the dependecies.
+
+    Pros:
+    - Works with Spectrum tables
+    - Views are connected properly if a table depends on it
+
+    Cons:
+    - Slow.
+    - Less reliable as the query parser can fail on certain queries
+
+    #### mixed
+    Using both collector above and first applying the sql based and then the stl_scan based one.
+
+    Pros:
+    - Works with Spectrum tables
+    - Views are connected properly if a table depends on it
+    - A bit more reliable than the sql_based one only
+
+    Cons:
+    - Slow
+    - May be incorrect at times as the query parser can fail on certain queries
+
+    :::note
+
+    The redshift stl redshift tables which are used for getting data lineage only retain approximately two to five days of log history. This means you cannot extract lineage from queries issued outside that window.
+
+    :::
+
+    """
+
     eskind_to_platform = {1: "glue", 2: "hive", 3: "postgres", 4: "redshift"}
 
     def __init__(self, config: RedshiftConfig, ctx: PipelineContext):
         super().__init__(config, ctx, "redshift")
+        self.catalog_metadata: Dict = {}
+        self.config: RedshiftConfig = config
         self._lineage_map: Optional[Dict[str, LineageItem]] = None
         self._all_tables_set: Optional[Set[str]] = None
+        self.report: RedshiftReport = RedshiftReport()
 
     @classmethod
     def create(cls, config_dict, ctx):
@@ -376,13 +525,13 @@ class RedshiftSource(SQLAlchemySource):
         return cls(config, ctx)
 
     def get_catalog_metadata(self, conn: Connection) -> None:
-        catalog_metadata = _get_external_db_mapping(conn)
-        if catalog_metadata is None:
+        try:
+            catalog_metadata = _get_external_db_mapping(conn)
+        except Exception as e:
+            self.error(logger, "external-svv_external_schemas", f"Error was {e}")
             return
-        db_name = getattr(self.config, "database")
-        db_alias = getattr(self.config, "database_alias")
-        if db_alias:
-            db_name = db_alias
+
+        db_name = self.get_db_name()
 
         external_schema_mapping = {}
         for rel in catalog_metadata:
@@ -404,15 +553,30 @@ class RedshiftSource(SQLAlchemySource):
     def get_inspectors(self) -> Iterable[Inspector]:
         # This method can be overridden in the case that you want to dynamically
         # run on multiple databases.
-        url = self.config.get_sql_alchemy_url()
-        logger.debug(f"sql_alchemy_url={url}")
-        engine = create_engine(url, **self.config.options)
+        engine = self.get_metadata_engine()
         with engine.connect() as conn:
             self.get_catalog_metadata(conn)
             inspector = inspect(conn)
             yield inspector
 
+    def get_metadata_engine(self) -> sqlalchemy.engine.Engine:
+        url = self.config.get_sql_alchemy_url()
+        logger.debug(f"sql_alchemy_url={url}")
+        return create_engine(url, **self.config.options)
+
+    def inspect_version(self) -> Any:
+        db_engine = self.get_metadata_engine()
+        logger.info("Checking current version")
+        for db_row in db_engine.execute("select version()"):
+            self.report.saas_version = db_row[0]
+
     def get_workunits(self) -> Iterable[Union[MetadataWorkUnit, SqlWorkUnit]]:
+        try:
+            self.inspect_version()
+        except Exception as e:
+            self.report.report_failure("version", f"Error: {e}")
+            return
+
         for wu in super().get_workunits():
             yield wu
             if (
@@ -474,7 +638,7 @@ class RedshiftSource(SQLAlchemySource):
             table_schema as schemaname,
             table_name as tablename
         from
-            information_schema.tables
+            pg_catalog.svv_tables
         where
             table_type = 'BASE TABLE'
             and table_schema not in ('information_schema', 'pg_catalog', 'pg_internal')
@@ -498,16 +662,10 @@ class RedshiftSource(SQLAlchemySource):
         n.nspname not in ('pg_catalog', 'information_schema')
 
         """
-        db_name = getattr(self.config, "database")
-        db_alias = getattr(self.config, "database_alias")
-        if db_alias:
-            db_name = db_alias
-
+        db_name = self.get_db_name()
         all_tables_set = set()
 
-        url = self.config.get_sql_alchemy_url()
-        logger.debug(f"sql_alchemy_url={url}")
-        engine = create_engine(url, **self.config.options)
+        engine = self.get_metadata_engine()
         for db_row in engine.execute(all_tables_query):
             all_tables_set.add(
                 f'{db_name}.{db_row["schemaname"]}.{db_row["tablename"]}'
@@ -533,12 +691,20 @@ class RedshiftSource(SQLAlchemySource):
 
         return sources
 
-    def _get_db_name(self) -> str:
+    def get_db_name(self, inspector: Inspector = None) -> str:
         db_name = getattr(self.config, "database")
         db_alias = getattr(self.config, "database_alias")
         if db_alias:
             db_name = db_alias
         return db_name
+
+    def _get_s3_path(self, path: str) -> str:
+        if self.config.s3_lineage_config:
+            for path_spec in self.config.s3_lineage_config.path_specs:
+                if path_spec.allowed(path):
+                    table_name, table_path = path_spec.extract_table_name_and_path(path)
+                    return table_path
+        return path
 
     def _populate_lineage_map(
         self, query: str, lineage_type: LineageCollectorType
@@ -561,11 +727,9 @@ class RedshiftSource(SQLAlchemySource):
         if not self._all_tables_set:
             self._all_tables_set = self._get_all_tables()
 
-        url = self.config.get_sql_alchemy_url()
-        logger.debug(f"sql_alchemy_url={url}")
-        engine = create_engine(url, **self.config.options)
+        engine = self.get_metadata_engine()
 
-        db_name = self._get_db_name()
+        db_name = self.get_db_name()
 
         try:
             for db_row in engine.execute(query):
@@ -600,19 +764,24 @@ class RedshiftSource(SQLAlchemySource):
                         )
                     except Exception as e:
                         target.query_parser_failed_sqls.append(db_row["ddl"])
-                        logger.warning(
+                        self.warn(
+                            logger,
+                            "parsing-query",
                             f'Error parsing query {db_row["ddl"]} for getting lineage .'
-                            f"\nError was {e}."
+                            f"\nError was {e}.",
                         )
                 else:
                     if lineage_type == lineage_type.COPY:
                         platform = LineageDatasetPlatform.S3
                         path = db_row["filename"].strip()
                         if urlparse(path).scheme != "s3":
-                            logger.warning(
-                                f"Only s3 source supported with copy. The source was: {path}.  ."
+                            self.warn(
+                                logger,
+                                "non-s3-lineage",
+                                f"Only s3 source supported with copy. The source was: {path}.",
                             )
                             continue
+                        path = strip_s3_prefix(self._get_s3_path(path))
                     else:
                         platform = LineageDatasetPlatform.REDSHIFT
                         path = f'{db_name}.{db_row["source_schema"]}.{db_row["source_table"]}'
@@ -631,7 +800,9 @@ class RedshiftSource(SQLAlchemySource):
                         source.platform == LineageDatasetPlatform.REDSHIFT
                         and source.path not in self._all_tables_set
                     ):
-                        logger.warning(f"{source.path} missing table")
+                        self.warn(
+                            logger, "missing-table", f"{source.path} missing table"
+                        )
                         continue
 
                     target.upstreams.add(source)
@@ -655,14 +826,9 @@ class RedshiftSource(SQLAlchemySource):
                 )
 
         except Exception as e:
-            logger.warning(
-                f"Extracting {lineage_type.name} lineage from Redshift failed."
-                f"Continuing...\nError was {e}."
-            )
+            self.warn(logger, f"extract-{lineage_type.name}", f"Error was {e}")
 
     def _populate_lineage(self) -> None:
-
-        db_name = self._get_db_name()
 
         stl_scan_based_lineage_query: str = """
             select
@@ -721,7 +887,8 @@ class RedshiftSource(SQLAlchemySource):
                 scan_type in (1, 2, 3)
             order by cluster, target_schema, target_table, starttime asc
         """.format(
-            db_name=db_name,
+            # We need the original database name for filtering
+            db_name=self.config.database,
             start_time=self.config.start_time.strftime(redshift_datetime_format),
             end_time=self.config.end_time.strftime(redshift_datetime_format),
         )
@@ -820,7 +987,8 @@ class RedshiftSource(SQLAlchemySource):
             ) as target_tables
             order by cluster, target_schema, target_table, starttime asc
         """.format(
-            db_name=db_name,
+            # We need the original database name for filtering
+            db_name=self.config.database,
             start_time=self.config.start_time.strftime(redshift_datetime_format),
             end_time=self.config.end_time.strftime(redshift_datetime_format),
         )
@@ -843,7 +1011,8 @@ class RedshiftSource(SQLAlchemySource):
             and si.starttime < '{end_time}'
         order by target_schema, target_table, starttime asc
         """.format(
-            db_name=db_name,
+            # We need the original database name for filtering
+            db_name=self.config.database,
             start_time=self.config.start_time.strftime(redshift_datetime_format),
             end_time=self.config.end_time.strftime(redshift_datetime_format),
         )
@@ -900,7 +1069,8 @@ class RedshiftSource(SQLAlchemySource):
         if dataset_key is None:
             return None, None
 
-        if not self._lineage_map:
+        if self._lineage_map is None:
+            logger.debug("Populating lineage")
             self._populate_lineage()
         assert self._lineage_map is not None
 
@@ -964,7 +1134,11 @@ class RedshiftSource(SQLAlchemySource):
         if custom_properties:
             properties = DatasetPropertiesClass(customProperties=custom_properties)
 
-        if not upstream_lineage:
+        if upstream_lineage:
+            self.report.upstream_lineage[dataset_urn] = [
+                u.dataset for u in upstream_lineage
+            ]
+        else:
             return None, properties
 
         mcp = MetadataChangeProposalWrapper(

@@ -43,12 +43,20 @@
                       "type" : "string",
                       "doc" : "The value of the intended field"
                     }, {
+                      "name" : "values",
+                      "type" : {
+                        "type" : "array",
+                        "items" : "string"
+                      },
+                      "doc" : "Values. one of which the intended field should match\nNote, if values is set, the above \"value\" field will be ignored",
+                      "default" : [ ]
+                    }, {
                       "name" : "condition",
                       "type" : {
                         "type" : "enum",
                         "name" : "Condition",
                         "doc" : "The matching condition in a filter criterion",
-                        "symbols" : [ "CONTAIN", "END_WITH", "EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL_TO", "IN", "LESS_THAN", "LESS_THAN_OR_EQUAL_TO", "START_WITH" ],
+                        "symbols" : [ "CONTAIN", "END_WITH", "EQUAL", "IS_NULL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL_TO", "IN", "LESS_THAN", "LESS_THAN_OR_EQUAL_TO", "START_WITH" ],
                         "symbolDocs" : {
                           "CONTAIN" : "Represent the relation: String field contains value, e.g. name contains Profile",
                           "END_WITH" : "Represent the relation: String field ends with value, e.g. name ends with Event",
@@ -56,6 +64,7 @@
                           "GREATER_THAN" : "Represent the relation greater than, e.g. ownerCount > 5",
                           "GREATER_THAN_OR_EQUAL_TO" : "Represent the relation greater than or equal to, e.g. ownerCount >= 5",
                           "IN" : "Represent the relation: String field is one of the array values to, e.g. name in [\"Profile\", \"Event\"]",
+                          "IS_NULL" : "Represent the relation: field is null, e.g. platform is null",
                           "LESS_THAN" : "Represent the relation less than, e.g. ownerCount < 3",
                           "LESS_THAN_OR_EQUAL_TO" : "Represent the relation less than or equal to, e.g. ownerCount <= 3",
                           "START_WITH" : "Represent the relation: String field starts with value, e.g. name starts with PageView"
@@ -63,6 +72,11 @@
                       },
                       "doc" : "The condition for the criterion, e.g. EQUAL, START_WITH",
                       "default" : "EQUAL"
+                    }, {
+                      "name" : "negated",
+                      "type" : "boolean",
+                      "doc" : "Whether the condition should be negated",
+                      "default" : false
                     } ]
                   }
                 },
@@ -70,7 +84,7 @@
               } ]
             }
           },
-          "doc" : "A list of of disjunctive criterion for the filter.",
+          "doc" : "A list of disjunctive criterion for the filter. (or operation to combine filters)",
           "optional" : true
         }, {
           "name" : "criteria",

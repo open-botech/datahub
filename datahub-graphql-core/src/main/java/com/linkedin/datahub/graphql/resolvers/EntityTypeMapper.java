@@ -13,7 +13,8 @@ import javax.annotation.Nonnull;
 public class EntityTypeMapper {
 
   static final Map<EntityType, String> ENTITY_TYPE_TO_NAME =
-      ImmutableMap.<EntityType, String>builder().put(EntityType.DATASET, "dataset")
+      ImmutableMap.<EntityType, String>builder()
+          .put(EntityType.DATASET, "dataset")
           .put(EntityType.CORP_USER, "corpuser")
           .put(EntityType.CORP_GROUP, "corpGroup")
           .put(EntityType.DATA_PLATFORM, "dataPlatform")
@@ -23,12 +24,17 @@ public class EntityTypeMapper {
           .put(EntityType.DATA_FLOW, "dataFlow")
           .put(EntityType.DATA_JOB, "dataJob")
           .put(EntityType.GLOSSARY_TERM, "glossaryTerm")
+          .put(EntityType.GLOSSARY_NODE, "glossaryNode")
           .put(EntityType.MLMODEL, "mlModel")
           .put(EntityType.MLMODEL_GROUP, "mlModelGroup")
           .put(EntityType.MLFEATURE_TABLE, "mlFeatureTable")
           .put(EntityType.MLFEATURE, "mlFeature")
           .put(EntityType.MLPRIMARY_KEY, "mlPrimaryKey")
+          .put(EntityType.CONTAINER, "container")
           .put(EntityType.DOMAIN, "domain")
+          .put(EntityType.NOTEBOOK, "notebook")
+          .put(EntityType.DATA_PLATFORM_INSTANCE, "dataPlatformInstance")
+          .put(EntityType.TEST, "test")
           .build();
 
   private static final Map<String, EntityType> ENTITY_NAME_TO_TYPE =
